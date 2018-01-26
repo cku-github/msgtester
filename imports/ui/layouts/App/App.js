@@ -27,6 +27,8 @@ import Footer from '../../components/Footer/Footer';
 import Terms from '../../pages/Terms/Terms';
 import Privacy from '../../pages/Privacy/Privacy';
 import ExamplePage from '../../pages/ExamplePage/ExamplePage';
+import TestCaseEditorPage from '../../pages/TestCaseEditorPage/TestCaseEditorPage';
+import TestCases from '../../pages/TestCases/TestCases';
 import VerifyEmailAlert from '../../components/VerifyEmailAlert/VerifyEmailAlert';
 import getUserName from '../../../modules/get-user-name';
 
@@ -61,6 +63,8 @@ const App = props => (
             <Route name="terms" path="/terms" component={Terms} />
             <Route name="privacy" path="/privacy" component={Privacy} />
             <Route name="examplePage" path="/example-page" component={ExamplePage} />
+            <Route path="/test-case-editor" component={TestCaseEditorPage} />
+            <Route path="/test-cases" component={TestCases} />
             <Route component={NotFound} />
           </Switch>
         </Grid>
