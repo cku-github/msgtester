@@ -18,6 +18,7 @@ TestCases.deny({
 });
 
 TestCases.schema = new SimpleSchema({
+  owner: SimpleSchema.RegEx.Id,
   name: String,
   type: String,
   format: String,

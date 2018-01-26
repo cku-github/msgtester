@@ -4,32 +4,18 @@ import { Link } from 'react-router-dom';
 import { Table, Alert, Button } from 'react-bootstrap';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
-import { Bert } from 'meteor/themeteorchef:bert';
 import TestCasesCollection from '../../../api/TestCases/TestCases';
-import { timeago, monthDayYearAtTime } from '../../../modules/dates';
 import Loading from '../../components/Loading/Loading';
 
 import './TestCases.scss';
 
-const handleRemove = (documentId) => {
-  if (confirm('Are you sure? This is permanent!')) {
-    Meteor.call('TestCases.remove', documentId, (error) => {
-      if (error) {
-        Bert.alert(error.reason, 'danger');
-      } else {
-        Bert.alert('Document deleted!', 'success');
-      }
-    });
-  }
-};
-
 const TestCases = ({
-  loading = false, testCases = [1], match, history,
+  loading, testCases, match, history,
 }) => (!loading ? (
   <div className="TestCases">
     <div className="page-header clearfix">
       <h4 className="pull-left">TestCases</h4>
-      <Link className="btn btn-success pull-right" to={`${match.url}/new`}>Add Document</Link>
+      <Link className="btn btn-success pull-right" to={`${match.url}/new`}>Add Test Case</Link>
     </div>
     {TestCases.length ?
       <Table responsive>
@@ -47,7 +33,7 @@ const TestCases = ({
         </thead>
         <tbody>
           {testCases.map(({
-            _id, title, createdAt, updatedAt,
+            _id, group, name
           }) => (
             <tr key={_id}>
               <td>
@@ -61,8 +47,8 @@ const TestCases = ({
                   Test Results
                 </Button>
               </td>
-              <td>Group</td>
-              <td>Name</td>
+              <td>{group}</td>
+              <td>{name}</td>
               <td>MT</td>
               <td>Status</td>
               <td>Last Run</td>
@@ -82,12 +68,12 @@ TestCases.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-// export default withTracker(() => {
-//   const subscription = Meteor.subscribe('TestCases');
-//   return {
-//     loading: !subscription.ready(),
-//     TestCases: TestCasesCollection.find().fetch(),
-//   };
-// })(TestCases);
+export default withTracker(() => {
+  const subscription = Meteor.subscribe('testCases');
+  return {
+    loading: !subscription.ready(),
+    testCases: TestCasesCollection.find().fetch(),
+  };
+})(TestCases);
 
-export default TestCases;
+// export default TestCases;
