@@ -3,11 +3,24 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Table, Alert, Button } from 'react-bootstrap';
 import { Meteor } from 'meteor/meteor';
+import { Bert } from 'meteor/themeteorchef:bert';
 import { withTracker } from 'meteor/react-meteor-data';
 import TestCasesCollection from '../../../api/TestCases/TestCases';
 import Loading from '../../components/Loading/Loading';
 
 import './TestCases.scss';
+
+const runTest = (_id) => {
+  const date = new Date();
+  Meteor.call('testCases.runTest', _id, date, (error, result) => {
+    if (error) {
+      Bert.alert(error.reason, 'danger');
+    }
+    else {
+      Bert.alert('Test is running', 'success');
+    }
+  })
+}
 
 const TestCases = ({
   loading, testCases, match, history,
@@ -37,7 +50,7 @@ const TestCases = ({
           }) => (
             <tr key={_id}>
               <td>
-                <Button>
+                <Button onClick={() => runTest(_id)}>
                   Run
                 </Button>
                 <Button>

@@ -30,7 +30,20 @@ Meteor.methods({
     } catch (exception) {
       throw new Meteor.Error('500', exception);
     }
-  }
+  },
+  'testCases.runTest': function testCasesRunTest(_id, date) {
+    check(_id, String);
+    check(date, Date);
+
+    try {
+      return TestCases.update(_id, {$set: {
+        testStatus: 'run',
+        testStart: date,
+      }});
+    } catch(exception) {
+      throw new Meteor.Error('500', exception);
+    }
+  },
 });
 
 rateLimit({
