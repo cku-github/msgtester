@@ -14,11 +14,11 @@ Meteor.methods({
       testMessage: String, // clob
       resultData: String, // clob
       testStatus: String,
-      testStart: Date,
-      testResult: String,
-      testReport: String, // clob
+      // testStart: Date,
+      // testResult: String,
+      // testReport: String, // clob
       completesInIpc: Boolean,
-      lastRunResult: String, // clob
+      // lastRunResult: String, // clob
       rfh2Header: String, // clob
       comment: String,
       group: String,

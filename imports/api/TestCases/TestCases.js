@@ -30,11 +30,23 @@ TestCases.schema = new SimpleSchema({
     type: String,
     allowedValues: ['run', 'loading', 'ready']
   },
-  testStart: Date,
-  testResult: String,
-  testReport: String, // clob
+  testStart: {
+    type: Date,
+    optional: true
+  }, // internal
+  testResult: {
+    type: String,
+    optional: true
+  }, // overview not editor
+  testReport: {
+    type: String,
+    optional: true
+  }, // clob, internal
   completesInIpc: Boolean,
-  lastRunResult: String, // clob
+  lastRunResult: {
+    type: String,
+    optional: true
+  }, // clob, internal, overview not editor
   rfh2Header: String, // clob
   comment: String,
   group: String,

@@ -63,8 +63,10 @@ const App = props => (
             <Route name="terms" path="/terms" component={Terms} />
             <Route name="privacy" path="/privacy" component={Privacy} />
             <Route name="examplePage" path="/example-page" component={ExamplePage} />
-            <Route path="/test-case-editor" component={TestCaseEditorPage} />
-            <Route path="/test-cases" component={TestCases} />
+            <Authenticated exact path="/test-cases" component={TestCases} {...props} />
+            <Authenticated exact path="/test-cases/new" component={TestCaseEditorPage} {...props} />
+            <Authenticated exact path="/test-cases/:_id" component={TestCaseEditorPage} {...props} />
+            <Authenticated exact path="/test-cases/:_id/edit" component={TestCaseEditorPage} {...props} />
             <Route component={NotFound} />
           </Switch>
         </Grid>
