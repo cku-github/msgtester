@@ -29,6 +29,7 @@ import Privacy from '../../pages/Privacy/Privacy';
 import ExamplePage from '../../pages/ExamplePage/ExamplePage';
 import TestCaseEditorPage from '../../pages/TestCaseEditorPage/TestCaseEditorPage';
 import TestCases from '../../pages/TestCases/TestCases';
+import DiffTest from '../../pages/DiffTest/DiffTest';
 import VerifyEmailAlert from '../../components/VerifyEmailAlert/VerifyEmailAlert';
 import getUserName from '../../../modules/get-user-name';
 
@@ -67,6 +68,7 @@ const App = props => (
             <Authenticated exact path="/test-cases/new" component={TestCaseEditorPage} {...props} />
             <Authenticated exact path="/test-cases/:_id" component={TestCaseEditorPage} {...props} />
             <Authenticated exact path="/test-cases/:_id/edit" component={TestCaseEditorPage} {...props} />
+            <Authenticated exact path="/diff-test" component={DiffTest} {...props} />
             <Route component={NotFound} />
           </Switch>
         </Grid>
