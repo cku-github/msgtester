@@ -13,15 +13,85 @@ class TestCaseEditor extends React.Component {
         name: {
           required: true,
         },
-
-        // TODO fill out form validation
+        type: {
+          required: true,
+        },
+        format: {
+          required: true,
+        },
+        loadingQueue: {
+          required: true,
+        },
+        runTimeSec: {
+          required: true,
+        },
+        testMessage: {
+          required: true,
+        },
+        resultData: {
+          required: false,
+        },
+        testStatus: {
+          required: true,
+        },
+        completesInIpc: {
+          required: false,
+        },
+        rfh2Header: {
+          required: false,
+        },
+        comment: {
+          required: false,
+        },
+        group: {
+          required: true,
+        },
+        autoTest: {
+          required: false,
+        },
       },
       messages: {
         name: {
           required: 'A name is needed',
         },
+        type: {
+          required: 'please choose a type',
+        },
+        format: {
+          required: 'please choose a type from the list',
+        },
+        loadingQueue: {
+          required: 'the MQ loading queue needs to be defined here',
+        },
+        runTimeSec: {
+          required: 'set a time in sec to wait before the test result is calculated',
+        },
+        testMessage: {
+          required: 'Paste the full test message here. Replace the SEME / or whatever value is stored in C_REF_1 in IPC with [REFERENCE] placeholder',
+        },
+        resultData: {
+          required: 'Once a test run completes the resulting trace is stored here. You can manually edit this if required. This is used for comparing the next test run trace',
+        },
+        testStatus: {
+          required: 'Status Ready shows that test is complete and can be run again',
+        },
+        completesInIpc: {
+          required: 'Set flag if we expect this message to successfully complete in IPC. Some messages stay active. Normally test runs wait for the message to complete in IPC before the trace is calculated',
+        },
+        rfh2Header: {
+          required: 'Paste any required MQ RFH2 headers here. Required for testing T2S messages or data from WBIFN systems',
+        },
+        comment: {
+          required: 'Comment your test case here. Some keywords such as ID=xxxx will cause the MQMD_MSG_ID field to be filled with the relevant xxx value. USERID=yyyy will be written to MQMD_USER_IDENTIFIER',
+        },
+        group: {
+          required: 'Please choose from list or create a new group to organize tests',
+        },
+        autoTest: {
+          required: 'If set to true this test case will be run automatically on each code change deployment in the ISB',
+        },
       },
-      submitHandler() { component.handleSubmit() },
+      submitHandler() { component.handleSubmit(); },
     });
   }
 
@@ -35,6 +105,7 @@ class TestCaseEditor extends React.Component {
       format: this.format.value,
       loadingQueue: this.loadingQueue.value,
       runTimeSec: Number(this.runTimeSec.value),
+      // TODO find way to escape CLOB because I need to store JSON and XML content
       testMessage: this.testMessage.value, // clob
       resultData: this.resultData.value, // clob
       testStatus: 'ready',
@@ -58,78 +129,128 @@ class TestCaseEditor extends React.Component {
         Bert.alert(confirmation, 'success');
         history.push(`/test-cases`);
       }
-    })
+    });
   }
 
   render() {
     const { testCase } = this.props;
+    const localDateString = new Date().toLocalDateString + new Date().toLocalTimeString;
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
-        <input
-          name="name"
-          placeholder="name"
-          ref={name => (this.name = name)}
-        />
-        <input
-          name="loadingQueue"
-          placeholder="Queue name"
-          ref={loadingQueue => (this.loadingQueue = loadingQueue)}
-        />
-        <input
-          name="format"
-          placeholder="format"
-          ref={format => (this.format = format)}
-        />
-        <input
-          name="messageType"
-          placeholder="Message type"
-          ref={messageType => (this.messageType = messageType)}
-        />
-        <textarea
-          className="form-control"
-          name="testMessage"
-          placeholder="test message"
-          ref={testMessage => (this.testMessage = testMessage)}
-        />
-        <input
-          name="runTimeSec"
-          defaultValue="60"
-          placeholder="allowed runTime in Sec"
-          ref={runTimeSec => (this.runTimeSec = runTimeSec)}
-        />
-        <textarea
-          className="form-control"
-          name="resultData"
-          placeholder="resultData"
-          ref={resultData => (this.resultData = resultData)}
-        />
-        <textarea
-          className="form-control"
-          name="rfh2Header"
-          placeholder="RFH2 MQ queue header value"
-          ref={rfh2Header => (this.rfh2Header = rfh2Header)}
-        />
-        <textarea
-          className="form-control"
-          name="comment"
-          placeholder="comment"
-          ref={comment => (this.comment = comment)}
-        />
-        <input
-          name="group"
-          placeholder="group"
-          ref={group => (this.group = group)}
-        />
-        <input
-          name="completesInIpc"
-          placeholder="completesInIpc"
-          ref={completesInIpc => (this.completesInIpc = completesInIpc)}
-        />
-        <input
-          name="autoTest"
-          placeholder="autoTest"
-          ref={autoTest => (this.autoTest = autoTest)}
-        />
+        <FormGroup>
+          <ControlLabel>Test name</ControlLabel>
+          <input
+            name="name"
+            placeholder="name"
+            // TODO find out how this would work
+            // defaultValue="TestCase" + localDateString
+            defaultValue="some name"
+            ref={name => (this.name = name)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>MQ Queue Name</ControlLabel>
+          <input
+            name="loadingQueue"
+            placeholder="Queue name"
+            defaultValue="QUEUE.NAME"
+            ref={loadingQueue => (this.loadingQueue = loadingQueue)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Format</ControlLabel>
+          <input
+            name="format"
+            placeholder="format"
+            defaultValue="FIN"
+            ref={format => (this.format = format)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Message Type</ControlLabel>
+          <input
+            name="messageType"
+            placeholder="Message type"
+            defaultValue="testMessageType"
+            ref={messageType => (this.messageType = messageType)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Test Message</ControlLabel>
+          <textarea
+            className="form-control"
+            name="testMessage"
+            placeholder="test message"
+            defaultValue="Some test message values"
+            ref={testMessage => (this.testMessage = testMessage)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Run Time Sec.</ControlLabel>
+          <input
+            name="runTimeSec"
+            defaultValue="60"
+            placeholder="allowed runTime in Sec"
+            ref={runTimeSec => (this.runTimeSec = runTimeSec)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Result Data</ControlLabel>
+          <textarea
+            className="form-control"
+            name="resultData"
+            placeholder="resultData"
+            ref={resultData => (this.resultData = resultData)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>RFH2 Header</ControlLabel>
+          <textarea
+            className="form-control"
+            name="rfh2Header"
+            placeholder="RFH2 MQ queue header value"
+            ref={rfh2Header => (this.rfh2Header = rfh2Header)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Comment</ControlLabel>
+          <textarea
+            className="form-control"
+            name="comment"
+            placeholder="comment"
+            ref={comment => (this.comment = comment)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Group</ControlLabel>
+          <input
+            name="group"
+            placeholder="group"
+            defaultValue="FIN.OUTBOUND.TEST"
+            ref={group => (this.group = group)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Completes in IPC</ControlLabel>
+          <input
+            type="checkbox"
+            name="completesInIpc"
+            placeholder="completesInIpc"
+            // TODO how to set default values for checkbox in Node.js
+            defaultValue="true"
+            ref={completesInIpc => (this.completesInIpc = completesInIpc)}
+          />
+        </FormGroup>
+        <FormGroup>
+          <ControlLabel>Autotest</ControlLabel>
+          <input
+            type="checkbox"
+            name="autoTest"
+            placeholder="autoTest"
+            defaultValue="false"
+            ref={autoTest => (this.autoTest = autoTest)}
+          />
+        </FormGroup>
         <Button type="submit" bsStyle="success">
           {testCase && testCase._id ? 'Save Change' : 'Add Test Case'}
         </Button>

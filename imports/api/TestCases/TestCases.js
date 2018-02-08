@@ -25,30 +25,39 @@ TestCases.schema = new SimpleSchema({
   loadingQueue: String,
   runTimeSec: Number,
   testMessage: String, // clob
-  resultData: String, // clob
+  resultData: {
+    type: String,
+    optional: true,
+  }, // clob
   testStatus: {
     type: String,
-    allowedValues: ['run', 'loading', 'ready']
+    allowedValues: ['run', 'loading', 'ready'],
   },
   testStart: {
     type: Date,
-    optional: true
+    optional: true,
   }, // internal
   testResult: {
     type: String,
-    optional: true
+    optional: true,
   }, // overview not editor
   testReport: {
     type: String,
-    optional: true
+    optional: true,
   }, // clob, internal
   completesInIpc: Boolean,
   lastRunResult: {
     type: String,
-    optional: true
+    optional: true,
   }, // clob, internal, overview not editor
-  rfh2Header: String, // clob
-  comment: String,
+  rfh2Header: {
+    type: String,
+    optional: true,
+  }, // clob
+  comment: {
+    type: String,
+    optional: true,
+  }, // clob,
   group: String,
   autoTest: Boolean,
 });
