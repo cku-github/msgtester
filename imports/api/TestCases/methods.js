@@ -26,7 +26,9 @@ Meteor.methods({
     });
 
     try {
-      return TestCases.insert({ owner: this.userId, ...testCase });
+      const id = TestCases.insert({ owner: this.userId, ...testCase });
+      // TODO insert into postgres
+      return id;
     } catch (exception) {
       throw new Meteor.Error('500', exception);
     }
