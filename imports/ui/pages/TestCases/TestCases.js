@@ -53,7 +53,7 @@ const TestCases = ({
                 <Button onClick={() => runTest(_id)}>
                   Run
                 </Button>
-                <Button>
+                <Button onClick={() => history.push(`${match.url}/${_id}`)}>
                   Edit
                 </Button>
                 <Button>

@@ -55,7 +55,7 @@ Meteor.methods({
 
     try {
       const testCaseId = testCase._id;
-      TestCases.update(testCaseId, { owner: this.userId, ...testCase });
+      TestCases.update(testCaseId, {$set: { owner: this.userId, ...testCase } });
       return testCaseId; // Return _id so we can redirect to the testcase after update.
     } catch (exception) {
       throw new Meteor.Error('500', exception);

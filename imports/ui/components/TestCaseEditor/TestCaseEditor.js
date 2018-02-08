@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, Button } from 'react-bootstrap';
-import { Meteor } from 'meteor/meteor';
+import { Row, Col, FormGroup, ControlLabel, Button } from 'react-bootstrap';
 import { Bert } from 'meteor/themeteorchef:bert';
 import validate from '../../../modules/validate';
 
@@ -109,11 +108,11 @@ class TestCaseEditor extends React.Component {
       testMessage: this.testMessage.value, // clob
       resultData: this.resultData.value, // clob
       testStatus: 'ready',
-      completesInIpc: false,
+      completesInIpc: this.completesInIpc.checked,
       rfh2Header: this.rfh2Header.value, // clob
       comment: this.comment.value,
       group: this.group.value,
-      autoTest: true,
+      autoTest: this.autoTest.checked,
     };
 
     if (existingTestCase) {
@@ -134,54 +133,65 @@ class TestCaseEditor extends React.Component {
 
   render() {
     const { testCase } = this.props;
+
     const localDateString = new Date().toLocalDateString + new Date().toLocalTimeString;
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
-        <FormGroup>
-          <ControlLabel>Test name</ControlLabel>
-          <input
-            name="name"
-            placeholder="name"
-            // TODO find out how this would work
-            // defaultValue="TestCase" + localDateString
-            defaultValue="some name"
-            ref={name => (this.name = name)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <ControlLabel>MQ Queue Name</ControlLabel>
-          <input
-            name="loadingQueue"
-            placeholder="Queue name"
-            defaultValue="QUEUE.NAME"
-            ref={loadingQueue => (this.loadingQueue = loadingQueue)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <ControlLabel>Format</ControlLabel>
-          <input
-            name="format"
-            placeholder="format"
-            defaultValue="FIN"
-            ref={format => (this.format = format)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <ControlLabel>Message Type</ControlLabel>
-          <input
-            name="messageType"
-            placeholder="Message type"
-            defaultValue="testMessageType"
-            ref={messageType => (this.messageType = messageType)}
-          />
-        </FormGroup>
+        <Row>
+          <Col xs={3}>
+            <FormGroup>
+              <ControlLabel>Test name</ControlLabel>
+              <input
+                name="name"
+                placeholder="name"
+                // TODO find out how this would work
+                // defaultValue="TestCase" + localDateString
+                defaultValue={testCase.name || "some name"}
+                ref={name => (this.name = name)}
+              />
+            </FormGroup>
+          </Col>
+          <Col xs={3}>
+            <FormGroup>
+              <ControlLabel>MQ Queue Name</ControlLabel>
+              <input
+                name="loadingQueue"
+                placeholder="Queue name"
+                defaultValue={testCase.loadingQueue || "QUEUE.NAME"}
+                ref={loadingQueue => (this.loadingQueue = loadingQueue)}
+              />
+            </FormGroup>
+          </Col>
+          <Col xs={3}>
+            <FormGroup>
+              <ControlLabel>Format</ControlLabel>
+              <input
+                name="format"
+                placeholder="format"
+                defaultValue={testCase.format || "FIN"}
+                ref={format => (this.format = format)}
+              />
+            </FormGroup>
+          </Col>
+          <Col xs={3}>
+            <FormGroup>
+              <ControlLabel>Message Type</ControlLabel>
+              <input
+                name="messageType"
+                placeholder="Message type"
+                defaultValue={testCase.messageType || "testMessageType"}
+                ref={messageType => (this.messageType = messageType)}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
         <FormGroup>
           <ControlLabel>Test Message</ControlLabel>
           <textarea
             className="form-control"
             name="testMessage"
             placeholder="test message"
-            defaultValue="Some test message values"
+            defaultValue={testCase.testMessage || "Some test message values"}
             ref={testMessage => (this.testMessage = testMessage)}
           />
         </FormGroup>
@@ -189,7 +199,7 @@ class TestCaseEditor extends React.Component {
           <ControlLabel>Run Time Sec.</ControlLabel>
           <input
             name="runTimeSec"
-            defaultValue="60"
+            defaultValue={testCase.runTimeSec || 60}
             placeholder="allowed runTime in Sec"
             ref={runTimeSec => (this.runTimeSec = runTimeSec)}
           />
@@ -200,6 +210,7 @@ class TestCaseEditor extends React.Component {
             className="form-control"
             name="resultData"
             placeholder="resultData"
+            defaultValue={testCase.resultData}
             ref={resultData => (this.resultData = resultData)}
           />
         </FormGroup>
@@ -209,6 +220,7 @@ class TestCaseEditor extends React.Component {
             className="form-control"
             name="rfh2Header"
             placeholder="RFH2 MQ queue header value"
+            defaultValue={testCase.rfh2Header}
             ref={rfh2Header => (this.rfh2Header = rfh2Header)}
           />
         </FormGroup>
@@ -218,6 +230,7 @@ class TestCaseEditor extends React.Component {
             className="form-control"
             name="comment"
             placeholder="comment"
+            defaultValue={testCase.comment}
             ref={comment => (this.comment = comment)}
           />
         </FormGroup>
@@ -226,7 +239,7 @@ class TestCaseEditor extends React.Component {
           <input
             name="group"
             placeholder="group"
-            defaultValue="FIN.OUTBOUND.TEST"
+            defaultValue={testCase.group || "FIN.OUTBOUND.TEST"}
             ref={group => (this.group = group)}
           />
         </FormGroup>
@@ -236,8 +249,7 @@ class TestCaseEditor extends React.Component {
             type="checkbox"
             name="completesInIpc"
             placeholder="completesInIpc"
-            // TODO how to set default values for checkbox in Node.js
-            defaultValue="true"
+            defaultChecked={testCase.completesInIpc || true}
             ref={completesInIpc => (this.completesInIpc = completesInIpc)}
           />
         </FormGroup>
@@ -247,7 +259,7 @@ class TestCaseEditor extends React.Component {
             type="checkbox"
             name="autoTest"
             placeholder="autoTest"
-            defaultValue="false"
+            defaultValue={testCase.autoTest || false}
             ref={autoTest => (this.autoTest = autoTest)}
           />
         </FormGroup>
