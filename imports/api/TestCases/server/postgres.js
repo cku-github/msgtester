@@ -2,8 +2,8 @@ import { Client } from 'pg';
 import TestCases from '../TestCases';
 
 const client = new Client({
-  user: 'ipc_vps',
-  // user: 'ipc',
+  // user: 'ipc_vps',
+  user: 'ipc',
   host: 'localhost',
   database: 'ipcdb',
   password: 'IPC',
