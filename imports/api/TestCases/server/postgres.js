@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Client } from 'pg';
+import jsdiff from 'diff';
 import TestCases from '../TestCases';
 
 const client = new Client(Meteor.settings.private.postgres);
@@ -21,6 +22,69 @@ const fetch = async (query, params) => {
   }
 };
 
+const pollReadyTests = async () => {
+  try {
+    const query = `
+      select test_case_id, result_data, test_result
+      from bus_test_cases
+      where test_status = 'ready'
+    `;
+    const result = await client.query(query);
+    result.rows.forEach(row => {
+      console.log(row);
+      const {
+        test_case_id: _id,
+        result_data: resultData,
+        test_result: testResult,
+      } = row;
+
+      // test result is empty, new test case
+      if (! testResult) {
+        console.log('test result empty')
+        TestCases.update(_id, {
+          $set: {
+            resultData,
+            testResult: resultData,
+            diffCount: 0,
+          },
+        });
+      } else {
+        console.log('test result not empty')
+        // test result is same
+        // test result is different
+        const diff = jsdiff.diffChars(testResult, resultData);
+        const diffCount = diff.filter(part => part.added || part.removed).length;
+
+        TestCases.update(_id, {
+          $set: {
+            resultData,
+            diffCount,
+          },
+        });
+      }
+    });
+
+    await client.end()
+  } catch (exception) {
+    throw new Error(exception.message);
+  }
+}
+
+const updateReadyTests = async () => {
+  try {
+    const query = `
+      update bus_test_cases
+      set test_status = 'calculating'
+      where test_status = 'ready'
+    `;
+
+    const result = await fetch(query);
+    await client.end()
+  } catch (exception) {
+    throw new Error(exception.message);
+  }
+}
+
 const insert = async (testCase) => {
   try {
     const {
@@ -40,9 +104,18 @@ const insert = async (testCase) => {
     } = testCase;
 
     const query = `
-      insert into bus_test_cases(test_case_id,test_case_name,message_type,format,loading_queue,test_message,test_status,rhf2_header,comment,group_name,last_editor,runtime_in_sec,completes_in_ipc,autotest)
-values('${_id}','${name}','${type}','${format}','${loadingQueue}','${testMessage}','new',${rfh2Header},'${comment}','${group}',,
-${runTimeSec},${completesInIpc},${autoTest},${owner});
+      insert into bus_test_cases(
+        test_case_id, test_case_name, message_type, format,
+        loading_queue, test_message, test_status, rhf2_header,
+        comment, group_name, last_editor, runtime_in_sec,
+        completes_in_ipc, autotest
+      )
+      values(
+        '${_id}', '${name}', '${type}', '${format}',
+        '${loadingQueue}', '${testMessage}', 'new', '${rfh2Header}',
+        '${comment}', '${group}', '${owner}', ${runTimeSec},
+        ${completesInIpc ? 1 : 0}, ${autoTest ? 1 : 0}
+      );
     `;
 
     console.log(query);
@@ -88,8 +161,8 @@ const update = async (testCase) => {
     group_name = '${group}',
     last_editor = '${owner}',
     runtime_in_sec = ${runTimeSec},
-    completes_in_ipc = ${completesInIpc},
-    autotest = ${autoTest} where
+    completes_in_ipc = ${completesInIpc ? 1 : 0},
+    autotest = ${autoTest ? 1 : 0} where
     test_case_id = '${_id}'
     `;
 
@@ -157,4 +230,6 @@ export default {
   update,
   runTest,
   updateLastRunResult,
+  pollReadyTests,
+  updateReadyTests,
 };

@@ -26,9 +26,11 @@ Meteor.methods({
     });
 
     try {
-      const id = TestCases.insert({ owner: this.userId, ...testCase });
-      // TODO insert into postgres
-      return id;
+      const _id = TestCases.insert({ owner: this.userId, ...testCase });
+      import('./server/postgres').then(({default: postgres}) => {
+        postgres.insert({ _id, owner: this.userId, ...testCase });
+      });
+      return _id;
     } catch (exception) {
       throw new Meteor.Error('500', exception);
     }
@@ -77,10 +79,16 @@ Meteor.methods({
     check(date, Date);
 
     try {
-      return TestCases.update(_id, {$set: {
+      const result = TestCases.update(_id, {$set: {
         testStatus: 'run',
         testStart: date,
       }});
+
+      import('./server/postgres').then(({default: postgres}) => {
+        postgres.runTest({_id, owner: this.userId});
+      });
+
+      return result;
     } catch(exception) {
       throw new Meteor.Error('500', exception);
     }
