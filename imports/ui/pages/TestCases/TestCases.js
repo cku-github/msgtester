@@ -39,14 +39,14 @@ const TestCases = ({
             <th>Name</th>
             <th>MT</th>
             <th>Status</th>
-            <th>Last Run</th>
+            <th>Diff Count</th>
             <th>Format</th>
             <th>Test Result</th>
           </tr>
         </thead>
         <tbody>
           {testCases.map(({
-            _id, group, name
+            _id, group, name, type, testStatus, diffCount, format
           }) => (
             <tr key={_id}>
               <td>
@@ -62,10 +62,10 @@ const TestCases = ({
               </td>
               <td>{group}</td>
               <td>{name}</td>
-              <td>MT</td>
-              <td>Status</td>
-              <td>Last Run</td>
-              <td>Format</td>
+              <td>{type}</td>
+              <td>{testStatus}</td>
+              <td>{diffCount}</td>
+              <td>{format}</td>
               <td>Test Result</td>
             </tr>
           ))}

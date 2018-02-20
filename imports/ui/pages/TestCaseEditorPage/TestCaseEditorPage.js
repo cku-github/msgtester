@@ -23,11 +23,19 @@ TestCaseEditorPage.propTypes = {
 
 export default withTracker(({ history, match }) => {
   const testCaseId = match.params._id;
-  const subscription = Meteor.subscribe('testCases.view', testCaseId);
+  if (testCaseId) {
+    const subscription = Meteor.subscribe('testCases.view', testCaseId);
+
+    return {
+      history,
+      loading: !subscription.ready(),
+      testCase: TestCases.findOne(testCaseId),
+    };
+  }
 
   return {
     history,
-    loading: !subscription.ready(),
-    testCase: TestCases.findOne(testCaseId),
+    loading: false,
+    testCase: {},
   };
 })(TestCaseEditorPage);
