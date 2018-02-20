@@ -60,6 +60,10 @@ TestCases.schema = new SimpleSchema({
   }, // clob,
   group: String,
   autoTest: Boolean,
+  diffCount: {
+    type: Number,
+    optional: true,
+  },
 });
 
 TestCases.attachSchema(TestCases.schema);
