@@ -17,7 +17,7 @@ export default (options, user) => {
     templateVars: {
       applicationName,
       firstName,
-      welcomeUrl: Meteor.absoluteUrl('documents'), // e.g., returns http://localhost:3000/documents
+      welcomeUrl: Meteor.absoluteUrl('test-cases'), // e.g., returns http://localhost:3000/documents
     },
   })
     .catch((error) => {

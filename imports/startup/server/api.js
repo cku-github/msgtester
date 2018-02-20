@@ -17,4 +17,4 @@ import postgres from '../../api/TestCases/server/postgres';
 //   where runstate = 'ready'
 // `);
 
-postgres.update({_id: 'something', testMessage: 'change'})
+// postgres.update({_id: 'something', testMessage: 'change'})

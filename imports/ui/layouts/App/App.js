@@ -49,10 +49,10 @@ const App = props => (
         <Grid>
           <Switch>
             <Route exact name="index" path="/" component={Index} />
-            <Authenticated exact path="/documents" component={Documents} {...props} />
-            <Authenticated exact path="/documents/new" component={NewDocument} {...props} />
-            <Authenticated exact path="/documents/:_id" component={ViewDocument} {...props} />
-            <Authenticated exact path="/documents/:_id/edit" component={EditDocument} {...props} />
+            <Authenticated exact path="/test-cases" component={TestCases} {...props} />
+            <Authenticated exact path="/test-cases/new" component={TestCaseEditorPage} {...props} />
+            <Authenticated exact path="/test-cases/:_id" component={TestCaseEditorPage} {...props} />
+            <Authenticated exact path="/test-cases/:_id/edit" component={TestCaseEditorPage} {...props} />
             <Authenticated exact path="/profile" component={Profile} {...props} />
             <Public path="/signup" component={Signup} {...props} />
             <Public path="/login" component={Login} {...props} />
@@ -63,10 +63,6 @@ const App = props => (
             <Route name="terms" path="/terms" component={Terms} />
             <Route name="privacy" path="/privacy" component={Privacy} />
             <Route name="examplePage" path="/example-page" component={ExamplePage} />
-            <Authenticated exact path="/test-cases" component={TestCases} {...props} />
-            <Authenticated exact path="/test-cases/new" component={TestCaseEditorPage} {...props} />
-            <Authenticated exact path="/test-cases/:_id" component={TestCaseEditorPage} {...props} />
-            <Authenticated exact path="/test-cases/:_id/edit" component={TestCaseEditorPage} {...props} />
             <Route component={NotFound} />
           </Switch>
         </Grid>
