@@ -1,14 +1,8 @@
+import { Meteor } from 'meteor/meteor';
 import { Client } from 'pg';
 import TestCases from '../TestCases';
 
-const client = new Client({
-  // user: 'ipc_vps',
-  user: 'ipc',
-  host: 'localhost',
-  database: 'ipcdb',
-  password: 'IPC',
-  port: 5432,
-});
+const client = new Client(Meteor.settings.private.postgres);
 
 const connection = client.connect();
 

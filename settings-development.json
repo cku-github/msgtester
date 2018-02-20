@@ -1,6 +1,13 @@
 {
   "public": {},
   "private": {
+    "postgres": {
+      "user": "ipc",
+      "host": "localhost",
+      "database": "ipcdb",
+      "password": "IPC",
+      "port": 5432
+    },
     "MAIL_URL": "",
     "OAuth": {
       "facebook": {
