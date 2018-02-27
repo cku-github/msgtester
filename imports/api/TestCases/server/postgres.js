@@ -1,20 +1,21 @@
 import { Meteor } from 'meteor/meteor';
-import { Client } from 'pg';
+import { Pool } from 'pg';
 import jsdiff from 'diff';
 import TestCases from '../TestCases';
 
-const client = new Client(Meteor.settings.private.postgres);
-
-client.connect();
+const pool = new Pool(Meteor.settings.private.postgres);
 
 const fetch = async (query, params) => {
   try {
+    const client = await pool.connect();
     const result = await client.query(query, params);
     result.rows.forEach((result) => {
       // NOTE: result here will likely need to be mapped to specific fields in MongoDB instead of a plain dump.
       console.log(result);
       //  TestCases.insert(result);
     });
+
+    await client.release(true);
   } catch (exception) {
     throw new Error(exception.message);
   }
@@ -22,6 +23,7 @@ const fetch = async (query, params) => {
 
 const pollReadyTests = async () => {
   try {
+    const client = await pool.connect();
     const query = `
       select test_case_id, result_data, test_result
       from bus_test_cases
@@ -63,7 +65,7 @@ const pollReadyTests = async () => {
       }
     });
 
-    await client.end()
+    await client.release(true)
   } catch (exception) {
     throw new Error(exception.message);
   }
@@ -71,6 +73,7 @@ const pollReadyTests = async () => {
 
 const updateReadyTests = async () => {
   try {
+    const client = await pool.connect();
     const query = `
       update bus_test_cases
       set test_status = 'calculating'
@@ -78,7 +81,7 @@ const updateReadyTests = async () => {
     `;
 
     const result = await fetch(query);
-    await client.end()
+    await client.release(true)
   } catch (exception) {
     throw new Error(exception.message);
   }
@@ -86,6 +89,7 @@ const updateReadyTests = async () => {
 
 const insert = async (testCase) => {
   try {
+    const client = await pool.connect();
     const {
       _id,
       owner,
@@ -120,7 +124,7 @@ const insert = async (testCase) => {
     console.log(query);
 
     const result = await client.query(query);
-    await client.end();
+    await client.release(true);
   } catch (exception) {
     throw new Error(exception.message);
   }
@@ -128,6 +132,7 @@ const insert = async (testCase) => {
 
 const update = async (testCase) => {
   try {
+    const client = await pool.connect();
     const {
       _id,
       owner,
@@ -168,7 +173,7 @@ const update = async (testCase) => {
     console.log(query);
 
     const result = await client.query(query);
-    await client.end();
+    await client.release(true);
   } catch (exception) {
     throw new Error(exception.message);
   }
@@ -176,6 +181,7 @@ const update = async (testCase) => {
 
 const runTest = async (testCase) => {
   try {
+    const client = await pool.connect();
     const {
       _id,
       owner,
@@ -193,7 +199,7 @@ const runTest = async (testCase) => {
     console.log(query);
 
     const result = await client.query(query);
-    await client.end();
+    await client.release(true);
   } catch (exception) {
     throw new Error(exception.message);
   }
@@ -201,6 +207,7 @@ const runTest = async (testCase) => {
 
 const updateLastRunResult = async (testCase) => {
   try {
+    const client = await pool.connect();
     const {
       _id,
       compareResult,
@@ -217,7 +224,7 @@ const updateLastRunResult = async (testCase) => {
     console.log(query);
 
     const result = await client.query(query);
-    await client.end();
+    await client.release(true);
   } catch (exception) {
     throw new Error(exception.message);
   }
@@ -225,6 +232,7 @@ const updateLastRunResult = async (testCase) => {
 
 const deleteTestCase = async (testCase) => {
   try {
+    const client = await pool.connect();
     const {
       _id,
     } = testCase;
@@ -237,7 +245,7 @@ const deleteTestCase = async (testCase) => {
     console.log(query);
 
     const result = await fetch(query);
-    await client.end()
+    await client.release(true)
   } catch (exception) {
     throw new Error(exception.message);
   }
