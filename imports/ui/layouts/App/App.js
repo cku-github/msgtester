@@ -54,8 +54,8 @@ const App = props => (
             <Authenticated exact path="/test-cases/new" component={TestCaseEditorPage} {...props} />
             <Authenticated exact path="/test-cases/:_id" component={TestCaseEditorPage} {...props} />
             <Authenticated exact path="/test-cases/:_id/edit" component={TestCaseEditorPage} {...props} />
+            <Authenticated exact path="/test-cases/:_id/diff" component={DiffTest} {...props} />
             <Authenticated exact path="/profile" component={Profile} {...props} />
-            <Authenticated exact path="/diff-test" component={DiffTest} {...props} />
             <Public path="/signup" component={Signup} {...props} />
             <Public path="/login" component={Login} {...props} />
             <Route path="/logout" component={Logout} {...props} />

@@ -68,7 +68,7 @@ const TestCases = ({
                 <Button onClick={() => removeTest(_id)}>
                   delete
                 </Button>
-                <Button>
+                <Button onClick={() => history.push(`${match.url}/${_id}/diff`)}>
                   Test Results
                 </Button>
               </td>
