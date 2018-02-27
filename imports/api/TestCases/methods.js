@@ -60,16 +60,24 @@ Meteor.methods({
     try {
       const testCaseId = testCase._id;
       TestCases.update(testCaseId, {$set: { owner: this.userId, ...testCase } });
+      import('./server/postgres').then(({default: postgres}) => {
+        postgres.testCasesUpdate({ _id, owner: this.userId, ...testCase });
+      });
       return testCaseId; // Return _id so we can redirect to the testcase after update.
     } catch (exception) {
       throw new Meteor.Error('500', exception);
     }
   },
-  'testCases.remove': function testCasesRemove(testCaseId) {
-    check(testCaseId, String);
+  'testCases.remove': function testCasesRemove(_id) {
+    check(_id, String);
 
     try {
-      return TestCases.remove(testCaseId);
+      //first try to delete from Postgresql
+      import('./server/postgres').then(({default: postgres}) => {
+        postgres.deleteTestCase({_id});
+      });
+      // then remove from MongoDB
+      return TestCases.remove(_id);
     } catch (exception) {
       throw new Meteor.Error('500', exception);
     }

@@ -2,9 +2,9 @@
   "public": {},
   "private": {
     "postgres": {
-      "user": "ipc",
+      "user": "ipc_vps",
       "host": "localhost",
-      "database": "ipcdb",
+      "database": "ipcdb_vps",
       "password": "IPC",
       "port": 5432
     },

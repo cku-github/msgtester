@@ -12,15 +12,24 @@ import './TestCases.scss';
 
 const runTest = (_id) => {
   const date = new Date();
-  Meteor.call('testCases.runTest', _id, date, (error, result) => {
+  Meteor.call('testCases.runTest', _id, date, (error) => {
     if (error) {
       Bert.alert(error.reason, 'danger');
-    }
-    else {
+    } else {
       Bert.alert('Test is running', 'success');
     }
-  })
-}
+  });
+};
+
+const removeTest = (_id) => {
+  Meteor.call('testCases.remove', _id, (error) => {
+    if (error) {
+      Bert.alert(error.reason, 'danger');
+    } else {
+      Bert.alert('Testcase removed', 'success');
+    }
+  });
+};
 
 const TestCases = ({
   loading, testCases, match, history,
@@ -55,6 +64,9 @@ const TestCases = ({
                 </Button>
                 <Button onClick={() => history.push(`${match.url}/${_id}`)}>
                   Edit
+                </Button>
+                <Button onClick={() => removeTest(_id)}>
+                  delete
                 </Button>
                 <Button>
                   Test Results

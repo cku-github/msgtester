@@ -5,7 +5,7 @@ import TestCases from '../TestCases';
 
 const client = new Client(Meteor.settings.private.postgres);
 
-const connection = client.connect();
+client.connect();
 
 const fetch = async (query, params) => {
   try {
@@ -15,8 +15,6 @@ const fetch = async (query, params) => {
       console.log(result);
       //  TestCases.insert(result);
     });
-
-    await client.end()
   } catch (exception) {
     throw new Error(exception.message);
   }
@@ -29,6 +27,7 @@ const pollReadyTests = async () => {
       from bus_test_cases
       where test_status = 'ready'
     `;
+
     const result = await client.query(query);
     result.rows.forEach(row => {
       console.log(row);
@@ -224,6 +223,26 @@ const updateLastRunResult = async (testCase) => {
   }
 };
 
+const deleteTestCase = async (testCase) => {
+  try {
+    const {
+      _id,
+    } = testCase;
+
+    const query = `
+      delete from bus_test_cases
+      where test_case_id = '${_id}'
+    `;
+
+    console.log(query);
+
+    const result = await fetch(query);
+    await client.end()
+  } catch (exception) {
+    throw new Error(exception.message);
+  }
+};
+
 export default {
   fetch,
   insert,
@@ -232,4 +251,5 @@ export default {
   updateLastRunResult,
   pollReadyTests,
   updateReadyTests,
+  deleteTestCase,
 };
