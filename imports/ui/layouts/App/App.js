@@ -50,21 +50,27 @@ const App = props => (
         <Grid>
           <Switch>
             <Route exact name="index" path="/" component={Index} />
+
             <Authenticated exact path="/test-cases" component={TestCases} {...props} />
             <Authenticated exact path="/test-cases/new" component={TestCaseEditorPage} {...props} />
             <Authenticated exact path="/test-cases/:_id" component={TestCaseEditorPage} {...props} />
             <Authenticated exact path="/test-cases/:_id/edit" component={TestCaseEditorPage} {...props} />
             <Authenticated exact path="/test-cases/:_id/diff" component={DiffTest} {...props} />
+
             <Authenticated exact path="/profile" component={Profile} {...props} />
+
             <Public path="/signup" component={Signup} {...props} />
             <Public path="/login" component={Login} {...props} />
+
             <Route path="/logout" component={Logout} {...props} />
             <Route name="verify-email" path="/verify-email/:token" component={VerifyEmail} />
             <Route name="recover-password" path="/recover-password" component={RecoverPassword} />
             <Route name="reset-password" path="/reset-password/:token" component={ResetPassword} />
+
             <Route name="terms" path="/terms" component={Terms} />
             <Route name="privacy" path="/privacy" component={Privacy} />
             <Route name="examplePage" path="/example-page" component={ExamplePage} />
+
             <Route component={NotFound} />
           </Switch>
         </Grid>

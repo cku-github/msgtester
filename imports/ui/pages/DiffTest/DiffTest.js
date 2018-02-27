@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import jsdiff from 'diff';
+import { Button } from 'react-bootstrap';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import TestCases from '../../../api/TestCases/TestCases';
 import Loading from '../../components/Loading/Loading';
 
-const DiffTest = ({loading, testResult, resultData}) => {
+const DiffTest = ({history, loading, name, testResult, resultData}) => {
   if (loading) {
     return (
       <Loading />
@@ -31,6 +32,12 @@ const DiffTest = ({loading, testResult, resultData}) => {
 
   return (
     <div>
+      <Button onClick={() => history.push('/test-cases')}>
+        Back to Test Cases
+      </Button>
+      <h1>
+        {name}
+      </h1>
       <h1>
         Differences Found: {diffCount}
       </h1>
@@ -54,38 +61,41 @@ const DiffTest = ({loading, testResult, resultData}) => {
 }
 
 DiffTest.propTypes = {
-  inputA: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object
-  ]),
-  inputB: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object
-  ]),
-  type: PropTypes.oneOf([
-    'chars',
-    'words',
-    'sentences',
-    'json'
-  ])
+  history: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
+  name: PropTypes.string,
+  testResult: PropTypes.string,
+  resultData: PropTypes.string,
 };
 
 DiffTest.defaultProps = {
-  inputA: '',
-  inputB: '',
-  type: 'chars'
+  name: '',
+  testResult: '',
+  resultData: '',
 };
 
 export default withTracker(({ history, match }) => {
   const testCaseId = match.params._id;
 
   const subscription = Meteor.subscribe('testCases.view', testCaseId);
-  const testCase = TestCases.findOne(testCaseId);
+  if (!subscription.ready()) {
+    return {
+      history,
+      loading: true,
+    };
+  }
+
+  const {
+    name,
+    testResult,
+    resultData,
+  } = TestCases.findOne(testCaseId);
 
   return {
     history,
-    loading: !subscription.ready(),
-    testResult: testCase && testCase.testResult,
-    resultData: testCase && testCase.resultData,
+    loading: false,
+    name,
+    testResult,
+    resultData,
   };
 })(DiffTest);
