@@ -1,5 +1,6 @@
 import '../../api/Documents/server/publications';
 import '../../api/TestCases/server/publications';
+import '../../api/Groups/server/publications';
 
 import '../../api/OAuth/server/methods';
 

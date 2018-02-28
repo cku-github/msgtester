@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col, FormGroup, ControlLabel, Button } from 'react-bootstrap';
 import { Bert } from 'meteor/themeteorchef:bert';
 import validate from '../../../modules/validate';
+import GroupSelect from '../GroupSelect/GroupSelect';
 
 class TestCaseEditor extends React.Component {
   componentDidMount() {
@@ -90,29 +91,29 @@ class TestCaseEditor extends React.Component {
           required: 'If set to true this test case will be run automatically on each code change deployment in the ISB',
         },
       },
-      submitHandler() { component.handleSubmit(); },
+      submitHandler() { component.handleSubmit(component.form); },
     });
   }
 
-  handleSubmit() {
+  handleSubmit(form) {
     const { history } = this.props;
     const existingTestCase = this.props.testCase && this.props.testCase._id;
     const methodToCall = existingTestCase ? 'testCases.update' : 'testCases.insert';
     const testCase = {
-      name: this.name.value,
-      type: this.messageType.value,
-      format: this.format.value,
-      loadingQueue: this.loadingQueue.value,
-      runTimeSec: Number(this.runTimeSec.value),
+      name: form.name.value,
+      type: form.messageType.value,
+      format: form.format.value,
+      loadingQueue: form.loadingQueue.value,
+      runTimeSec: Number(form.runTimeSec.value),
       // TODO find way to escape CLOB because I need to store JSON and XML content
-      testMessage: this.testMessage.value, // clob
-      resultData: this.resultData.value, // clob
+      testMessage: form.testMessage.value, // clob
+      resultData: form.resultData.value, // clob
       testStatus: 'ready',
-      completesInIpc: this.completesInIpc.checked,
-      rfh2Header: this.rfh2Header.value, // clob
-      comment: this.comment.value,
-      group: this.group.value,
-      autoTest: this.autoTest.checked,
+      completesInIpc: form.completesInIpc.checked,
+      rfh2Header: form.rfh2Header.value, // clob
+      comment: form.comment.value,
+      group: form.group.value,
+      autoTest: form.autoTest.checked,
     };
 
     if (existingTestCase) {
@@ -147,7 +148,6 @@ class TestCaseEditor extends React.Component {
                 // TODO find out how this would work
                 // defaultValue="TestCase" + localDateString
                 defaultValue={testCase.name || "some name"}
-                ref={name => (this.name = name)}
               />
             </FormGroup>
           </Col>
@@ -158,7 +158,6 @@ class TestCaseEditor extends React.Component {
                 name="loadingQueue"
                 placeholder="Queue name"
                 defaultValue={testCase.loadingQueue || "QUEUE.NAME"}
-                ref={loadingQueue => (this.loadingQueue = loadingQueue)}
               />
             </FormGroup>
           </Col>
@@ -169,7 +168,6 @@ class TestCaseEditor extends React.Component {
                 name="format"
                 placeholder="format"
                 defaultValue={testCase.format || "FIN"}
-                ref={format => (this.format = format)}
               />
             </FormGroup>
           </Col>
@@ -180,7 +178,6 @@ class TestCaseEditor extends React.Component {
                 name="messageType"
                 placeholder="Message type"
                 defaultValue={testCase.messageType || "testMessageType"}
-                ref={messageType => (this.messageType = messageType)}
               />
             </FormGroup>
           </Col>
@@ -192,7 +189,6 @@ class TestCaseEditor extends React.Component {
             name="testMessage"
             placeholder="test message"
             defaultValue={testCase.testMessage || "Some test message values"}
-            ref={testMessage => (this.testMessage = testMessage)}
           />
         </FormGroup>
         <FormGroup>
@@ -201,7 +197,6 @@ class TestCaseEditor extends React.Component {
             name="runTimeSec"
             defaultValue={testCase.runTimeSec || 60}
             placeholder="allowed runTime in Sec"
-            ref={runTimeSec => (this.runTimeSec = runTimeSec)}
           />
         </FormGroup>
         <FormGroup>
@@ -211,7 +206,6 @@ class TestCaseEditor extends React.Component {
             name="resultData"
             placeholder="resultData"
             defaultValue={testCase.resultData}
-            ref={resultData => (this.resultData = resultData)}
           />
         </FormGroup>
         <FormGroup>
@@ -221,7 +215,6 @@ class TestCaseEditor extends React.Component {
             name="rfh2Header"
             placeholder="RFH2 MQ queue header value"
             defaultValue={testCase.rfh2Header}
-            ref={rfh2Header => (this.rfh2Header = rfh2Header)}
           />
         </FormGroup>
         <FormGroup>
@@ -231,17 +224,11 @@ class TestCaseEditor extends React.Component {
             name="comment"
             placeholder="comment"
             defaultValue={testCase.comment}
-            ref={comment => (this.comment = comment)}
           />
         </FormGroup>
         <FormGroup>
           <ControlLabel>Group</ControlLabel>
-          <input
-            name="group"
-            placeholder="group"
-            defaultValue={testCase.group || "FIN.OUTBOUND.TEST"}
-            ref={group => (this.group = group)}
-          />
+          <GroupSelect name={testCase.group} />
         </FormGroup>
         <FormGroup>
           <ControlLabel>Completes in IPC</ControlLabel>
@@ -250,7 +237,6 @@ class TestCaseEditor extends React.Component {
             name="completesInIpc"
             placeholder="completesInIpc"
             defaultChecked={testCase.completesInIpc || true}
-            ref={completesInIpc => (this.completesInIpc = completesInIpc)}
           />
         </FormGroup>
         <FormGroup>
@@ -260,7 +246,6 @@ class TestCaseEditor extends React.Component {
             name="autoTest"
             placeholder="autoTest"
             defaultValue={testCase.autoTest || false}
-            ref={autoTest => (this.autoTest = autoTest)}
           />
         </FormGroup>
         <Button type="submit" bsStyle="success">
