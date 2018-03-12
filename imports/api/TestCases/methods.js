@@ -12,10 +12,10 @@ Meteor.methods({
       loadingQueue: String,
       runTimeSec: Number,
       testMessage: String, // clob
-      resultData: String, // clob
+      // testRunResult: String, // clob
       testStatus: String,
       // testStart: Date,
-      // testResult: String,
+      expectedResult: String,
       // testReport: String, // clob
       completesInIpc: Boolean,
       // lastRunResult: String, // clob
@@ -44,10 +44,10 @@ Meteor.methods({
       loadingQueue: String,
       runTimeSec: Number,
       testMessage: String, // clob
-      resultData: String, // clob
+      // testRunResult: String, // clob
       testStatus: String,
       // testStart: Date,
-      // testResult: String,
+      expectedResult: String,
       // testReport: String, // clob
       completesInIpc: Boolean,
       // lastRunResult: String, // clob

@@ -25,45 +25,48 @@ const pollReadyTests = async () => {
   try {
     const client = await pool.connect();
     const query = `
-      select test_case_id, result_data, test_result
+      select test_case_id, coalesce(result_data, '') as result_data, coalesce(test_result, '') as test_result
       from bus_test_cases
       where test_status = 'ready'
     `;
 
     const result = await client.query(query);
     result.rows.forEach(row => {
-      console.log(row);
       const {
         test_case_id: _id,
-        result_data: resultData,
-        test_result: testResult,
+        result_data: expectedResult,
+        test_result: testRunResult,
       } = row;
 
+      console.log({_id, testRunResult, expectedResult})
+
       // test result is empty, new test case
-      if (! testResult) {
-        console.log('test result empty')
+      if (! expectedResult) {
+        console.log('expected result empty')
         TestCases.update(_id, {
           $set: {
-            resultData,
-            testResult: resultData,
+            testRunResult,
+            expectedResult: testRunResult,
             diffCount: 0,
           },
         });
       } else {
-        console.log('test result not empty')
+        console.log('expected result not empty')
         // test result is same
         // test result is different
-        const diff = jsdiff.diffChars(testResult, resultData);
+        const diff = jsdiff.diffChars(expectedResult, testRunResult);
         const diffCount = diff.filter(part => part.added || part.removed).length;
 
         TestCases.update(_id, {
           $set: {
-            resultData,
+            testRunResult,
             diffCount,
           },
         });
       }
     });
+
+    // updateReadyTests();
 
     await client.release(true)
   } catch (exception) {
@@ -142,7 +145,7 @@ const update = async (testCase) => {
       loadingQueue,
       runTimeSec,
       testMessage,
-      resultData,
+      testRunResult,
       completesInIpc,
       rfh2Header,
       comment,
@@ -158,7 +161,7 @@ const update = async (testCase) => {
     format = '${format}',
     loading_queue = '${loadingQueue}',
     test_message = '${testMessage}',
-    result_data = '${resultData}',
+    result_data = '${testRunResult}',
     test_status = 'new',
     rhf2_header = '${rfh2Header}',
     comment = '${comment}',

@@ -7,16 +7,14 @@ import { Meteor } from 'meteor/meteor';
 import TestCases from '../../../api/TestCases/TestCases';
 import Loading from '../../components/Loading/Loading';
 
-const DiffTest = ({history, loading, name, testResult, resultData}) => {
+const DiffTest = ({history, loading, name, testRunResult, expectedResult}) => {
   if (loading) {
     return (
       <Loading />
     );
   }
 
-  const inputA = testResult;
-  const inputB = resultData;
-  var diff = jsdiff.diffChars(inputA, inputB);
+  var diff = jsdiff.diffChars(testRunResult, expectedResult);
   var diffCount = diff.filter(part => part.added || part.removed).length;
 
   var result = diff.map(function(part, index) {
@@ -45,16 +43,16 @@ const DiffTest = ({history, loading, name, testResult, resultData}) => {
         {result}
       </pre>
       <h1>
-        Test Result
+        Expected Result
       </h1>
       <pre className='diff-result'>
-        {testResult}
+        {expectedResult}
       </pre>
       <h1>
-        Result Data
+        Test Run Result
       </h1>
       <pre className='diff-result'>
-        {resultData}
+        {testRunResult}
       </pre>
     </div>
   );
@@ -64,14 +62,14 @@ DiffTest.propTypes = {
   history: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
   name: PropTypes.string,
-  testResult: PropTypes.string,
-  resultData: PropTypes.string,
+  expectedResult: PropTypes.string,
+  testRunResult: PropTypes.string,
 };
 
 DiffTest.defaultProps = {
   name: '',
-  testResult: '',
-  resultData: '',
+  expectedResult: '',
+  testRunResult: '',
 };
 
 export default withTracker(({ history, match }) => {
@@ -87,15 +85,15 @@ export default withTracker(({ history, match }) => {
 
   const {
     name,
-    testResult,
-    resultData,
+    testRunResult,
+    expectedResult,
   } = TestCases.findOne(testCaseId);
-
+  
   return {
     history,
     loading: false,
     name,
-    testResult,
-    resultData,
+    testRunResult,
+    expectedResult,
   };
 })(DiffTest);

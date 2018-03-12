@@ -13,7 +13,7 @@ SyncedCron.add({
   },
   job() {
     console.log('polling');
-    // return postgres.pollReadyTests();
+    return postgres.pollReadyTests();
   },
 });
 

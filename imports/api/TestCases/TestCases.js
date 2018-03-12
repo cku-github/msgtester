@@ -25,7 +25,7 @@ TestCases.schema = new SimpleSchema({
   loadingQueue: String,
   runTimeSec: Number,
   testMessage: String, // clob
-  resultData: {
+  testRunResult: {
     type: String,
     optional: true,
   }, // clob
@@ -37,19 +37,11 @@ TestCases.schema = new SimpleSchema({
     type: Date,
     optional: true,
   }, // internal
-  testResult: {
+  expectedResult: {
     type: String,
     optional: true,
   }, // overview not editor
-  testReport: {
-    type: String,
-    optional: true,
-  }, // clob, internal
   completesInIpc: Boolean,
-  lastRunResult: {
-    type: String,
-    optional: true,
-  }, // clob, internal, overview not editor
   rfh2Header: {
     type: String,
     optional: true,
