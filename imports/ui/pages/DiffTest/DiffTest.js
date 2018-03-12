@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import jsdiff from 'diff';
-import { Button } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import TestCases from '../../../api/TestCases/TestCases';
@@ -42,18 +42,24 @@ const DiffTest = ({history, loading, name, testRunResult, expectedResult}) => {
       <pre className='diff-result'>
         {result}
       </pre>
-      <h1>
-        Expected Result
-      </h1>
-      <pre className='diff-result'>
-        {expectedResult}
-      </pre>
-      <h1>
-        Test Run Result
-      </h1>
-      <pre className='diff-result'>
-        {testRunResult}
-      </pre>
+      <Row>
+        <Col xs={6}>
+          <h1>
+            Expected Result
+          </h1>
+          <pre className='diff-result'>
+            {expectedResult}
+          </pre>
+        </Col>
+        <Col xs={6}>
+          <h1>
+            Test Run Result
+          </h1>
+          <pre className='diff-result'>
+            {testRunResult}
+          </pre>
+        </Col>
+      </Row>
     </div>
   );
 }
@@ -88,7 +94,7 @@ export default withTracker(({ history, match }) => {
     testRunResult,
     expectedResult,
   } = TestCases.findOne(testCaseId);
-  
+
   return {
     history,
     loading: false,
