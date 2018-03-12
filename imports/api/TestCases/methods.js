@@ -101,6 +101,25 @@ Meteor.methods({
       throw new Meteor.Error('500', exception);
     }
   },
+  'testCases.acceptTestResult': function testCasesAcceptTestResult(_id) {
+    check(_id, String);
+
+    try {
+      const {testRunResult} = TestCases.findOne(_id);
+      const result = TestCases.update(_id, {$set: {
+        expectedResult: testRunResult,
+        diffCount: 0,
+      }});
+
+      import('./server/postgres').then(({default: postgres}) => {
+        postgres.acceptTestResult({_id, testRunResult});
+      });
+
+      return result;
+    } catch(exception) {
+      throw new Meteor.Error('500', exception);
+    }
+  }
 });
 
 rateLimit({

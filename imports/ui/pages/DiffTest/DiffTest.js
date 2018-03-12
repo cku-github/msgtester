@@ -7,7 +7,17 @@ import { Meteor } from 'meteor/meteor';
 import TestCases from '../../../api/TestCases/TestCases';
 import Loading from '../../components/Loading/Loading';
 
-const DiffTest = ({history, loading, name, testRunResult, expectedResult}) => {
+const acceptTestResult = (_id) => {
+  Meteor.call('testCases.acceptTestResult', _id, (error) => {
+    if (error) {
+      Bert.alert(error.reason, 'danger');
+    } else {
+      Bert.alert('Updated test case', 'success');
+    }
+  });
+};
+
+const DiffTest = ({_id, history, loading, name, testRunResult, expectedResult}) => {
   if (loading) {
     return (
       <Loading />
@@ -32,6 +42,9 @@ const DiffTest = ({history, loading, name, testRunResult, expectedResult}) => {
     <div>
       <Button onClick={() => history.push('/test-cases')}>
         Back to Test Cases
+      </Button>
+      <Button onClick={() => acceptTestResult(_id)}>
+        Accept Test Result as New Standard
       </Button>
       <h1>
         {name}
@@ -96,6 +109,7 @@ export default withTracker(({ history, match }) => {
   } = TestCases.findOne(testCaseId);
 
   return {
+    _id: testCaseId,
     history,
     loading: false,
     name,

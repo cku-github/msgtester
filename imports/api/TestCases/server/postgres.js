@@ -25,7 +25,7 @@ const pollReadyTests = async () => {
   try {
     const client = await pool.connect();
     const query = `
-      select test_case_id, coalesce(result_data, '') as result_data, coalesce(test_result, '') as test_result
+      select test_case_id, coalesce(expected_result, '') as expected_result, coalesce(test_run_result, '') as test_run_result
       from bus_test_cases
       where test_status = 'ready'
     `;
@@ -34,8 +34,8 @@ const pollReadyTests = async () => {
     result.rows.forEach(row => {
       const {
         test_case_id: _id,
-        result_data: expectedResult,
-        test_result: testRunResult,
+        expected_result: expectedResult,
+        test_run_result: testRunResult,
       } = row;
 
       console.log({_id, testRunResult, expectedResult})
@@ -50,6 +50,8 @@ const pollReadyTests = async () => {
             diffCount: 0,
           },
         });
+
+        updateExpectedResult(_id, testRunResult);
       } else {
         console.log('expected result not empty')
         // test result is same
@@ -63,10 +65,10 @@ const pollReadyTests = async () => {
             diffCount,
           },
         });
+
+        updateReadyToCalculating(_id);
       }
     });
-
-    // updateReadyTests();
 
     await client.release(true)
   } catch (exception) {
@@ -74,13 +76,13 @@ const pollReadyTests = async () => {
   }
 }
 
-const updateReadyTests = async () => {
+const updateReadyToCalculating = async (_id) => {
   try {
     const client = await pool.connect();
     const query = `
       update bus_test_cases
       set test_status = 'calculating'
-      where test_status = 'ready'
+      where test_case_id = '${_id}'
     `;
 
     const result = await fetch(query);
@@ -161,7 +163,7 @@ const update = async (testCase) => {
     format = '${format}',
     loading_queue = '${loadingQueue}',
     test_message = '${testMessage}',
-    result_data = '${testRunResult}',
+    expected_result = '${testRunResult}',
     test_status = 'new',
     rhf2_header = '${rfh2Header}',
     comment = '${comment}',
@@ -254,6 +256,52 @@ const deleteTestCase = async (testCase) => {
   }
 };
 
+const acceptTestResult = async (testCase) => {
+  try {
+    const client = await pool.connect();
+    const {
+      _id,
+      testRunResult,
+    } = testCase;
+
+    // update bus_test_cases set test_message = $2 where test_case_id = $1;
+    const query = `
+    update bus_test_cases set
+    expected_result = '${testRunResult}'
+    where
+    test_case_id = '${_id}'
+    `;
+
+    console.log(query);
+
+    const result = await client.query(query);
+    await client.release(true);
+  } catch (exception) {
+    throw new Error(exception.message);
+  }
+};
+
+const updateExpectedResult = async (_id, testRunResult) => {
+  try {
+    const client = await pool.connect();
+
+    // update bus_test_cases set test_message = $2 where test_case_id = $1;
+    const query = `
+    update bus_test_cases set
+    expected_result = '${testRunResult}', test_status = 'calculating'
+    where
+    test_case_id = '${_id}'
+    `;
+
+    console.log(query);
+
+    const result = await client.query(query);
+    await client.release(true);
+  } catch (exception) {
+    throw new Error(exception.message);
+  }
+};
+
 export default {
   fetch,
   insert,
@@ -261,6 +309,8 @@ export default {
   runTest,
   updateLastRunResult,
   pollReadyTests,
-  updateReadyTests,
+  updateReadyToCalculating,
   deleteTestCase,
+  acceptTestResult,
+  updateExpectedResult,
 };
