@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Row, Col, FormGroup, ControlLabel, Button } from 'react-bootstrap';
 import { Bert } from 'meteor/themeteorchef:bert';
 import validate from '../../../modules/validate';
+import QueueSelect from '../QueueSelect/QueueSelect';
 import GroupSelect from '../GroupSelect/GroupSelect';
 
 class TestCaseEditor extends React.Component {
@@ -120,7 +121,7 @@ class TestCaseEditor extends React.Component {
       testCase._id = existingTestCase;
     }
 
-    Meteor.call(methodToCall, testCase, (error, testCaseId) => {
+    Meteor.call(methodToCall, testCase, (error) => {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
@@ -135,7 +136,6 @@ class TestCaseEditor extends React.Component {
   render() {
     const { testCase } = this.props;
 
-    const localDateString = new Date().toLocalDateString + new Date().toLocalTimeString;
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
         <Row>
@@ -145,8 +145,6 @@ class TestCaseEditor extends React.Component {
               <input
                 name="name"
                 placeholder="name"
-                // TODO find out how this would work
-                // defaultValue="TestCase" + localDateString
                 defaultValue={testCase.name || "some name"}
               />
             </FormGroup>
@@ -154,11 +152,7 @@ class TestCaseEditor extends React.Component {
           <Col xs={3}>
             <FormGroup>
               <ControlLabel>MQ Queue Name</ControlLabel>
-              <input
-                name="loadingQueue"
-                placeholder="Queue name"
-                defaultValue={testCase.loadingQueue || "QUEUE.NAME"}
-              />
+              <QueueSelect name={testCase.loadingQueue} />
             </FormGroup>
           </Col>
           <Col xs={3}>

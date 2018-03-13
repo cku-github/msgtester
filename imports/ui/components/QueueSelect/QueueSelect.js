@@ -4,10 +4,11 @@ import ReactSelect, { Creatable } from 'react-select';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
-import Groups from '../../../api/Groups/Groups';
+import Queues from '../../../api/Queues/Queues';
 import Loading from '../../components/Loading/Loading';
 
-class GroupSelect extends React.Component {
+
+class QueueSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,18 +23,18 @@ class GroupSelect extends React.Component {
   }
 
   handleNewOption({ name }) {
-    Meteor.call('groups.insert', { name }, (error) => {
+    Meteor.call('queues.insert', { name }, (error) => {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
-        Bert.alert('Group added!');
+        Bert.alert('Queue added!');
         this.setState({ selectedOption: { name } });
       }
     });
   }
 
   render() {
-    const { loading, groups } = this.props;
+    const { loading, queues } = this.props;
     const { selectedOption } = this.state;
     const value = selectedOption && selectedOption.name;
 
@@ -47,28 +48,28 @@ class GroupSelect extends React.Component {
       <Creatable
         labelKey="name"
         valueKey="name"
-        name="group"
+        name="queue"
         value={value}
         onChange={this.handleChange}
         onNewOptionClick={this.handleNewOption}
-        options={groups}
+        options={queues}
       />
     );
   }
 }
 
 export default withTracker(({ name }) => {
-  const subscription = Meteor.subscribe('groups');
+  const subscription = Meteor.subscribe('queues');
   if (!subscription.ready()) {
     return {
       loading: !subscription.ready(),
     };
   }
 
-  const groups = Groups.find().fetch();
+  const queues = Queues.find().fetch();
 
   return {
-    groups,
+    queues,
     name,
   };
-})(GroupSelect);
+})(QueueSelect);
