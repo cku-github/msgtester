@@ -29,7 +29,7 @@ class TestCaseEditor extends React.Component {
         testMessage: {
           required: true,
         },
-        resultData: {
+        expectedResult: {
           required: false,
         },
         testStatus: {
@@ -70,7 +70,7 @@ class TestCaseEditor extends React.Component {
         testMessage: {
           required: 'Paste the full test message here. Replace the SEME / or whatever value is stored in C_REF_1 in IPC with [REFERENCE] placeholder',
         },
-        resultData: {
+        expectedResult: {
           required: 'Once a test run completes the resulting trace is stored here. You can manually edit this if required. This is used for comparing the next test run trace',
         },
         testStatus: {
@@ -108,7 +108,7 @@ class TestCaseEditor extends React.Component {
       runTimeSec: Number(form.runTimeSec.value),
       // TODO find way to escape CLOB because I need to store JSON and XML content
       testMessage: form.testMessage.value, // clob
-      resultData: form.resultData.value, // clob
+      expectedResult: form.expectedResult.value, // clob
       testStatus: 'ready',
       completesInIpc: form.completesInIpc.checked,
       rfh2Header: form.rfh2Header.value, // clob
@@ -197,9 +197,9 @@ class TestCaseEditor extends React.Component {
           <ControlLabel>Result Data</ControlLabel>
           <textarea
             className="form-control"
-            name="resultData"
-            placeholder="resultData"
-            defaultValue={testCase.resultData}
+            name="expectedResult"
+            placeholder="expectedResult"
+            defaultValue={testCase.expectedResult}
           />
         </FormGroup>
         <FormGroup>

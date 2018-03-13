@@ -12,10 +12,10 @@ Meteor.methods({
       loadingQueue: String,
       runTimeSec: Number,
       testMessage: String, // clob
-      resultData: String, // clob
+      // testRunResult: String, // clob
       testStatus: String,
       // testStart: Date,
-      // testResult: String,
+      expectedResult: String,
       // testReport: String, // clob
       completesInIpc: Boolean,
       // lastRunResult: String, // clob
@@ -44,10 +44,10 @@ Meteor.methods({
       loadingQueue: String,
       runTimeSec: Number,
       testMessage: String, // clob
-      resultData: String, // clob
+      // testRunResult: String, // clob
       testStatus: String,
       // testStart: Date,
-      // testResult: String,
+      expectedResult: String,
       // testReport: String, // clob
       completesInIpc: Boolean,
       // lastRunResult: String, // clob
@@ -101,6 +101,25 @@ Meteor.methods({
       throw new Meteor.Error('500', exception);
     }
   },
+  'testCases.acceptTestResult': function testCasesAcceptTestResult(_id) {
+    check(_id, String);
+
+    try {
+      const {testRunResult} = TestCases.findOne(_id);
+      const result = TestCases.update(_id, {$set: {
+        expectedResult: testRunResult,
+        diffCount: 0,
+      }});
+
+      import('./server/postgres').then(({default: postgres}) => {
+        postgres.acceptTestResult({_id, testRunResult});
+      });
+
+      return result;
+    } catch(exception) {
+      throw new Meteor.Error('500', exception);
+    }
+  }
 });
 
 rateLimit({

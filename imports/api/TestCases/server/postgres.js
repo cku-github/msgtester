@@ -25,43 +25,48 @@ const pollReadyTests = async () => {
   try {
     const client = await pool.connect();
     const query = `
-      select test_case_id, result_data, test_result
+      select test_case_id, coalesce(expected_result, '') as expected_result, coalesce(test_run_result, '') as test_run_result
       from bus_test_cases
       where test_status = 'ready'
     `;
 
     const result = await client.query(query);
     result.rows.forEach(row => {
-      console.log(row);
       const {
         test_case_id: _id,
-        result_data: resultData,
-        test_result: testResult,
+        expected_result: expectedResult,
+        test_run_result: testRunResult,
       } = row;
 
+      console.log({_id, testRunResult, expectedResult})
+
       // test result is empty, new test case
-      if (! testResult) {
-        console.log('test result empty')
+      if (! expectedResult) {
+        console.log('expected result empty')
         TestCases.update(_id, {
           $set: {
-            resultData,
-            testResult: resultData,
+            testRunResult,
+            expectedResult: testRunResult,
             diffCount: 0,
           },
         });
+
+        updateExpectedResult(_id, testRunResult);
       } else {
-        console.log('test result not empty')
+        console.log('expected result not empty')
         // test result is same
         // test result is different
-        const diff = jsdiff.diffChars(testResult, resultData);
+        const diff = jsdiff.diffChars(expectedResult, testRunResult);
         const diffCount = diff.filter(part => part.added || part.removed).length;
 
         TestCases.update(_id, {
           $set: {
-            resultData,
+            testRunResult,
             diffCount,
           },
         });
+
+        updateReadyToCalculating(_id);
       }
     });
 
@@ -71,13 +76,13 @@ const pollReadyTests = async () => {
   }
 }
 
-const updateReadyTests = async () => {
+const updateReadyToCalculating = async (_id) => {
   try {
     const client = await pool.connect();
     const query = `
       update bus_test_cases
       set test_status = 'calculating'
-      where test_status = 'ready'
+      where test_case_id = '${_id}'
     `;
 
     const result = await fetch(query);
@@ -142,7 +147,7 @@ const update = async (testCase) => {
       loadingQueue,
       runTimeSec,
       testMessage,
-      resultData,
+      testRunResult,
       completesInIpc,
       rfh2Header,
       comment,
@@ -158,7 +163,7 @@ const update = async (testCase) => {
     format = '${format}',
     loading_queue = '${loadingQueue}',
     test_message = '${testMessage}',
-    result_data = '${resultData}',
+    expected_result = '${testRunResult}',
     test_status = 'new',
     rhf2_header = '${rfh2Header}',
     comment = '${comment}',
@@ -251,6 +256,52 @@ const deleteTestCase = async (testCase) => {
   }
 };
 
+const acceptTestResult = async (testCase) => {
+  try {
+    const client = await pool.connect();
+    const {
+      _id,
+      testRunResult,
+    } = testCase;
+
+    // update bus_test_cases set test_message = $2 where test_case_id = $1;
+    const query = `
+    update bus_test_cases set
+    expected_result = '${testRunResult}'
+    where
+    test_case_id = '${_id}'
+    `;
+
+    console.log(query);
+
+    const result = await client.query(query);
+    await client.release(true);
+  } catch (exception) {
+    throw new Error(exception.message);
+  }
+};
+
+const updateExpectedResult = async (_id, testRunResult) => {
+  try {
+    const client = await pool.connect();
+
+    // update bus_test_cases set test_message = $2 where test_case_id = $1;
+    const query = `
+    update bus_test_cases set
+    expected_result = '${testRunResult}', test_status = 'calculating'
+    where
+    test_case_id = '${_id}'
+    `;
+
+    console.log(query);
+
+    const result = await client.query(query);
+    await client.release(true);
+  } catch (exception) {
+    throw new Error(exception.message);
+  }
+};
+
 export default {
   fetch,
   insert,
@@ -258,6 +309,8 @@ export default {
   runTest,
   updateLastRunResult,
   pollReadyTests,
-  updateReadyTests,
+  updateReadyToCalculating,
   deleteTestCase,
+  acceptTestResult,
+  updateExpectedResult,
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Table, Alert, Button } from 'react-bootstrap';
+import { Table, Alert, Button, Glyphicon } from 'react-bootstrap';
 import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
 import { withTracker } from 'meteor/react-meteor-data';
@@ -63,7 +63,7 @@ const TestCases = ({
                   Run
                 </Button>
                 <Button onClick={() => history.push(`${match.url}/${_id}`)}>
-                  Edit
+                  <Glyphicon glyph="pencil" />
                 </Button>
                 <Button onClick={() => removeTest(_id)}>
                   delete

@@ -35,7 +35,7 @@ const testCase = {
 
 // postgres.fetch(`
 //   select fk_test_case_id as testCaseId,
-//   result as testResult
+//   result as expectedResult
 //   from bus_test_runs
 //   where runstate = 'ready'
 // `);
