@@ -132,15 +132,27 @@ const loadFromPostgresql = async () => {
         last_run_result: diffCount,
       } = row;
 
+      const testCase = {
+        _id: _id,
+        name: name,
+        type: message_type,
+        format: form.format.value,
+        loadingQueue: form.loadingQueue.value,
+        runTimeSec: Number(form.runTimeSec.value),
+        // TODO find way to escape CLOB because I need to store JSON and XML content
+        testMessage: form.testMessage.value, // clob
+        expectedResult: form.expectedResult.value, // clob
+        testStatus: 'ready',
+        completesInIpc: form.completesInIpc.checked,
+        rfh2Header: form.rfh2Header.value, // clob
+        comment: form.comment.value,
+        group: form.group.value,
+        autoTest: form.autoTest.checked,
+      };
+
 
       console.log('will add new entry wit ID ')
-      TestCases.insert(_id, {
-        $set: {
-          testRunResult,
-          expectedResult: testRunResult,
-          diffCount: 0,
-        },
-      });
+      TestCases.insert(testCase);
 
     });
 
