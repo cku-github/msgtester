@@ -31,10 +31,25 @@ const removeTest = (_id) => {
   });
 };
 
+const importPostgresInfo = () => {
+  Meteor.call('importPostgresInfo', (error) => {
+    if (error) {
+      Bert.alert(error.reason, 'danger');
+    } else {
+      Bert.alert('Imported successfully', 'success');
+    }
+  });
+}
+
 const TestCases = ({
   loading, testCases, match, history,
 }) => (!loading ? (
   <div className="TestCases">
+    <div>
+      <Button onClick={importPostgresInfo}>
+        Import Postgres Info
+      </Button>
+    </div>
     <div className="page-header clearfix">
       <h4 className="pull-left">TestCases</h4>
       <Link className="btn btn-success pull-right" to={`${match.url}/new`}>Add Test Case</Link>

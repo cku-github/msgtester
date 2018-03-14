@@ -2,6 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import { Pool } from 'pg';
 import jsdiff from 'diff';
 import TestCases from '../TestCases';
+import Queues from '../../Queues/Queues';
+import Groups from '../../Groups/Groups';
 
 const pool = new Pool(Meteor.settings.private.postgres);
 
@@ -93,7 +95,7 @@ const updateReadyToCalculating = async (_id) => {
 };
 
 // function to import all data from Postgresql. Deletes all existing data in Mongo.
-const loadFromPostgresql = async () => {
+const loadFromPostgresql = async (userId) => {
   try {
     const client = await pool.connect();
     // query to get all test_cases from Postgresql
@@ -107,54 +109,47 @@ const loadFromPostgresql = async () => {
 
     // delete existing Mongo records
     // delete Queues
-    Meteor.call('queuesDeleteAll');
-    Meteor.call('groupsDeleteAll');
-    Meteor.call('TestCasesDeleteAll');
+
+    Groups.remove({});
+    Queues.remove({});
+    TestCases.remove({});
+
+    const groups = new Set();
+    const queues = new Set();
 
     result.rows.forEach((row) => {
-      const {
-        test_case_id: _id,
-        message_type: type,
-        format: format,
-        loading_queue: loadingQueue,
-        runtime_in_sec: runTimeSec,
-        test_message: testMessage,
-        test_run_result: testRunResult,
-        test_status: testStatus,
-        expected_result: expectedResult,
-        test_report: testReport,
-        completes_in_ipc: completesInIpc,
-        rfh2_header: rfh2Header,
-        comment: comment,
-        group_name: group,
-        autotest: autoTest,
-        test_case_name: name,
-        last_run_result: diffCount,
-      } = row;
-
       const testCase = {
-        _id: _id,
-        name: name,
-        type: message_type,
-        format: form.format.value,
-        loadingQueue: form.loadingQueue.value,
-        runTimeSec: Number(form.runTimeSec.value),
+        _id: row.test_case_id,
+        owner: userId,
+        name: row.test_case_name,
+        type: row.message_type,
+        format: row.format,
+        loadingQueue: row.loading_queue,
+        runTimeSec: row.runtime_in_sec,
         // TODO find way to escape CLOB because I need to store JSON and XML content
-        testMessage: form.testMessage.value, // clob
-        expectedResult: form.expectedResult.value, // clob
+        testMessage: row.test_message, // clob
+        expectedResult: row.expected_result, // clob
         testStatus: 'ready',
-        completesInIpc: form.completesInIpc.checked,
-        rfh2Header: form.rfh2Header.value, // clob
-        comment: form.comment.value,
-        group: form.group.value,
-        autoTest: form.autoTest.checked,
+        completesInIpc: row.completes_in_ipc ? true : false,
+        rfh2Header: row.rfh2header, // clob
+        comment: row.comment,
+        group: row.group_name,
+        autoTest: row.autotest ? true : false,
       };
 
 
-      console.log('will add new entry wit ID ')
+      console.log('will add new entry wit ID ', row.test_case_id, row.group_name, row.loading_queue);
       TestCases.insert(testCase);
+      groups.add(row.group_name);
+      queues.add(row.loading_queue);
 
     });
+
+    console.log(groups);
+    console.log(queues);
+
+    groups.forEach(name => Groups.insert({name}));
+    queues.forEach(name => Queues.insert({name}));
 
     await client.release(true)
   } catch (exception) {
@@ -374,6 +369,7 @@ const updateExpectedResult = async (_id, testRunResult) => {
 
 export default {
   fetch,
+  loadFromPostgresql,
   insert,
   update,
   runTest,
