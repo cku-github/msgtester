@@ -7,7 +7,6 @@ import { Meteor } from 'meteor/meteor';
 import Queues from '../../../api/Queues/Queues';
 import Loading from '../../components/Loading/Loading';
 
-
 class QueueSelect extends React.Component {
   constructor(props) {
     super(props);
@@ -48,7 +47,7 @@ class QueueSelect extends React.Component {
       <Creatable
         labelKey="name"
         valueKey="name"
-        name="queue"
+        name="loadingQueue"
         value={value}
         onChange={this.handleChange}
         onNewOptionClick={this.handleNewOption}
