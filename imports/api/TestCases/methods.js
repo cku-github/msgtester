@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { check } from 'meteor/check';
+import { check, Match } from 'meteor/check';
 import TestCases from './TestCases';
 import rateLimit from '../../modules/rate-limit';
 
@@ -120,10 +120,29 @@ Meteor.methods({
       throw new Meteor.Error('500', exception);
     }
   },
-  'importPostgresInfo': function importPostgresInfo() {
-    import('./server/postgres').then(({default: postgres}) => {
-      postgres.loadFromPostgresql(this.userId);
+  'testCases.runTestsFiltered': function testCasesRunTestsFiltered(params) {
+    check(params, {
+      group: Match.Maybe(String),
+      loadingQueue: Match.Maybe(String),
     });
+
+    try {
+      import('./server/postgres').then(({default: postgres}) => {
+        postgres.runTestsFiltered({...params, owner: this.userId});
+      });
+    } catch(exception) {
+      throw new Meteor.Error('500', exception);
+    }
+  },
+
+  'importPostgresInfo': function importPostgresInfo() {
+    try {
+      import('./server/postgres').then(({default: postgres}) => {
+        postgres.loadFromPostgresql(this.userId);
+      });
+    } catch(exception) {
+      throw new Meteor.Error('500', exception);
+    }
   }
 });
 

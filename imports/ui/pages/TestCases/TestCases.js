@@ -22,6 +22,16 @@ const importPostgresInfo = () => {
   });
 }
 
+const runTestsFiltered = (params) => {
+  Meteor.call('testCases.runTestsFiltered', params, (error) => {
+    if (error) {
+      Bert.alert(error.reason, 'danger');
+    } else {
+      Bert.alert('Ran filtered tests successfully', 'success');
+    }
+  });
+}
+
 class TestCases extends React.Component {
   constructor(props) {
     super(props);
@@ -61,8 +71,14 @@ class TestCases extends React.Component {
               <th>Test Result</th>
             </tr>
             <tr>
-              <th />
-              <th><GroupFilter value={group} onChange={this.filterGroup} /></th>
+              <th>
+                <Button onClick={() => runTestsFiltered({loadingQueue, group})}>
+                  Run Filtered Tests
+                </Button>
+              </th>
+              <th>
+                <GroupFilter value={group} onChange={this.filterGroup} />
+              </th>
               <th></th>
               <th></th>
               <th></th>

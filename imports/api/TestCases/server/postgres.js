@@ -275,6 +275,35 @@ const runTest = async (testCase) => {
   }
 };
 
+const runTestsFiltered = async ({group, loadingQueue, owner}) => {
+  try {
+    const client = await pool.connect();
+
+    // update bus_test_cases set test_message = $2 where test_case_id = $1;
+    let query = `
+    update bus_test_cases set
+    test_status = 'run',
+    last_editor = '${owner}'
+    where 1 = 1
+    `;
+
+    if (group) {
+      query += ` AND group_name = '${group}'`;
+    }
+
+    if (loadingQueue) {
+      query += ` AND loading_queue = '${loadingQueue}'`;
+    }
+
+    console.log(query);
+
+    const result = await client.query(query);
+    await client.release(true);
+  } catch (exception) {
+    throw new Error(exception.message);
+  }
+};
+
 const updateLastRunResult = async (testCase) => {
   try {
     const client = await pool.connect();
@@ -373,6 +402,7 @@ export default {
   insert,
   update,
   runTest,
+  runTestsFiltered,
   updateLastRunResult,
   pollReadyTests,
   updateReadyToCalculating,
