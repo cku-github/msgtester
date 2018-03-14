@@ -119,6 +119,27 @@ Meteor.methods({
     } catch(exception) {
       throw new Meteor.Error('500', exception);
     }
+  },
+  'testCases.deleteAll': function testCasesDeleteAll() {
+    try {
+      return TestCases.remove({});
+    } catch(exception) {
+      throw new Meteor.Error('500', exception);
+    }
+  },
+  'queues.deleteAll': function queuesDeleteAll() {
+    try {
+      return Queues.remove({});
+    } catch(exception) {
+      throw new Meteor.Error('500', exception);
+    }
+  },
+  'groups.deleteAll': function groupsDeleteAll() {
+    try {
+      return Groups.remove({});
+    } catch(exception) {
+      throw new Meteor.Error('500', exception);
+    }
   }
 });
 

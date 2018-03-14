@@ -31,7 +31,7 @@ const pollReadyTests = async () => {
     `;
 
     const result = await client.query(query);
-    result.rows.forEach(row => {
+    result.rows.forEach((row) => {
       const {
         test_case_id: _id,
         expected_result: expectedResult,
@@ -74,7 +74,7 @@ const pollReadyTests = async () => {
   } catch (exception) {
     throw new Error(exception.message);
   }
-}
+};
 
 const updateReadyToCalculating = async (_id) => {
   try {
@@ -90,7 +90,65 @@ const updateReadyToCalculating = async (_id) => {
   } catch (exception) {
     throw new Error(exception.message);
   }
-}
+};
+
+// function to import all data from Postgresql. Deletes all existing data in Mongo.
+const loadFromPostgresql = async () => {
+  try {
+    const client = await pool.connect();
+    // query to get all test_cases from Postgresql
+    const query = `
+    select test_case_id, message_type, format, loading_queue, runtime_in_sec, test_message
+, test_run_result, test_status, expected_result, test_report, completes_in_ipc
+, rhf2_header, comment, group_name, autotest, test_case_name, last_run_result from bus_test_cases
+    `;
+
+    const result = await client.query(query);
+
+    // delete existing Mongo records
+    // delete Queues
+    Meteor.call('queuesDeleteAll');
+    Meteor.call('groupsDeleteAll');
+    Meteor.call('TestCasesDeleteAll');
+
+    result.rows.forEach((row) => {
+      const {
+        test_case_id: _id,
+        message_type: type,
+        format: format,
+        loading_queue: loadingQueue,
+        runtime_in_sec: runTimeSec,
+        test_message: testMessage,
+        test_run_result: testRunResult,
+        test_status: testStatus,
+        expected_result: expectedResult,
+        test_report: testReport,
+        completes_in_ipc: completesInIpc,
+        rfh2_header: rfh2Header,
+        comment: comment,
+        group_name: group,
+        autotest: autoTest,
+        test_case_name: name,
+        last_run_result: diffCount,
+      } = row;
+
+
+      console.log('will add new entry wit ID ')
+      TestCases.insert(_id, {
+        $set: {
+          testRunResult,
+          expectedResult: testRunResult,
+          diffCount: 0,
+        },
+      });
+
+    });
+
+    await client.release(true)
+  } catch (exception) {
+    throw new Error(exception.message);
+  }
+};
 
 const insert = async (testCase) => {
   try {
