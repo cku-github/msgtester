@@ -7,29 +7,10 @@ import { Bert } from 'meteor/themeteorchef:bert';
 import { withTracker } from 'meteor/react-meteor-data';
 import TestCasesCollection from '../../../api/TestCases/TestCases';
 import Loading from '../../components/Loading/Loading';
+import GroupFilter from '../../components/GroupSelect/GroupFilter';
+import TestCasesTableBody from './TestCasesTableBody';
 
 import './TestCases.scss';
-
-const runTest = (_id) => {
-  const date = new Date();
-  Meteor.call('testCases.runTest', _id, date, (error) => {
-    if (error) {
-      Bert.alert(error.reason, 'danger');
-    } else {
-      Bert.alert('Test is running', 'success');
-    }
-  });
-};
-
-const removeTest = (_id) => {
-  Meteor.call('testCases.remove', _id, (error) => {
-    if (error) {
-      Bert.alert(error.reason, 'danger');
-    } else {
-      Bert.alert('Testcase removed', 'success');
-    }
-  });
-};
 
 const importPostgresInfo = () => {
   Meteor.call('importPostgresInfo', (error) => {
@@ -42,8 +23,8 @@ const importPostgresInfo = () => {
 }
 
 const TestCases = ({
-  loading, testCases, match, history,
-}) => (!loading ? (
+  match, history,
+}) => (
   <div className="TestCases">
     <div>
       <Button onClick={importPostgresInfo}>
@@ -54,66 +35,27 @@ const TestCases = ({
       <h4 className="pull-left">TestCases</h4>
       <Link className="btn btn-success pull-right" to={`${match.url}/new`}>Add Test Case</Link>
     </div>
-    {TestCases.length ?
-      <Table responsive>
-        <thead>
-          <tr>
-            <th />
-            <th>Group</th>
-            <th>Name</th>
-            <th>MT</th>
-            <th>Status</th>
-            <th>Diff Count</th>
-            <th>Format</th>
-            <th>Test Result</th>
-          </tr>
-        </thead>
-        <tbody>
-          {testCases.map(({
-            _id, group, name, type, testStatus, diffCount, format
-          }) => (
-            <tr key={_id}>
-              <td>
-                <Button onClick={() => runTest(_id)} title="run">
-                  <Glyphicon glyph="play" />
-                </Button>
-                <Button onClick={() => history.push(`${match.url}/${_id}`)} title="edit">
-                  <Glyphicon glyph="pencil" />
-                </Button>
-                <Button onClick={() => removeTest(_id)} title="delete">
-                  <Glyphicon glyph="remove" />
-                </Button>
-                <Button onClick={() => history.push(`${match.url}/${_id}/diff`)} title="diff">
-                  <Glyphicon glyph="eye-open" />
-                </Button>
-              </td>
-              <td>{group}</td>
-              <td>{name}</td>
-              <td>{type}</td>
-              <td>{testStatus}</td>
-              <td>{diffCount}</td>
-              <td>{format}</td>
-              <td>Test Result</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table> : <Alert bsStyle="warning">No TestCases yet!</Alert>}
+    <Table responsive>
+      <thead>
+        <tr>
+          <th />
+          <th><GroupFilter /></th>
+          <th>Name</th>
+          <th>MT</th>
+          <th>Status</th>
+          <th>Diff Count</th>
+          <th>Format</th>
+          <th>Test Result</th>
+        </tr>
+      </thead>
+      <TestCasesTableBody match={match} history={history} />
+    </Table>
   </div>
-) : <Loading />);
+);
 
 TestCases.propTypes = {
-  loading: PropTypes.bool.isRequired,
-  testCases: PropTypes.arrayOf(PropTypes.object).isRequired,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
 
-export default withTracker(() => {
-  const subscription = Meteor.subscribe('testCases');
-  return {
-    loading: !subscription.ready(),
-    testCases: TestCasesCollection.find().fetch(),
-  };
-})(TestCases);
-
-// export default TestCases;
+export default TestCases;
