@@ -7,37 +7,19 @@ import { Meteor } from 'meteor/meteor';
 import Groups from '../../../api/Groups/Groups';
 import Loading from '../../components/Loading/Loading';
 
-class GroupFilter extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedOption: props.name ? { name: props.name } : '',
-    };
-  }
-
-  render() {
-    const { loading, groups, onChange } = this.props;
-    const { selectedOption } = this.state;
-    const value = selectedOption && selectedOption.name;
-
-    if (loading) {
-      return (
-        <Loading />
-      );
-    }
-
-    return (
-      <ReactSelect
-        labelKey="name"
-        valueKey="name"
-        name="group"
-        value={value}
-        onChange={onChange}
-        options={groups}
-      />
-    );
-  }
-}
+const GroupFilter = ({
+  loading, groups, value, onChange
+}) => (!loading ? (
+  <ReactSelect
+    labelKey="name"
+    valueKey="name"
+    name="group"
+    resetValue=""
+    value={value}
+    onChange={onChange}
+    options={groups}
+  />
+) : <Loading />);
 
 export default withTracker(({ name }) => {
   const subscription = Meteor.subscribe('groups');

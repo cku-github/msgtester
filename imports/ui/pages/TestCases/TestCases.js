@@ -22,36 +22,61 @@ const importPostgresInfo = () => {
   });
 }
 
-const TestCases = ({
-  match, history,
-}) => (
-  <div className="TestCases">
-    <div>
-      <Button onClick={importPostgresInfo}>
-        Import Postgres Info
-      </Button>
-    </div>
-    <div className="page-header clearfix">
-      <h4 className="pull-left">TestCases</h4>
-      <Link className="btn btn-success pull-right" to={`${match.url}/new`}>Add Test Case</Link>
-    </div>
-    <Table responsive>
-      <thead>
-        <tr>
-          <th />
-          <th><GroupFilter /></th>
-          <th>Name</th>
-          <th>MT</th>
-          <th>Status</th>
-          <th>Diff Count</th>
-          <th>Format</th>
-          <th>Test Result</th>
-        </tr>
-      </thead>
-      <TestCasesTableBody match={match} history={history} />
-    </Table>
-  </div>
-);
+class TestCases extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {loadingQueue: '', group: ''};
+    this.filterGroup = this.filterGroup.bind(this);
+  }
+
+  filterGroup({name}) {
+    this.setState({group: name});
+  }
+
+  render() {
+    const {match, history} = this.props;
+    const {loadingQueue, group} = this.state;
+
+    return (
+      <div className="TestCases">
+        <div>
+          <Button onClick={importPostgresInfo}>
+            Import Postgres Info
+          </Button>
+        </div>
+        <div className="page-header clearfix">
+          <h4 className="pull-left">TestCases</h4>
+          <Link className="btn btn-success pull-right" to={`${match.url}/new`}>Add Test Case</Link>
+        </div>
+        <Table responsive>
+          <thead>
+            <tr>
+              <th />
+              <th>Group</th>
+              <th>Name</th>
+              <th>MT</th>
+              <th>Status</th>
+              <th>Diff Count</th>
+              <th>Format</th>
+              <th>Test Result</th>
+            </tr>
+            <tr>
+              <th />
+              <th><GroupFilter value={group} onChange={this.filterGroup} /></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <TestCasesTableBody group={group} loadingQueue={loadingQueue} match={match} history={history} />
+        </Table>
+      </div>
+    );
+  }
+}
 
 TestCases.propTypes = {
   match: PropTypes.object.isRequired,

@@ -72,11 +72,21 @@ TestCasesTableBody.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default withTracker(({group, queue, match, history}) => {
+export default withTracker(({group, loadingQueue, match, history}) => {
   const subscription = Meteor.subscribe('testCases');
+
+  const params = {};
+
+  if (group) {
+    params.group = group;
+  }
+
+  if (loadingQueue) {
+    params.loadingQueue = loadingQueue;
+  }
 
   return {
     loading: !subscription.ready(),
-    testCases: TestCasesCollection.find().fetch(),
+    testCases: TestCasesCollection.find(params).fetch(),
   };
 })(TestCasesTableBody);
