@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import jsdiff from 'diff';
-import { Button, Col, Row } from 'react-bootstrap';
+import { Button, Col, Row, Glyphicon } from 'react-bootstrap';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import TestCases from '../../../api/TestCases/TestCases';
@@ -40,11 +40,11 @@ const DiffTest = ({_id, history, loading, name, testRunResult, expectedResult}) 
 
   return (
     <div>
-      <Button onClick={() => history.push('/test-cases')}>
-        Back to Test Cases
+      <Button onClick={() => history.push('/test-cases')} title="back to test cases">
+        <Glyphicon glyph="menu-left" />
       </Button>
-      <Button onClick={() => acceptTestResult(_id)}>
-        Accept Test Result as New Standard
+      <Button onClick={() => acceptTestResult(_id)} title="accept test result as new standard">
+        <Glyphicon glyph="ok" />
       </Button>
       <h1>
         {name}

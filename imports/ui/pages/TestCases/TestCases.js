@@ -59,17 +59,17 @@ const TestCases = ({
           }) => (
             <tr key={_id}>
               <td>
-                <Button onClick={() => runTest(_id)}>
-                  Run
+                <Button onClick={() => runTest(_id)} title="run">
+                  <Glyphicon glyph="play" />
                 </Button>
-                <Button onClick={() => history.push(`${match.url}/${_id}`)}>
+                <Button onClick={() => history.push(`${match.url}/${_id}`)} title="edit">
                   <Glyphicon glyph="pencil" />
                 </Button>
-                <Button onClick={() => removeTest(_id)}>
-                  delete
+                <Button onClick={() => removeTest(_id)} title="delete">
+                  <Glyphicon glyph="remove" />
                 </Button>
-                <Button onClick={() => history.push(`${match.url}/${_id}/diff`)}>
-                  Test Results
+                <Button onClick={() => history.push(`${match.url}/${_id}/diff`)} title="diff">
+                  <Glyphicon glyph="eye-open" />
                 </Button>
               </td>
               <td>{group}</td>
