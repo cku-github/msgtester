@@ -2,6 +2,7 @@ import '../../api/Documents/server/publications';
 import '../../api/TestCases/server/publications';
 import '../../api/Groups/server/publications';
 import '../../api/Queues/server/publications';
+import '../../api/MessageTypes/server/publications';
 
 import '../../api/OAuth/server/methods';
 
@@ -18,7 +19,7 @@ const testCase = {
   _id: '_id',
   owner: 'owner',
   name: 'name',
-  type: 'type',
+  messageType: 'messageType',
   format: 'format',
   loadingQueue: 'loadingQueue',
   runTimeSec: 60,

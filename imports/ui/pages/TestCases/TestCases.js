@@ -8,6 +8,8 @@ import { withTracker } from 'meteor/react-meteor-data';
 import TestCasesCollection from '../../../api/TestCases/TestCases';
 import Loading from '../../components/Loading/Loading';
 import GroupFilter from '../../components/GroupSelect/GroupFilter';
+import QueueFilter from '../../components/QueueSelect/QueueFilter';
+import MessageTypeFilter from '../../components/MessageTypeSelect/MessageTypeFilter';
 import TestCasesTableBody from './TestCasesTableBody';
 
 import './TestCases.scss';
@@ -35,17 +37,27 @@ const runTestsFiltered = (params) => {
 class TestCases extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {loadingQueue: '', group: ''};
+    this.state = { loadingQueue: '', group: '', messageType: '' };
     this.filterGroup = this.filterGroup.bind(this);
+    this.filterQueue = this.filterQueue.bind(this);
+    this.filterMessageType = this.filterMessageType.bind(this);
   }
 
-  filterGroup({name}) {
-    this.setState({group: name});
+  filterGroup({ name }) {
+    this.setState({ group: name });
+  }
+
+  filterQueue({ name }) {
+    this.setState({ loadingQueue: name });
+  }
+
+  filterMessageType({ name }) {
+    this.setState({ messageType: name });
   }
 
   render() {
-    const {match, history} = this.props;
-    const {loadingQueue, group} = this.state;
+    const { match, history } = this.props;
+    const { loadingQueue, group, messageType } = this.state;
 
     return (
       <div className="TestCases">
@@ -61,33 +73,39 @@ class TestCases extends React.Component {
         <Table responsive>
           <thead>
             <tr>
-              <th />
+              <th>
+                <Button onClick={() => runTestsFiltered({ loadingQueue, group })} title="Run all filtered tests">
+                  <Glyphicon glyph="forward" />
+                </Button>
+              </th>
               <th>Group</th>
               <th>Name</th>
               <th>MT</th>
+              <th>Queue</th>
               <th>Status</th>
               <th>Diff Count</th>
               <th>Format</th>
               <th>Test Result</th>
             </tr>
             <tr>
-              <th>
-                <Button onClick={() => runTestsFiltered({loadingQueue, group})}>
-                  Run Filtered Tests
-                </Button>
-              </th>
+              <th />
               <th>
                 <GroupFilter value={group} onChange={this.filterGroup} />
               </th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
-              <th></th>
+              <th />
+              <th>
+                <MessageTypeFilter value={messageType} onChange={this.filterMessageType} />
+              </th>
+              <th>
+                <QueueFilter value={loadingQueue} onChange={this.filterQueue} />
+              </th>
+              <th />
+              <th />
+              <th />
+              <th />
             </tr>
           </thead>
-          <TestCasesTableBody group={group} loadingQueue={loadingQueue} match={match} history={history} />
+          <TestCasesTableBody group={group} loadingQueue={loadingQueue} messageType={messageType} match={match} history={history} />
         </Table>
       </div>
     );

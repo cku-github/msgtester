@@ -4,6 +4,7 @@ import jsdiff from 'diff';
 import TestCases from '../TestCases';
 import Queues from '../../Queues/Queues';
 import Groups from '../../Groups/Groups';
+import MessageTypes from '../../MessageTypes/MessageTypes';
 
 const pool = new Pool(Meteor.settings.private.postgres);
 
@@ -109,24 +110,26 @@ const loadFromPostgresql = async (userId) => {
 
     // delete existing Mongo records
     // delete Queues
-
+    console.log('deleting data in MongoDB');
     Groups.remove({});
     Queues.remove({});
+    MessageTypes.remove({});
     TestCases.remove({});
 
-    const groups = new Set();
-    const queues = new Set();
+    const setGroups = new Set();
+    const setQueues = new Set();
+    const setMessageTypes = new Set();
 
+    console.log('process each row from Postgresql');
     result.rows.forEach((row) => {
       const testCase = {
         _id: row.test_case_id,
         owner: userId,
         name: row.test_case_name,
-        type: row.message_type,
+        messageType: row.message_type,
         format: row.format,
         loadingQueue: row.loading_queue,
         runTimeSec: row.runtime_in_sec,
-        // TODO find way to escape CLOB because I need to store JSON and XML content
         testMessage: row.test_message, // clob
         expectedResult: row.expected_result, // clob
         testStatus: 'ready',
@@ -138,18 +141,20 @@ const loadFromPostgresql = async (userId) => {
       };
 
 
-      console.log('will add new entry wit ID ', row.test_case_id, row.group_name, row.loading_queue);
+      console.log('will add new entry with ID ', row.test_case_id, row.group_name, row.loading_queue, row.message_type);
       TestCases.insert(testCase);
-      groups.add(row.group_name);
-      queues.add(row.loading_queue);
-
+      setGroups.add(row.group_name);
+      setQueues.add(row.loading_queue);
+      setMessageTypes.add(row.message_type);
     });
 
-    console.log(groups);
-    console.log(queues);
+    console.log(setGroups);
+    console.log(setQueues);
+    console.log(setMessageTypes);
 
-    groups.forEach(name => Groups.insert({name}));
-    queues.forEach(name => Queues.insert({name}));
+    setGroups.forEach(name => Groups.insert({ name }));
+    setQueues.forEach(name => Queues.insert({ name }));
+    setMessageTypes.forEach(name => MessageTypes.insert({ name }));
 
     await client.release(true)
   } catch (exception) {
@@ -164,7 +169,7 @@ const insert = async (testCase) => {
       _id,
       owner,
       name,
-      type,
+      messageType,
       format,
       loadingQueue,
       runTimeSec,
@@ -184,7 +189,7 @@ const insert = async (testCase) => {
         completes_in_ipc, autotest
       )
       values(
-        '${_id}', '${name}', '${type}', '${format}',
+        '${_id}', '${name}', '${messageType}', '${format}',
         '${loadingQueue}', '${testMessage}', 'new', '${rfh2Header}',
         '${comment}', '${group}', '${owner}', ${runTimeSec},
         ${completesInIpc ? 1 : 0}, ${autoTest ? 1 : 0}
@@ -207,7 +212,7 @@ const update = async (testCase) => {
       _id,
       owner,
       name,
-      type,
+      messageType,
       format,
       loadingQueue,
       runTimeSec,
@@ -224,7 +229,7 @@ const update = async (testCase) => {
     const query = `
     update bus_test_cases set
     test_case_name = '${name}',
-    message_type = '${type}',
+    message_type = '${messageType}',
     format = '${format}',
     loading_queue = '${loadingQueue}',
     test_message = '${testMessage}',

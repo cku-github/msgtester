@@ -36,7 +36,7 @@ const TestCasesTableBody = ({
 }) => (!loading ? (
   <tbody>
     {testCases.length ? testCases.map(({
-      _id, group, name, type, testStatus, diffCount, format
+      _id, group, name, messageType, loadingQueue, testStatus, diffCount, format
     }) => (
       <tr key={_id}>
         <td>
@@ -55,7 +55,8 @@ const TestCasesTableBody = ({
         </td>
         <td>{group}</td>
         <td>{name}</td>
-        <td>{type}</td>
+        <td>{messageType}</td>
+        <td>{loadingQueue}</td>
         <td>{testStatus}</td>
         <td>{diffCount}</td>
         <td>{format}</td>
@@ -72,7 +73,9 @@ TestCasesTableBody.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default withTracker(({group, loadingQueue, match, history}) => {
+export default withTracker(({
+  group, loadingQueue, messageType, match, history
+}) => {
   const subscription = Meteor.subscribe('testCases');
 
   const params = {};
@@ -83,6 +86,10 @@ export default withTracker(({group, loadingQueue, match, history}) => {
 
   if (loadingQueue) {
     params.loadingQueue = loadingQueue;
+  }
+
+  if (messageType) {
+    params.messageType = messageType;
   }
 
   return {

@@ -7,7 +7,7 @@ Meteor.methods({
   'testCases.insert': function testCasesInsert(testCase) {
     check(testCase, {
       name: String,
-      type: String,
+      messageType: String,
       format: String,
       loadingQueue: String,
       runTimeSec: Number,
@@ -39,7 +39,7 @@ Meteor.methods({
     check(testCase, {
       _id: String,
       name: String,
-      type: String,
+      messageType: String,
       format: String,
       loadingQueue: String,
       runTimeSec: Number,

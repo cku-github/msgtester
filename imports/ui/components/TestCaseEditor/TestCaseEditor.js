@@ -5,6 +5,7 @@ import { Bert } from 'meteor/themeteorchef:bert';
 import validate from '../../../modules/validate';
 import QueueSelect from '../QueueSelect/QueueSelect';
 import GroupSelect from '../GroupSelect/GroupSelect';
+import MessageTypeSelect from '../MessageTypeSelect/MessageTypeSelect';
 
 class TestCaseEditor extends React.Component {
   componentDidMount() {
@@ -14,7 +15,7 @@ class TestCaseEditor extends React.Component {
         name: {
           required: true,
         },
-        type: {
+        messageType: {
           required: true,
         },
         format: {
@@ -55,11 +56,11 @@ class TestCaseEditor extends React.Component {
         name: {
           required: 'A name is needed',
         },
-        type: {
-          required: 'please choose a type',
+        messageType: {
+          required: 'please choose a messageType',
         },
         format: {
-          required: 'please choose a type from the list',
+          required: 'please choose a format from the list',
         },
         loadingQueue: {
           required: 'the MQ loading queue needs to be defined here',
@@ -102,7 +103,7 @@ class TestCaseEditor extends React.Component {
     const methodToCall = existingTestCase ? 'testCases.update' : 'testCases.insert';
     const testCase = {
       name: form.name.value,
-      type: form.messageType.value,
+      messageType: form.messageType.value,
       format: form.format.value,
       loadingQueue: form.loadingQueue.value,
       runTimeSec: Number(form.runTimeSec.value),
@@ -168,11 +169,7 @@ class TestCaseEditor extends React.Component {
           <Col xs={3}>
             <FormGroup>
               <ControlLabel>Message Type</ControlLabel>
-              <input
-                name="messageType"
-                placeholder="Message type"
-                defaultValue={testCase.messageType || "testMessageType"}
-              />
+              <MessageTypeSelect name={testCase.messageType} />
             </FormGroup>
           </Col>
         </Row>

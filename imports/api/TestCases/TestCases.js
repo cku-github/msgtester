@@ -20,7 +20,7 @@ TestCases.deny({
 TestCases.schema = new SimpleSchema({
   owner: SimpleSchema.RegEx.Id,
   name: String,
-  type: String,
+  messageType: String,
   format: String,
   loadingQueue: String,
   runTimeSec: Number,
