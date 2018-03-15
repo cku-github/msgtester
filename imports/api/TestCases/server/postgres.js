@@ -24,21 +24,62 @@ const fetch = async (query, params) => {
   }
 };
 
+const updateStatusAndDiffResult = async (_id, diffCount) => {
+  try {
+    const client = await pool.connect();
+    const query = `
+      update bus_test_cases
+      set c_test_status = 'calculating'
+      , c_test_run_resulttrace = '${diffCount}'
+      where c_test_case_id = '${_id}'
+    `;
+
+    const result = await fetch(query);
+    await client.release(true)
+  } catch (exception) {
+    throw new Error(exception.message);
+  }
+};
+
+const updateExpectedResult = async (_id, testRunResult) => {
+  try {
+    const client = await pool.connect();
+
+    // update bus_test_cases set test_message = $2 where test_case_id = $1;
+    const query = `
+    update bus_test_cases set
+    c_expected_resulttrace = '${testRunResult}'
+    , c_test_status = 'calculating'
+    , n_diff_count = 0
+    where
+    c_test_case_id = '${_id}'
+    `;
+
+    console.log(query);
+
+    const result = await client.query(query);
+    await client.release(true);
+  } catch (exception) {
+    throw new Error(exception.message);
+  }
+};
+
 const pollReadyTests = async () => {
   try {
     const client = await pool.connect();
     const query = `
-      select test_case_id, coalesce(expected_result, '') as expected_result, coalesce(test_run_result, '') as test_run_result
+      select c_test_case_id, coalesce(c_expected_resulttrace, '') as c_expected_resulttrace
+      , coalesce(c_test_run_resulttrace, '') as c_test_run_resulttrace
       from bus_test_cases
-      where test_status = 'ready'
+      where c_test_status = 'ready'
     `;
 
     const result = await client.query(query);
     result.rows.forEach((row) => {
       const {
-        test_case_id: _id,
-        expected_result: expectedResult,
-        test_run_result: testRunResult,
+        c_test_case_id: _id,
+        c_expected_result: expectedResult,
+        c_test_run_result: testRunResult,
       } = row;
 
       console.log({_id, testRunResult, expectedResult})
@@ -69,26 +110,10 @@ const pollReadyTests = async () => {
           },
         });
 
-        updateReadyToCalculating(_id);
+        updateStatusAndDiffResult(_id, diffCount);
       }
     });
 
-    await client.release(true)
-  } catch (exception) {
-    throw new Error(exception.message);
-  }
-};
-
-const updateReadyToCalculating = async (_id) => {
-  try {
-    const client = await pool.connect();
-    const query = `
-      update bus_test_cases
-      set test_status = 'calculating'
-      where test_case_id = '${_id}'
-    `;
-
-    const result = await fetch(query);
     await client.release(true)
   } catch (exception) {
     throw new Error(exception.message);
@@ -101,9 +126,25 @@ const loadFromPostgresql = async (userId) => {
     const client = await pool.connect();
     // query to get all test_cases from Postgresql
     const query = `
-    select test_case_id, message_type, format, loading_queue, runtime_in_sec, test_message
-, test_run_result, test_status, expected_result, test_report, completes_in_ipc
-, rhf2_header, comment, group_name, autotest, test_case_name, last_run_result from bus_test_cases
+    select
+    c_test_case_id,
+    c_test_case_name,
+    c_group_name,
+    c_message_type,
+    c_format,
+    c_loading_queue,
+    c_test_message,
+    c_test_status,
+    c_rhf2_header,
+    c_comment,
+    c_expected_resulttrace,
+    c_test_run_resulttrace,
+    c_last_editor,
+    n_diff_count,
+    n_autotest,
+    n_runtime_in_sec,
+    n_completes_in_ipc
+    from bus_test_cases
     `;
 
     const result = await client.query(query);
@@ -123,29 +164,31 @@ const loadFromPostgresql = async (userId) => {
     console.log('process each row from Postgresql');
     result.rows.forEach((row) => {
       const testCase = {
-        _id: row.test_case_id,
+        _id: row.c_test_case_id,
         owner: userId,
-        name: row.test_case_name,
-        messageType: row.message_type,
-        format: row.format,
-        loadingQueue: row.loading_queue,
-        runTimeSec: row.runtime_in_sec,
-        testMessage: row.test_message, // clob
-        expectedResult: row.expected_result, // clob
+        name: row.c_test_case_name,
+        group: row.c_group_name,
+        messageType: row.c_message_type,
+        format: row.c_format,
+        loadingQueue: row.c_loading_queue,
+        testMessage: row.c_test_message, // clob
         testStatus: 'ready',
-        completesInIpc: row.completes_in_ipc ? true : false,
-        rfh2Header: row.rfh2header, // clob
-        comment: row.comment,
-        group: row.group_name,
-        autoTest: row.autotest ? true : false,
+        rfh2Header: row.c_rhf2_header, // clob
+        comment: row.c_comment,
+        expectedResult: row.c_expected_resulttrace, // clob
+        testRunResult: row.c_test_run_resulttrace,
+        diffCount: row.n_diff_count,
+        autoTest: row.n_autotest ? true : false,
+        runTimeSec: row.n_runtime_in_sec,
+        completesInIpc: row.n_completes_in_ipc ? true : false,
       };
 
 
-      console.log('will add new entry with ID ', row.test_case_id, row.group_name, row.loading_queue, row.message_type);
+      console.log('will add new entry with ID ', row.c_test_case_id, row.c_group_name, row.c_loading_queue, row.c_message_type);
       TestCases.insert(testCase);
-      setGroups.add(row.group_name);
-      setQueues.add(row.loading_queue);
-      setMessageTypes.add(row.message_type);
+      setGroups.add(row.c_group_name);
+      setQueues.add(row.c_loading_queue);
+      setMessageTypes.add(row.c_message_type);
     });
 
     console.log(setGroups);
@@ -183,10 +226,10 @@ const insert = async (testCase) => {
 
     const query = `
       insert into bus_test_cases(
-        test_case_id, test_case_name, message_type, format,
-        loading_queue, test_message, test_status, rhf2_header,
-        comment, group_name, last_editor, runtime_in_sec,
-        completes_in_ipc, autotest
+        c_test_case_id, c_test_case_name, c_message_type, c_format,
+        c_loading_queue, c_test_message, c_test_status, c_rhf2_header,
+        c_comment, c_group_name, c_last_editor, n_runtime_in_sec,
+        n_completes_in_ipc, n_autotest
       )
       values(
         '${_id}', '${name}', '${messageType}', '${format}',
@@ -228,21 +271,21 @@ const update = async (testCase) => {
     // update bus_test_cases set test_message = $2 where test_case_id = $1;
     const query = `
     update bus_test_cases set
-    test_case_name = '${name}',
-    message_type = '${messageType}',
-    format = '${format}',
-    loading_queue = '${loadingQueue}',
-    test_message = '${testMessage}',
-    expected_result = '${testRunResult}',
-    test_status = 'new',
-    rhf2_header = '${rfh2Header}',
-    comment = '${comment}',
-    group_name = '${group}',
-    last_editor = '${owner}',
-    runtime_in_sec = ${runTimeSec},
-    completes_in_ipc = ${completesInIpc ? 1 : 0},
-    autotest = ${autoTest ? 1 : 0} where
-    test_case_id = '${_id}'
+    c_test_case_name = '${name}',
+    c_message_type = '${messageType}',
+    c_format = '${format}',
+    c_loading_queue = '${loadingQueue}',
+    c_test_message = '${testMessage}',
+    c_expected_resulttrace = '${testRunResult}',
+    c_test_status = 'new',
+    c_rhf2_header = '${rfh2Header}',
+    c_comment = '${comment}',
+    c_group_name = '${group}',
+    c_last_editor = '${owner}',
+    n_runtime_in_sec = ${runTimeSec},
+    n_completes_in_ipc = ${completesInIpc ? 1 : 0},
+    n_autotest = ${autoTest ? 1 : 0} where
+    c_test_case_id = '${_id}'
     `;
 
     console.log(query);
@@ -265,10 +308,10 @@ const runTest = async (testCase) => {
     // update bus_test_cases set test_message = $2 where test_case_id = $1;
     const query = `
     update bus_test_cases set
-    test_status = 'run',
-    last_editor = '${owner}'
+    c_test_status = 'run',
+    c_last_editor = '${owner}'
     where
-    test_case_id = '${_id}'
+    c_test_case_id = '${_id}'
     `;
 
     console.log(query);
@@ -280,50 +323,31 @@ const runTest = async (testCase) => {
   }
 };
 
-const runTestsFiltered = async ({group, loadingQueue, owner}) => {
+const runTestsFiltered = async ({
+  group, loadingQueue, messageType, owner,
+}) => {
   try {
     const client = await pool.connect();
 
     // update bus_test_cases set test_message = $2 where test_case_id = $1;
     let query = `
     update bus_test_cases set
-    test_status = 'run',
-    last_editor = '${owner}'
+    c_test_status = 'run',
+    c_last_editor = '${owner}'
     where 1 = 1
     `;
 
     if (group) {
-      query += ` AND group_name = '${group}'`;
+      query += ` AND c_group_name = '${group}'`;
     }
 
     if (loadingQueue) {
-      query += ` AND loading_queue = '${loadingQueue}'`;
+      query += ` AND c_loading_queue = '${loadingQueue}'`;
     }
 
-    console.log(query);
-
-    const result = await client.query(query);
-    await client.release(true);
-  } catch (exception) {
-    throw new Error(exception.message);
-  }
-};
-
-const updateLastRunResult = async (testCase) => {
-  try {
-    const client = await pool.connect();
-    const {
-      _id,
-      compareResult,
-    } = testCase;
-
-    // update bus_test_cases set test_message = $2 where test_case_id = $1;
-    const query = `
-    update bus_test_cases set
-    last_run_result = '${compareResult}'
-    where
-    test_case_id = '${_id}'
-    `;
+    if (messageType) {
+      query += ` AND c_message_type = '${messageType}'`;
+    }
 
     console.log(query);
 
@@ -343,7 +367,7 @@ const deleteTestCase = async (testCase) => {
 
     const query = `
       delete from bus_test_cases
-      where test_case_id = '${_id}'
+      where c_test_case_id = '${_id}'
     `;
 
     console.log(query);
@@ -366,30 +390,9 @@ const acceptTestResult = async (testCase) => {
     // update bus_test_cases set test_message = $2 where test_case_id = $1;
     const query = `
     update bus_test_cases set
-    expected_result = '${testRunResult}'
+    c_expected_resulttrace = '${testRunResult}'
     where
-    test_case_id = '${_id}'
-    `;
-
-    console.log(query);
-
-    const result = await client.query(query);
-    await client.release(true);
-  } catch (exception) {
-    throw new Error(exception.message);
-  }
-};
-
-const updateExpectedResult = async (_id, testRunResult) => {
-  try {
-    const client = await pool.connect();
-
-    // update bus_test_cases set test_message = $2 where test_case_id = $1;
-    const query = `
-    update bus_test_cases set
-    expected_result = '${testRunResult}', test_status = 'calculating'
-    where
-    test_case_id = '${_id}'
+    c_test_case_id = '${_id}'
     `;
 
     console.log(query);
@@ -408,9 +411,8 @@ export default {
   update,
   runTest,
   runTestsFiltered,
-  updateLastRunResult,
   pollReadyTests,
-  updateReadyToCalculating,
+  updateStatusAndDiffResult,
   deleteTestCase,
   acceptTestResult,
   updateExpectedResult,
