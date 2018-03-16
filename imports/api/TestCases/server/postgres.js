@@ -123,6 +123,7 @@ const pollReadyTests = async () => {
 // function to import all data from Postgresql. Deletes all existing data in Mongo.
 const loadFromPostgresql = async (userId) => {
   try {
+    console.log('Start loadFromPostgresql');
     const client = await pool.connect();
     // query to get all test_cases from Postgresql
     const query = `
@@ -184,7 +185,9 @@ const loadFromPostgresql = async (userId) => {
       };
 
 
-      console.log('will add new entry with ID ', row.c_test_case_id, row.c_group_name, row.c_loading_queue, row.c_message_type);
+      console.log('will add new entry with ID ', row.c_test_case_id);
+      console.log(row.c_group_name, row.c_loading_queue, row.c_message_type);
+      // console.log('testCase: ', testCase)
       TestCases.insert(testCase);
       setGroups.add(row.c_group_name);
       setQueues.add(row.c_loading_queue);
