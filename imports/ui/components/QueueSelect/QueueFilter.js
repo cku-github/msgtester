@@ -29,7 +29,7 @@ export default withTracker(({ name }) => {
     };
   }
 
-  const queues = Queues.find().fetch();
+  const queues = Queues.find({}, { sort: ['name', 'asc'] }).fetch();
 
   return {
     queues,

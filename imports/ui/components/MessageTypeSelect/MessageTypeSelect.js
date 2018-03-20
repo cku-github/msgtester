@@ -65,7 +65,7 @@ export default withTracker(({ name }) => {
     };
   }
 
-  const messageTypes = MessageTypes.find().fetch();
+  const messageTypes = MessageTypes.find({}, { sort: { name: 1 } }).fetch();
 
   return {
     messageTypes,

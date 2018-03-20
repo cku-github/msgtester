@@ -65,7 +65,7 @@ export default withTracker(({ name }) => {
     };
   }
 
-  const queues = Queues.find().fetch();
+  const queues = Queues.find({}, { sort: { name: 1 } }).fetch();
 
   return {
     queues,

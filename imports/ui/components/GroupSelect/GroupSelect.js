@@ -65,7 +65,7 @@ export default withTracker(({ name }) => {
     };
   }
 
-  const groups = Groups.find().fetch();
+  const groups = Groups.find({}, { sort: { name: 1 } }).fetch();
 
   return {
     groups,
