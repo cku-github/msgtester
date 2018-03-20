@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, FormGroup, ControlLabel, Button } from 'react-bootstrap';
+import { Row, Col, FormControl, FormGroup, ControlLabel, Button } from 'react-bootstrap';
 import { Bert } from 'meteor/themeteorchef:bert';
 import validate from '../../../modules/validate';
 import QueueSelect from '../QueueSelect/QueueSelect';
@@ -143,7 +143,7 @@ class TestCaseEditor extends React.Component {
           <Col xs={4}>
             <FormGroup>
               <ControlLabel>Test name</ControlLabel>
-              <input
+              <FormControl
                 name="name"
                 placeholder="name"
                 defaultValue={testCase.name || 'some name'}
@@ -159,7 +159,7 @@ class TestCaseEditor extends React.Component {
           <Col xs={3}>
             <FormGroup>
               <ControlLabel>Format</ControlLabel>
-              <input
+              <FormControl
                 name="format"
                 placeholder="format"
                 defaultValue={testCase.format || 'FIN'}
@@ -194,7 +194,7 @@ class TestCaseEditor extends React.Component {
           <Col xs={3}>
             <FormGroup>
               <ControlLabel>Run Time Sec.</ControlLabel>
-              <input
+              <FormControl
                 name="runTimeSec"
                 defaultValue={testCase.runTimeSec || 60}
                 placeholder="allowed runTime in Sec"
@@ -221,6 +221,7 @@ class TestCaseEditor extends React.Component {
                 className="form-control"
                 name="comment"
                 placeholder="comment"
+                rows={6}
                 defaultValue={testCase.comment}
               />
             </FormGroup>
@@ -232,6 +233,7 @@ class TestCaseEditor extends React.Component {
                 className="form-control"
                 name="rfh2Header"
                 placeholder="RFH2 MQ queue header value"
+                rows={6}
                 defaultValue={testCase.rfh2Header}
               />
             </FormGroup>
@@ -243,6 +245,7 @@ class TestCaseEditor extends React.Component {
             className="form-control"
             name="testMessage"
             placeholder="test message"
+            rows={6}
             defaultValue={testCase.testMessage || 'Some test message values'}
           />
         </FormGroup>
@@ -252,6 +255,7 @@ class TestCaseEditor extends React.Component {
             className="form-control"
             name="expectedResult"
             placeholder="expectedResult"
+            rows={6}
             defaultValue={testCase.expectedResult}
           />
         </FormGroup>
