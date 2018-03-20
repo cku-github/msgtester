@@ -10,9 +10,6 @@ import './Navigation.scss';
 const Navigation = props => (
   <Navbar>
     <Navbar.Header>
-      <Navbar.Brand>
-        <Link to="/">Pup</Link>
-      </Navbar.Brand>
       <Navbar.Toggle />
     </Navbar.Header>
     <Navbar.Collapse>
