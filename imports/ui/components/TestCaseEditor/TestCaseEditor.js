@@ -140,20 +140,20 @@ class TestCaseEditor extends React.Component {
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
         <Row>
-          <Col xs={3}>
+          <Col xs={4}>
             <FormGroup>
               <ControlLabel>Test name</ControlLabel>
               <input
                 name="name"
                 placeholder="name"
-                defaultValue={testCase.name || "some name"}
+                defaultValue={testCase.name || 'some name'}
               />
             </FormGroup>
           </Col>
-          <Col xs={3}>
+          <Col xs={4}>
             <FormGroup>
-              <ControlLabel>MQ Queue Name</ControlLabel>
-              <QueueSelect name={testCase.loadingQueue} />
+              <ControlLabel>Message Type</ControlLabel>
+              <MessageTypeSelect name={testCase.messageType} />
             </FormGroup>
           </Col>
           <Col xs={3}>
@@ -162,14 +162,78 @@ class TestCaseEditor extends React.Component {
               <input
                 name="format"
                 placeholder="format"
-                defaultValue={testCase.format || "FIN"}
+                defaultValue={testCase.format || 'FIN'}
               />
+            </FormGroup>
+          </Col>
+          <Col xs={1}>
+            <FormGroup>
+              <ControlLabel>Completes in IPC</ControlLabel>
+              <input
+                type="checkbox"
+                name="completesInIpc"
+                placeholder="completesInIpc"
+                defaultChecked={testCase.completesInIpc || true}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={4}>
+            <FormGroup>
+              <ControlLabel>Group</ControlLabel>
+              <GroupSelect name={testCase.group} />
+            </FormGroup>
+          </Col>
+          <Col xs={4}>
+            <FormGroup>
+              <ControlLabel>MQ Queue Name</ControlLabel>
+              <QueueSelect name={testCase.loadingQueue} />
             </FormGroup>
           </Col>
           <Col xs={3}>
             <FormGroup>
-              <ControlLabel>Message Type</ControlLabel>
-              <MessageTypeSelect name={testCase.messageType} />
+              <ControlLabel>Run Time Sec.</ControlLabel>
+              <input
+                name="runTimeSec"
+                defaultValue={testCase.runTimeSec || 60}
+                placeholder="allowed runTime in Sec"
+              />
+            </FormGroup>
+          </Col>
+          <Col xs={1}>
+            <FormGroup>
+              <ControlLabel>Autotest</ControlLabel>
+              <input
+                type="checkbox"
+                name="autoTest"
+                placeholder="autoTest"
+                defaultValue={testCase.autoTest || false}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={6}>
+            <FormGroup>
+              <ControlLabel>Comment</ControlLabel>
+              <textarea
+                className="form-control"
+                name="comment"
+                placeholder="comment"
+                defaultValue={testCase.comment}
+              />
+            </FormGroup>
+          </Col>
+          <Col xs={6}>
+            <FormGroup>
+              <ControlLabel>RFH2 Header</ControlLabel>
+              <textarea
+                className="form-control"
+                name="rfh2Header"
+                placeholder="RFH2 MQ queue header value"
+                defaultValue={testCase.rfh2Header}
+              />
             </FormGroup>
           </Col>
         </Row>
@@ -179,15 +243,7 @@ class TestCaseEditor extends React.Component {
             className="form-control"
             name="testMessage"
             placeholder="test message"
-            defaultValue={testCase.testMessage || "Some test message values"}
-          />
-        </FormGroup>
-        <FormGroup>
-          <ControlLabel>Run Time Sec.</ControlLabel>
-          <input
-            name="runTimeSec"
-            defaultValue={testCase.runTimeSec || 60}
-            placeholder="allowed runTime in Sec"
+            defaultValue={testCase.testMessage || 'Some test message values'}
           />
         </FormGroup>
         <FormGroup>
@@ -197,46 +253,6 @@ class TestCaseEditor extends React.Component {
             name="expectedResult"
             placeholder="expectedResult"
             defaultValue={testCase.expectedResult}
-          />
-        </FormGroup>
-        <FormGroup>
-          <ControlLabel>RFH2 Header</ControlLabel>
-          <textarea
-            className="form-control"
-            name="rfh2Header"
-            placeholder="RFH2 MQ queue header value"
-            defaultValue={testCase.rfh2Header}
-          />
-        </FormGroup>
-        <FormGroup>
-          <ControlLabel>Comment</ControlLabel>
-          <textarea
-            className="form-control"
-            name="comment"
-            placeholder="comment"
-            defaultValue={testCase.comment}
-          />
-        </FormGroup>
-        <FormGroup>
-          <ControlLabel>Group</ControlLabel>
-          <GroupSelect name={testCase.group} />
-        </FormGroup>
-        <FormGroup>
-          <ControlLabel>Completes in IPC</ControlLabel>
-          <input
-            type="checkbox"
-            name="completesInIpc"
-            placeholder="completesInIpc"
-            defaultChecked={testCase.completesInIpc || true}
-          />
-        </FormGroup>
-        <FormGroup>
-          <ControlLabel>Autotest</ControlLabel>
-          <input
-            type="checkbox"
-            name="autoTest"
-            placeholder="autoTest"
-            defaultValue={testCase.autoTest || false}
           />
         </FormGroup>
         <Button type="submit" bsStyle="success">
