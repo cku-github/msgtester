@@ -4,6 +4,7 @@ import jsdiff from 'diff';
 import { Button, Col, Row, Glyphicon } from 'react-bootstrap';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
+import {ScrollSync, ScrollSyncPane} from 'react-scroll-sync';
 import TestCases from '../../../api/TestCases/TestCases';
 import Loading from '../../components/Loading/Loading';
 
@@ -49,30 +50,40 @@ const DiffTest = ({_id, history, loading, name, testRunResult, expectedResult}) 
       <h1>
         {name}
       </h1>
-      <h1>
-        Differences Found: {diffCount}
-      </h1>
-      <pre className='diff-result'>
-        {result}
-      </pre>
-      <Row>
-        <Col xs={6}>
+      <ScrollSync>
+        <div>
           <h1>
-            Expected Result
+            Differences Found: {diffCount}
           </h1>
-          <pre className='diff-result'>
-            {expectedResult}
-          </pre>
-        </Col>
-        <Col xs={6}>
-          <h1>
-            Test Run Result
-          </h1>
-          <pre className='diff-result'>
-            {testRunResult}
-          </pre>
-        </Col>
-      </Row>
+          <ScrollSyncPane>
+            <pre className='diff-result'>
+              {result}
+            </pre>
+          </ScrollSyncPane>
+          <Row>
+            <Col xs={6}>
+              <h1>
+                Expected Result
+              </h1>
+              <ScrollSyncPane>
+                <pre className='diff-result'>
+                  {expectedResult}
+                </pre>
+              </ScrollSyncPane>
+            </Col>
+            <Col xs={6}>
+              <h1>
+                Test Run Result
+              </h1>
+              <ScrollSyncPane>
+                <pre className='diff-result'>
+                  {testRunResult}
+                </pre>
+              </ScrollSyncPane>
+            </Col>
+          </Row>
+        </div>
+      </ScrollSync>
     </div>
   );
 }
