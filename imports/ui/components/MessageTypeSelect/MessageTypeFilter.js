@@ -11,6 +11,7 @@ const MessageTypeFilter = ({
   loading, messageTypes, value, onChange
 }) => (!loading ? (
   <ReactSelect
+    autosize={false}
     labelKey="name"
     valueKey="name"
     name="messageType"

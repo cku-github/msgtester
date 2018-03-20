@@ -11,6 +11,7 @@ const GroupFilter = ({
   loading, groups, value, onChange
 }) => (!loading ? (
   <ReactSelect
+    autosize={false}
     labelKey="name"
     valueKey="name"
     name="group"

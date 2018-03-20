@@ -124,9 +124,26 @@ Meteor.methods({
     check(params, {
       group: Match.Maybe(String),
       loadingQueue: Match.Maybe(String),
+      messageType: Match.Maybe(String),
     });
 
     try {
+      const updateParams = {};
+
+      if (params.group) {
+        updateParams.group = group;
+      }
+
+      if (params.loadingQueue) {
+        updateParams.loadingQueue = loadingQueue;
+      }
+
+      if (params.messageType) {
+        updateParams.messageType = messageType;
+      }
+
+      const result = TestCases.update(updateParams, {$set: { owner: this.userId, testStatus: 'run' } }, { multi: true });
+
       import('./server/postgres').then(({default: postgres}) => {
         postgres.runTestsFiltered({...params, owner: this.userId});
       });

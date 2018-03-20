@@ -11,6 +11,7 @@ const QueueFilter = ({
   loading, queues, value, onChange
 }) => (!loading ? (
   <ReactSelect
+    autosize={false}
     labelKey="name"
     valueKey="name"
     name="loadingQueue"

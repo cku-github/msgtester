@@ -74,7 +74,7 @@ class TestCases extends React.Component {
           <thead>
             <tr>
               <th>
-                <Button onClick={() => runTestsFiltered({ loadingQueue, group })} title="Run all filtered tests">
+                <Button onClick={() => runTestsFiltered({ loadingQueue, group, messageType })} title="Run all filtered tests">
                   <Glyphicon glyph="forward" />
                 </Button>
               </th>
