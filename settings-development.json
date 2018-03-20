@@ -8,6 +8,6 @@
       "password": "IPC",
       "port": 5432
     },
-    "MAIL_URL": "",
+    "MAIL_URL": ""
   }
 }
