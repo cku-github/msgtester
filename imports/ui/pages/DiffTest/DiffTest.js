@@ -25,13 +25,19 @@ const DiffTest = ({_id, history, loading, name, testRunResult, expectedResult}) 
     );
   }
 
-  var diff = jsdiff.diffChars(testRunResult, expectedResult);
-  var diffCount = diff.filter(part => part.added || part.removed).length;
+  // const diff = jsdiff.diffChars(testRunResult, expectedResult);
+  const diff = jsdiff.diffWords(testRunResult, expectedResult);
+  let diffCount = 0;
 
-  var result = diff.map(function(part, index) {
-    var spanStyle = {
+  const result = diff.map(function(part, index) {
+    if (part.added || part.removed) {
+      diffCount += 1;
+    }
+
+    const spanStyle = {
       backgroundColor: part.added ? 'lightgreen' : part.removed ? 'salmon' : 'lightgrey'
     };
+
     return (
       <span key={index} style={spanStyle}>
         {part.value}

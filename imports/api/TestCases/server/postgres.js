@@ -100,7 +100,8 @@ const pollReadyTests = async () => {
         console.log('expected result not empty')
         // test result is same
         // test result is different
-        const diff = jsdiff.diffChars(expectedResult, testRunResult);
+        // const diff = jsdiff.diffChars(expectedResult, testRunResult);
+        const diff = jsdiff.diffWords(expectedResult, testRunResult);
         const diffCount = diff.filter(part => part.added || part.removed).length;
 
         TestCases.update(_id, {
