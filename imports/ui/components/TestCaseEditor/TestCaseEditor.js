@@ -6,6 +6,7 @@ import validate from '../../../modules/validate';
 import QueueSelect from '../QueueSelect/QueueSelect';
 import GroupSelect from '../GroupSelect/GroupSelect';
 import MessageTypeSelect from '../MessageTypeSelect/MessageTypeSelect';
+import FormatSelect from '../FormatSelect/FormatSelect';
 
 class TestCaseEditor extends React.Component {
   componentDidMount() {
@@ -139,6 +140,9 @@ class TestCaseEditor extends React.Component {
 
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
+        <Button type="submit" bsStyle="success">
+          {testCase && testCase._id ? 'Save Change' : 'Add Test Case'}
+        </Button>
         <Row>
           <Col xs={4}>
             <FormGroup>
@@ -159,11 +163,7 @@ class TestCaseEditor extends React.Component {
           <Col xs={3}>
             <FormGroup>
               <ControlLabel>Format</ControlLabel>
-              <FormControl
-                name="format"
-                placeholder="format"
-                defaultValue={testCase.format || 'FIN'}
-              />
+              <FormatSelect name={testCase.format} />
             </FormGroup>
           </Col>
           <Col xs={1}>
@@ -245,7 +245,7 @@ class TestCaseEditor extends React.Component {
             className="form-control"
             name="testMessage"
             placeholder="test message"
-            rows={6}
+            rows={24}
             defaultValue={testCase.testMessage || 'Some test message values'}
           />
         </FormGroup>
@@ -255,7 +255,7 @@ class TestCaseEditor extends React.Component {
             className="form-control"
             name="expectedResult"
             placeholder="expectedResult"
-            rows={6}
+            rows={24}
             defaultValue={testCase.expectedResult}
           />
         </FormGroup>

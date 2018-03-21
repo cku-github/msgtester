@@ -5,6 +5,7 @@ import TestCases from '../TestCases';
 import Queues from '../../Queues/Queues';
 import Groups from '../../Groups/Groups';
 import MessageTypes from '../../MessageTypes/MessageTypes';
+import Formats from '../../Formats/Formats';
 
 const pool = new Pool(Meteor.settings.private.postgres);
 
@@ -157,11 +158,13 @@ const loadFromPostgresql = async (userId) => {
     Groups.remove({});
     Queues.remove({});
     MessageTypes.remove({});
+    Formats.remove({});
     TestCases.remove({});
 
     const setGroups = new Set();
     const setQueues = new Set();
     const setMessageTypes = new Set();
+    const setFormats = new Set();
 
     console.log('process each row from Postgresql');
     result.rows.forEach((row) => {
@@ -193,15 +196,18 @@ const loadFromPostgresql = async (userId) => {
       setGroups.add(row.c_group_name);
       setQueues.add(row.c_loading_queue);
       setMessageTypes.add(row.c_message_type);
+      setFormats.add(row.c_format);
     });
 
     console.log(setGroups);
     console.log(setQueues);
     console.log(setMessageTypes);
+    console.log(setFormats);
 
     setGroups.forEach(name => Groups.insert({ name }));
     setQueues.forEach(name => Queues.insert({ name }));
     setMessageTypes.forEach(name => MessageTypes.insert({ name }));
+    setFormats.forEach(name => Formats.insert({ name }));
 
     await client.release(true)
   } catch (exception) {

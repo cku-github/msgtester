@@ -61,9 +61,9 @@ class TestCases extends React.Component {
 
     return (
       <div className="TestCases">
-        <div>
+        <div className="pull-right">
           <Button onClick={importPostgresInfo}>
-            Import Postgres Info
+            Reload from Postgres
           </Button>
         </div>
         <div className="page-header clearfix">

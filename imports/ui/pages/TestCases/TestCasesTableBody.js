@@ -94,6 +94,6 @@ export default withTracker(({
 
   return {
     loading: !subscription.ready(),
-    testCases: TestCasesCollection.find(params).fetch(),
+    testCases: TestCasesCollection.find(params, { sort: { group: 1, name: 1 } }).fetch(),
   };
 })(TestCasesTableBody);

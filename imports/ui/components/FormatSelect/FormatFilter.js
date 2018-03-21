@@ -4,35 +4,36 @@ import ReactSelect from 'react-select';
 import PropTypes from 'prop-types';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
-import Queues from '../../../api/Queues/Queues';
+import Formats from '../../../api/Formats/Formats';
 import Loading from '../../components/Loading/Loading';
 
-const QueueFilter = ({
-  loading, queues, value, onChange
+const FormatFilter = ({
+  loading, formats, value, onChange
 }) => (!loading ? (
   <ReactSelect
+    autosize={false}
     labelKey="name"
     valueKey="name"
-    name="loadingQueue"
+    name="format"
     resetValue=""
     value={value}
     onChange={onChange}
-    options={queues}
+    options={formats}
   />
 ) : <Loading />);
 
 export default withTracker(({ name }) => {
-  const subscription = Meteor.subscribe('queues');
+  const subscription = Meteor.subscribe('formats');
   if (!subscription.ready()) {
     return {
       loading: !subscription.ready(),
     };
   }
 
-  const queues = Queues.find({}, { sort: { name: 1 } }).fetch();
+  const formats = Formats.find({}, { sort: { name: 1 } }).fetch();
 
   return {
-    queues,
+    formats,
     name,
   };
-})(QueueFilter);
+})(FormatFilter);
