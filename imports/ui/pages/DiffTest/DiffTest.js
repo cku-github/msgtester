@@ -26,7 +26,7 @@ const DiffTest = ({_id, history, loading, name, testRunResult, expectedResult}) 
   }
 
   // const diff = jsdiff.diffChars(testRunResult, expectedResult);
-  const diff = jsdiff.diffWords(testRunResult, expectedResult);
+  const diff = jsdiff.diffWords(testRunResult || '', expectedResult || '');
   let diffCount = 0;
 
   const result = diff.map(function(part, index) {

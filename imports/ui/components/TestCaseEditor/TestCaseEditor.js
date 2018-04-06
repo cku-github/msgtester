@@ -102,6 +102,23 @@ class TestCaseEditor extends React.Component {
     const { history } = this.props;
     const existingTestCase = this.props.testCase && this.props.testCase._id;
     const methodToCall = existingTestCase ? 'testCases.update' : 'testCases.insert';
+
+    if (! form.format) {
+      return Bert.alert('A format is needed', 'danger');
+    }
+
+    if (! form.loadingQueue) {
+      return Bert.alert('A loading queue is needed', 'danger');
+    }
+
+    if (! form.group) {
+      return Bert.alert('A group is needed', 'danger');
+    }
+
+    if (! form.messageType) {
+      return Bert.alert('A message type is needed', 'danger');
+    }
+
     const testCase = {
       name: form.name.value,
       messageType: form.messageType.value,

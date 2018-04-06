@@ -9,6 +9,12 @@ import Formats from '../../Formats/Formats';
 
 const pool = new Pool(Meteor.settings.private.postgres);
 
+const oldPoolQuery = pool.query;
+pool.query = (...args) => {
+  console.log('QUERY:', args);
+  return oldPoolQuery.apply(pool, args);
+};
+
 const fetch = async (query, params) => {
   try {
     const client = await pool.connect();
@@ -55,8 +61,6 @@ const updateExpectedResult = async (_id, testRunResult) => {
     where
     c_test_case_id = '${_id}'
     `;
-
-    console.log(query);
 
     const result = await client.query(query);
     await client.release(true);
@@ -249,8 +253,6 @@ const insert = async (testCase) => {
       );
     `;
 
-    console.log(query);
-
     const result = await client.query(query);
     await client.release(true);
   } catch (exception) {
@@ -298,8 +300,6 @@ const update = async (testCase) => {
     c_test_case_id = '${_id}'
     `;
 
-    console.log(query);
-
     const result = await client.query(query);
     await client.release(true);
   } catch (exception) {
@@ -323,8 +323,6 @@ const runTest = async (testCase) => {
     where
     c_test_case_id = '${_id}'
     `;
-
-    console.log(query);
 
     const result = await client.query(query);
     await client.release(true);
@@ -359,8 +357,6 @@ const runTestsFiltered = async ({
       query += ` AND c_message_type = '${messageType}'`;
     }
 
-    console.log(query);
-
     const result = await client.query(query);
     await client.release(true);
   } catch (exception) {
@@ -379,8 +375,6 @@ const deleteTestCase = async (testCase) => {
       delete from bus_test_cases
       where c_test_case_id = '${_id}'
     `;
-
-    console.log(query);
 
     const result = await fetch(query);
     await client.release(true)
@@ -404,8 +398,6 @@ const acceptTestResult = async (testCase) => {
     where
     c_test_case_id = '${_id}'
     `;
-
-    console.log(query);
 
     const result = await client.query(query);
     await client.release(true);
