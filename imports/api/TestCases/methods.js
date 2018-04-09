@@ -36,7 +36,7 @@ Meteor.methods({
     }
   },
   'testCases.update': function testCasesUpdate(testCase) {
-    check(testCase, {
+      check(testCase, {
       _id: String,
       name: String,
       messageType: String,
@@ -61,7 +61,7 @@ Meteor.methods({
       const testCaseId = testCase._id;
       TestCases.update(testCaseId, {$set: { owner: this.userId, ...testCase } });
       import('./server/postgres').then(({default: postgres}) => {
-        postgres.testCasesUpdate({ _id, owner: this.userId, ...testCase });
+        postgres.update({ testCaseId, owner: this.userId, ...testCase });
       });
       return testCaseId; // Return _id so we can redirect to the testcase after update.
     } catch (exception) {
