@@ -131,15 +131,15 @@ Meteor.methods({
       const updateParams = {};
 
       if (params.group) {
-        updateParams.group = group;
+        updateParams.group = params.group;
       }
 
       if (params.loadingQueue) {
-        updateParams.loadingQueue = loadingQueue;
+        updateParams.loadingQueue = params.loadingQueue;
       }
 
       if (params.messageType) {
-        updateParams.messageType = messageType;
+        updateParams.messageType = params.messageType;
       }
 
       const result = TestCases.update(updateParams, {$set: { owner: this.userId, testStatus: 'run' } }, { multi: true });

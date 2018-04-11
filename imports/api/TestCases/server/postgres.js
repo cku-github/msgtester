@@ -83,26 +83,27 @@ const pollReadyTests = async () => {
     result.rows.forEach((row) => {
       const {
         c_test_case_id: _id,
-        c_expected_result: expectedResult,
-        c_test_run_result: testRunResult,
+        c_expected_resulttrace: expectedResult,
+        c_test_run_resulttrace: testRunResult,
       } = row;
 
-      console.log({_id, testRunResult, expectedResult})
+      console.log({ _id, testRunResult, expectedResult });
 
       // test result is empty, new test case
-      if (! expectedResult) {
-        console.log('expected result empty')
+      if (!expectedResult) {
+        console.log('expected result empty');
         TestCases.update(_id, {
           $set: {
             testRunResult,
             expectedResult: testRunResult,
+            testStatus: 'ready',
             diffCount: 0,
           },
         });
 
         updateExpectedResult(_id, testRunResult);
       } else {
-        console.log('expected result not empty')
+        console.log('expected result not empty');
         // test result is same
         // test result is different
         // const diff = jsdiff.diffChars(expectedResult, testRunResult);
@@ -112,6 +113,7 @@ const pollReadyTests = async () => {
         TestCases.update(_id, {
           $set: {
             testRunResult,
+            testStatus: 'ready',
             diffCount,
           },
         });
