@@ -103,19 +103,19 @@ class TestCaseEditor extends React.Component {
     const existingTestCase = this.props.testCase && this.props.testCase._id;
     const methodToCall = existingTestCase ? 'testCases.update' : 'testCases.insert';
 
-    if (! form.format) {
+    if (!form.format) {
       return Bert.alert('A format is needed', 'danger');
     }
 
-    if (! form.loadingQueue) {
+    if (!form.loadingQueue) {
       return Bert.alert('A loading queue is needed', 'danger');
     }
 
-    if (! form.group) {
+    if (!form.group) {
       return Bert.alert('A group is needed', 'danger');
     }
 
-    if (! form.messageType) {
+    if (!form.messageType) {
       return Bert.alert('A message type is needed', 'danger');
     }
 
@@ -167,7 +167,7 @@ class TestCaseEditor extends React.Component {
               <FormControl
                 name="name"
                 placeholder="name"
-                defaultValue={testCase.name || 'some name'}
+                defaultValue={testCase.name}
               />
             </FormGroup>
           </Col>
@@ -263,7 +263,7 @@ class TestCaseEditor extends React.Component {
             name="testMessage"
             placeholder="test message"
             rows={24}
-            defaultValue={testCase.testMessage || 'Some test message values'}
+            defaultValue={testCase.testMessage}
           />
         </FormGroup>
         <FormGroup>
