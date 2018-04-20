@@ -6,6 +6,7 @@ import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
 import { withTracker } from 'meteor/react-meteor-data';
 import TestCasesCollection from '../../../api/TestCases/TestCases';
+import LocalFilters from '../../../api/LocalFilters/LocalFilters';
 import Loading from '../../components/Loading/Loading';
 import GroupFilter from '../../components/GroupSelect/GroupFilter';
 import QueueFilter from '../../components/QueueSelect/QueueFilter';
@@ -37,21 +38,41 @@ const runTestsFiltered = (params) => {
 class TestCases extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { loadingQueue: '', group: '', messageType: '' };
+    this.state = {
+      loadingQueue: window.localStorage.getItem('filterLoadingQueue') || '',
+      group: window.localStorage.getItem('filterGroup') || '',
+      messageType: window.localStorage.getItem('filterMessageType') || '',
+    };
+
     this.filterGroup = this.filterGroup.bind(this);
     this.filterQueue = this.filterQueue.bind(this);
     this.filterMessageType = this.filterMessageType.bind(this);
   }
 
   filterGroup({ name }) {
+    if (name) {
+      window.localStorage.setItem('filterGroup', name);
+    } else {
+      window.localStorage.removeItem('filterGroup');
+    }
     this.setState({ group: name });
   }
 
   filterQueue({ name }) {
+    if (name) {
+      window.localStorage.setItem('filterLoadingQueue', name);
+    } else {
+      window.localStorage.removeItem('filterLoadingQueue');
+    }
     this.setState({ loadingQueue: name });
   }
 
   filterMessageType({ name }) {
+    if (name) {
+      window.localStorage.setItem('filterMessageType', name);
+    } else {
+      window.localStorage.removeItem('filterMessageType');
+    }
     this.setState({ messageType: name });
   }
 

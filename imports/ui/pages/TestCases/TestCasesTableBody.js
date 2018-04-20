@@ -62,7 +62,7 @@ const TestCasesTableBody = ({
         <td>{format}</td>
         <td>Test Result</td>
       </tr>
-    )) : <Alert bsStyle="warning">No TestCases yet!</Alert>}
+    )) : <tr><td colSpan={9}><Alert bsStyle="warning">No TestCases yet!</Alert></td></tr>}
   </tbody>
 ) : <Loading />);
 
