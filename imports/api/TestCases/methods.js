@@ -155,6 +155,26 @@ Meteor.methods({
       throw new Meteor.Error('500', exception);
     }
   },
+  'testCases.copy': function testCasesCopy(oldTestCaseId) {
+    check(oldTestCaseId, String);
+
+    const testCase = TestCases.findOne(oldTestCaseId);
+    delete testCase._id;
+
+    const name = testCase.name + ' Copy';
+    const count = TestCases.find({name: new RegExp(`^${name}`)}).count();
+
+    const newTestCase = {
+      ...testCase,
+      name: name + ` ${count ? count + 1 : ''}`
+    };
+
+    try {
+      return TestCases.insert(newTestCase);
+    } catch(exception) {
+      throw new Meteor.Error('500', exception);
+    }
+  },
 
   'importPostgresInfo': function importPostgresInfo() {
     try {

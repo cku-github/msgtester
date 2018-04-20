@@ -11,6 +11,11 @@ import FormatSelect from '../FormatSelect/FormatSelect';
 
 
 class TestCaseEditor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.copyMessage = this.copyMessage.bind(this);
+  }
+
   componentDidMount() {
     const component = this;
     validate(component.form, {
@@ -168,23 +173,27 @@ class TestCaseEditor extends React.Component {
     });
   }
 
+  copyMessage() {
+    const {testCase, history} = this.props;
+    Meteor.call('testCases.copy', testCase._id, (error, newTestCaseId) => {
+      if (error) {
+        Bert.alert(error.reason, 'danger');
+      } else {
+        Bert.alert('Test case copied', 'success');
+        history.push(`/test-cases/${newTestCaseId}`);
+      }
+    });
+  }
+
   render() {
     const { testCase } = this.props;
-
-    const copyMessage = () => {
-      // TODO find out how to make the new name show with + "Copy"
-      // TODO ideally include some feature to first lookup if name + Copy is unique, else add counter and try again in a loop
-      testCase._id = null;
-      testCase.name += ' Copy';
-    };
-
 
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
         <Button type="submit" bsStyle="success">
           {testCase && testCase._id ? 'Save Change' : 'Add Test Case'}
         </Button>
-        {testCase && testCase._id ? <Button onClick={copyMessage}>Copy messages</Button> : '' }
+        {testCase && testCase._id && <Button onClick={this.copyMessage}>Copy messages</Button>}
         <Row>
           <Col xs={4}>
             <FormGroup>
