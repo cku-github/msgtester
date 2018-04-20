@@ -23,6 +23,8 @@ Meteor.methods({
       comment: String,
       group: String,
       autoTest: Boolean,
+      mqUserIdentifier: String,
+      linefeed: String,
     });
 
     try {
@@ -55,6 +57,8 @@ Meteor.methods({
       comment: String,
       group: String,
       autoTest: Boolean,
+      mqUserIdentifier: String,
+      linefeed: String,
     });
 
     try {

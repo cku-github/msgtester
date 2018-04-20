@@ -152,7 +152,9 @@ const loadFromPostgresql = async (userId) => {
     n_diff_count,
     n_autotest,
     n_runtime_in_sec,
-    n_completes_in_ipc
+    n_completes_in_ipc,
+    c_mqmd_useridentifier,
+    c_linebreak
     from bus_test_cases
     `;
 
@@ -192,6 +194,8 @@ const loadFromPostgresql = async (userId) => {
         autoTest: row.n_autotest ? true : false,
         runTimeSec: row.n_runtime_in_sec,
         completesInIpc: row.n_completes_in_ipc ? true : false,
+        mqUserIdentifier: row.c_mqmd_useridentifier,
+        linefeed: row.c_linebreak,
       };
 
 
@@ -238,6 +242,8 @@ const insert = async (testCase) => {
       comment,
       group,
       autoTest,
+      mqUserIdentifier,
+      linefeed,
     } = testCase;
 
     const query = `
@@ -245,13 +251,14 @@ const insert = async (testCase) => {
         c_test_case_id, c_test_case_name, c_message_type, c_format,
         c_loading_queue, c_test_message, c_test_status, c_rhf2_header,
         c_comment, c_group_name, c_last_editor, n_runtime_in_sec,
-        n_completes_in_ipc, n_autotest
+        n_completes_in_ipc, n_autotest, c_mqmd_useridentifier, c_linebreak
       )
       values(
         '${_id}', '${name}', '${messageType}', '${format}',
         '${loadingQueue}', '${testMessage}', 'new', '${rfh2Header}',
         '${comment}', '${group}', '${owner}', ${runTimeSec},
-        ${completesInIpc ? 1 : 0}, ${autoTest ? 1 : 0}
+        ${completesInIpc ? 1 : 0}, ${autoTest ? 1 : 0},
+        '${mqUserIdentifier}', '${linefeed}'
       );
     `;
 
@@ -280,6 +287,8 @@ const update = async (testCase) => {
       comment,
       group,
       autoTest,
+      mqUserIdentifier,
+      linefeed,
     } = testCase;
 
     // update bus_test_cases set test_message = $2 where test_case_id = $1;
@@ -298,7 +307,9 @@ const update = async (testCase) => {
     c_last_editor = '${owner}',
     n_runtime_in_sec = ${runTimeSec},
     n_completes_in_ipc = ${completesInIpc ? 1 : 0},
-    n_autotest = ${autoTest ? 1 : 0} where
+    n_autotest = ${autoTest ? 1 : 0},
+    c_mqmd_useridentifier = '${mqUserIdentifier}',
+    c_linebreak = '${linefeed}' where
     c_test_case_id = '${_id}'
     `;
 

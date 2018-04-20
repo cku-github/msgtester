@@ -8,6 +8,8 @@ import GroupSelect from '../GroupSelect/GroupSelect';
 import MessageTypeSelect from '../MessageTypeSelect/MessageTypeSelect';
 import FormatSelect from '../FormatSelect/FormatSelect';
 
+
+
 class TestCaseEditor extends React.Component {
   componentDidMount() {
     const component = this;
@@ -52,6 +54,12 @@ class TestCaseEditor extends React.Component {
         autoTest: {
           required: false,
         },
+        mqUserIdentifier: {
+          required: false,
+        },
+        linefeed: {
+          required: false,
+        },
       },
       messages: {
         name: {
@@ -92,6 +100,12 @@ class TestCaseEditor extends React.Component {
         },
         autoTest: {
           required: 'If set to true this test case will be run automatically on each code change deployment in the ISB',
+        },
+        mqUserIdentifier: {
+          required: 'If set this value will be written to the MQ Header, UserID field. It is used for message authorisation checks',
+        },
+        linefeed: {
+          required: 'choose the linefeed char the test message will use when written to the Queue',
         },
       },
       submitHandler() { component.handleSubmit(component.form); },
@@ -134,6 +148,8 @@ class TestCaseEditor extends React.Component {
       comment: form.comment.value,
       group: form.group.value,
       autoTest: form.autoTest.checked,
+      mqUserIdentifier: form.mqUserIdentifier.value,
+      linefeed: form.linefeed.value,
     };
 
     if (existingTestCase) {
@@ -155,11 +171,20 @@ class TestCaseEditor extends React.Component {
   render() {
     const { testCase } = this.props;
 
+    const copyMessage = () => {
+      // TODO find out how to make the new name show with + "Copy"
+      // TODO ideally include some feature to first lookup if name + Copy is unique, else add counter and try again in a loop
+      testCase._id = null;
+      testCase.name += ' Copy';
+    };
+
+
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
         <Button type="submit" bsStyle="success">
           {testCase && testCase._id ? 'Save Change' : 'Add Test Case'}
         </Button>
+        {testCase && testCase._id ? <Button onClick={copyMessage}>Copy messages</Button> : '' }
         <Row>
           <Col xs={4}>
             <FormGroup>
@@ -177,10 +202,20 @@ class TestCaseEditor extends React.Component {
               <MessageTypeSelect name={testCase.messageType} />
             </FormGroup>
           </Col>
-          <Col xs={3}>
+          <Col xs={1}>
             <FormGroup>
               <ControlLabel>Format</ControlLabel>
               <FormatSelect name={testCase.format} />
+            </FormGroup>
+          </Col>
+          <Col xs={2}>
+            <FormGroup>
+              <ControlLabel>MQ User</ControlLabel>
+              <FormControl
+                name="mqUserIdentifier"
+                placeholder="mqUserIdentifier"
+                defaultValue={testCase.mqUserIdentifier}
+              />
             </FormGroup>
           </Col>
           <Col xs={1}>
@@ -208,7 +243,7 @@ class TestCaseEditor extends React.Component {
               <QueueSelect name={testCase.loadingQueue} />
             </FormGroup>
           </Col>
-          <Col xs={3}>
+          <Col xs={1}>
             <FormGroup>
               <ControlLabel>Run Time Sec.</ControlLabel>
               <FormControl
@@ -216,6 +251,20 @@ class TestCaseEditor extends React.Component {
                 defaultValue={testCase.runTimeSec || 60}
                 placeholder="allowed runTime in Sec"
               />
+            </FormGroup>
+          </Col>
+          <Col xs={2}>
+            <FormGroup controlId="formControlsSelect">
+              <ControlLabel>Linefeed Chars</ControlLabel>
+              <FormControl
+                name="linefeed"
+                componentClass="select"
+                placeholder="linefeed"
+                defaultValue={testCase.linefeed || 'CRLF'}
+              >
+                <option value="LF">LF</option>
+                <option value="CRLF">CRLF</option>
+              </FormControl>
             </FormGroup>
           </Col>
           <Col xs={1}>

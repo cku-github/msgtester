@@ -56,6 +56,14 @@ TestCases.schema = new SimpleSchema({
     type: Number,
     optional: true,
   },
+  mqUserIdentifier: {
+    type: String,
+    optional: true,
+  },
+  linefeed: {
+    type: String,
+    allowedValues: ['LF', 'CRLF'],
+  },
 });
 
 TestCases.attachSchema(TestCases.schema);
