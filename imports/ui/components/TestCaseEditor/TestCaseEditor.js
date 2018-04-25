@@ -174,7 +174,7 @@ class TestCaseEditor extends React.Component {
   }
 
   copyMessage() {
-    const {testCase, history} = this.props;
+    const { testCase, history } = this.props;
     Meteor.call('testCases.copy', testCase._id, (error, newTestCaseId) => {
       if (error) {
         Bert.alert(error.reason, 'danger');

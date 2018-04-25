@@ -26,6 +26,7 @@ Meteor.methods({
       mqUserIdentifier: String,
       linefeed: String,
     });
+    // console.log('methods.testCases.insert: ', testCase);
 
     try {
       const _id = TestCases.insert({ owner: this.userId, ...testCase });
@@ -159,18 +160,39 @@ Meteor.methods({
     check(oldTestCaseId, String);
 
     const testCase = TestCases.findOne(oldTestCaseId);
+    // cleanup intermediate testcase to remove unused values
     delete testCase._id;
+    delete testCase.owner;
+    delete testCase.testRunResult;
+    delete testCase.diffCount;
+    delete testCase.testStart;
+    //check and set options field to empty string if null
 
+    if (!testCase.rfh2Header) {
+      testCase.rfh2Header = '';
+    };
+    if (!testCase.comment) {
+      testCase.comment = '';
+    };
+    if (!testCase.expectedResult) {
+      testCase.expectedResult = '';
+    };
+    if (!testCase.mqUserIdentifier) {
+      testCase.mqUserIdentifier = '';
+    };
+
+    //create new Name value with COPY string
     const name = testCase.name + ' Copy';
     const count = TestCases.find({name: new RegExp(`^${name}`)}).count();
 
     const newTestCase = {
       ...testCase,
-      name: name + ` ${count ? count + 1 : ''}`
+      name: name + ` ${count ? count + 1 : ''}`,
     };
 
     try {
-      return TestCases.insert(newTestCase);
+      return Meteor.call('testCases.insert', newTestCase);
+      // return TestCases.insert({ owner: this.userId, ...newTestCase });
     } catch(exception) {
       throw new Meteor.Error('500', exception);
     }

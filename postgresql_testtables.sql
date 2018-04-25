@@ -19,7 +19,9 @@ CREATE TABLE bus_test_cases
    n_diff_count int,
    n_autotest int,
    n_runtime_in_sec int,
-   n_completes_in_ipc int
+   n_completes_in_ipc int,
+   c_mqmd_useridentifier varchar(12),
+   c_linebreak varchar(10)
 );
 
 drop table bus_test_runs;
@@ -39,3 +41,8 @@ CREATE TABLE bus_test_runs
    d_test_start timestamp,
    n_extract_active_msg int
 );
+
+--alter table bus_test_cases add c_mqmd_useridentifier varchar(12);
+--alter table bus_test_cases add c_linebreak varchar(10);
+
+--update bus_test_cases set c_linebreak = 'CRLF';

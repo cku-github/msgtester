@@ -59,8 +59,6 @@ const TestCasesTableBody = ({
         <td>{loadingQueue}</td>
         <td>{testStatus}</td>
         <td>{diffCount}</td>
-        <td>{format}</td>
-        <td>Test Result</td>
       </tr>
     )) : <tr><td colSpan={9}><Alert bsStyle="warning">No TestCases yet!</Alert></td></tr>}
   </tbody>

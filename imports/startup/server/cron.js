@@ -12,7 +12,6 @@ SyncedCron.add({
     return parser.text('every 1 minute');
   },
   job() {
-    console.log('polling');
     return postgres.pollReadyTests();
   },
 });

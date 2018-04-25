@@ -6,7 +6,6 @@ import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
 import { withTracker } from 'meteor/react-meteor-data';
 import TestCasesCollection from '../../../api/TestCases/TestCases';
-import LocalFilters from '../../../api/LocalFilters/LocalFilters';
 import Loading from '../../components/Loading/Loading';
 import GroupFilter from '../../components/GroupSelect/GroupFilter';
 import QueueFilter from '../../components/QueueSelect/QueueFilter';
@@ -105,8 +104,6 @@ class TestCases extends React.Component {
               <th>Queue</th>
               <th>Status</th>
               <th>Diff Count</th>
-              <th>Format</th>
-              <th>Test Result</th>
             </tr>
             <tr>
               <th />
@@ -120,8 +117,6 @@ class TestCases extends React.Component {
               <th>
                 <QueueFilter value={loadingQueue} onChange={this.filterQueue} />
               </th>
-              <th />
-              <th />
               <th />
               <th />
             </tr>
