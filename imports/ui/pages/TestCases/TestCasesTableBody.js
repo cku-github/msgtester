@@ -7,6 +7,7 @@ import { Bert } from 'meteor/themeteorchef:bert';
 import { withTracker } from 'meteor/react-meteor-data';
 import TestCasesCollection from '../../../api/TestCases/TestCases';
 import Loading from '../../components/Loading/LoadingTable';
+import RemoveTestCaseButton from '../../components/RemoveTestCaseButton/RemoveTestCaseButton';
 
 import './TestCases.scss';
 
@@ -17,16 +18,6 @@ const runTest = (_id) => {
       Bert.alert(error.reason, 'danger');
     } else {
       Bert.alert('Test is running', 'success');
-    }
-  });
-};
-
-const removeTest = (_id) => {
-  Meteor.call('testCases.remove', _id, (error) => {
-    if (error) {
-      Bert.alert(error.reason, 'danger');
-    } else {
-      Bert.alert('Testcase removed', 'success');
     }
   });
 };
@@ -46,9 +37,7 @@ const TestCasesTableBody = ({
           <Button onClick={() => history.push(`${match.url}/${_id}`)} title="edit">
             <Glyphicon glyph="pencil" />
           </Button>
-          <Button onClick={() => removeTest(_id)} title="delete">
-            <Glyphicon glyph="remove" />
-          </Button>
+          <RemoveTestCaseButton _id={_id} />
           <Button onClick={() => history.push(`${match.url}/${_id}/diff`)} title="diff">
             <Glyphicon glyph="eye-open" />
           </Button>
