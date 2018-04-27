@@ -30,9 +30,11 @@ Meteor.methods({
 
     try {
       const _id = TestCases.insert({ owner: this.userId, ...testCase });
-      import('./server/postgres').then(({default: postgres}) => {
-        postgres.insert({ _id, owner: this.userId, ...testCase });
-      });
+      if (Meteor.isServer) {
+        import('./server/postgres').then(({default: postgres}) => {
+          postgres.insert({ _id, owner: this.userId, ...testCase });
+        });
+      }
       return _id;
     } catch (exception) {
       throw new Meteor.Error('500', exception);
@@ -65,9 +67,12 @@ Meteor.methods({
     try {
       const testCaseId = testCase._id;
       TestCases.update(testCaseId, {$set: { owner: this.userId, ...testCase } });
-      import('./server/postgres').then(({default: postgres}) => {
-        postgres.update({ testCaseId, owner: this.userId, ...testCase });
-      });
+
+      if (Meteor.isServer) {
+        import('./server/postgres').then(({default: postgres}) => {
+          postgres.update({ testCaseId, owner: this.userId, ...testCase });
+        });
+      }
       return testCaseId; // Return _id so we can redirect to the testcase after update.
     } catch (exception) {
       throw new Meteor.Error('500', exception);
@@ -78,9 +83,11 @@ Meteor.methods({
 
     try {
       //first try to delete from Postgresql
-      import('./server/postgres').then(({default: postgres}) => {
-        postgres.deleteTestCase({_id});
-      });
+      if (Meteor.isServer) {
+        import('./server/postgres').then(({default: postgres}) => {
+          postgres.deleteTestCase({_id});
+        });
+      }
       // then remove from MongoDB
       return TestCases.remove(_id);
     } catch (exception) {
@@ -98,9 +105,11 @@ Meteor.methods({
         ipcLink: '',
       }});
 
-      import('./server/postgres').then(({default: postgres}) => {
-        postgres.runTest({_id, owner: this.userId});
-      });
+      if (Meteor.isServer) {
+        import('./server/postgres').then(({default: postgres}) => {
+          postgres.runTest({_id, owner: this.userId});
+        });
+      }
 
       return result;
     } catch(exception) {
@@ -117,9 +126,11 @@ Meteor.methods({
         diffCount: 0,
       }});
 
-      import('./server/postgres').then(({default: postgres}) => {
-        postgres.acceptTestResult({_id, testRunResult});
-      });
+      if (Meteor.isServer) {
+        import('./server/postgres').then(({default: postgres}) => {
+          postgres.acceptTestResult({_id, testRunResult});
+        });
+      }
 
       return result;
     } catch(exception) {
@@ -149,10 +160,11 @@ Meteor.methods({
       }
 
       const result = TestCases.update(updateParams, {$set: { owner: this.userId, testStatus: 'run', ipcLink: '', } }, { multi: true });
-
-      import('./server/postgres').then(({default: postgres}) => {
-        postgres.runTestsFiltered({...params, owner: this.userId});
-      });
+      if (Meteor.isServer) {
+        import('./server/postgres').then(({default: postgres}) => {
+          postgres.runTestsFiltered({...params, owner: this.userId});
+        });
+      }
     } catch(exception) {
       throw new Meteor.Error('500', exception);
     }
@@ -161,27 +173,7 @@ Meteor.methods({
     check(oldTestCaseId, String);
 
     const testCase = TestCases.findOne(oldTestCaseId);
-    // cleanup intermediate testcase to remove unused values
     delete testCase._id;
-    delete testCase.owner;
-    delete testCase.testRunResult;
-    delete testCase.diffCount;
-    delete testCase.testStart;
-    delete testCase.ipcLink;
-    //check and set options field to empty string if null
-
-    if (!testCase.rfh2Header) {
-      testCase.rfh2Header = '';
-    };
-    if (!testCase.comment) {
-      testCase.comment = '';
-    };
-    if (!testCase.expectedResult) {
-      testCase.expectedResult = '';
-    };
-    if (!testCase.mqUserIdentifier) {
-      testCase.mqUserIdentifier = '';
-    };
 
     //create new Name value with COPY string
     const name = testCase.name + ' Copy';
@@ -193,8 +185,13 @@ Meteor.methods({
     };
 
     try {
-      return Meteor.call('testCases.insert', newTestCase);
-      // return TestCases.insert({ owner: this.userId, ...newTestCase });
+      const _id = TestCases.insert({ owner: this.userId, ...newTestCase });
+      if (Meteor.isServer) {
+        import('./server/postgres').then(({default: postgres}) => {
+          postgres.insert({ _id, owner: this.userId, ...newTestCase });
+        });
+      }
+      return _id;
     } catch(exception) {
       throw new Meteor.Error('500', exception);
     }
@@ -202,9 +199,11 @@ Meteor.methods({
 
   'importPostgresInfo': function importPostgresInfo() {
     try {
-      import('./server/postgres').then(({default: postgres}) => {
-        postgres.loadFromPostgresql(this.userId);
-      });
+      if (Meteor.isServer) {
+        import('./server/postgres').then(({default: postgres}) => {
+          postgres.loadFromPostgresql(this.userId);
+        });
+      }
     } catch(exception) {
       throw new Meteor.Error('500', exception);
     }
