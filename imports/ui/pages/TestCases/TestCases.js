@@ -104,6 +104,7 @@ class TestCases extends React.Component {
               <th>Queue</th>
               <th>Status</th>
               <th>Diff Count</th>
+              <th>IPC Link</th>
             </tr>
             <tr>
               <th />

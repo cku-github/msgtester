@@ -27,7 +27,7 @@ const TestCasesTableBody = ({
 }) => (!loading ? (
   <tbody>
     {testCases.length ? testCases.map(({
-      _id, group, name, messageType, loadingQueue, testStatus, diffCount, format
+      _id, group, name, messageType, loadingQueue, testStatus, diffCount, format, ipcLink
     }) => (
       <tr key={_id}>
         <td>
@@ -48,6 +48,11 @@ const TestCasesTableBody = ({
         <td>{loadingQueue}</td>
         <td>{testStatus}</td>
         <td>{diffCount}</td>
+        <td>
+          <a href={ipcLink} target="_blank">
+            ...
+          </a>
+        </td>
       </tr>
     )) : <tr><td colSpan={9}><Alert bsStyle="warning">No TestCases yet!</Alert></td></tr>}
   </tbody>
