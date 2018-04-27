@@ -3,10 +3,14 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Meteor } from 'meteor/meteor';
 
 const AuthenticatedNavigation = ({ name, history }) => (
   <div>
     <Nav>
+      <NavItem>
+        {Meteor.settings.public.environmentName}
+      </NavItem>
       <LinkContainer to="/test-cases">
         <NavItem eventKey={1} href="/test-cases">Test Cases</NavItem>
       </LinkContainer>
