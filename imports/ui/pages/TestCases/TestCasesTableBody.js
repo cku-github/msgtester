@@ -37,7 +37,7 @@ const TestCasesTableBody = ({
           <Button onClick={() => history.push(`${match.url}/${_id}`)} title="edit">
             <Glyphicon glyph="pencil" />
           </Button>
-          <RemoveTestCaseButton _id={_id} />
+          <RemoveTestCaseButton _id={_id} name={name} />
           <Button onClick={() => history.push(`${match.url}/${_id}/diff`)} title="diff">
             <Glyphicon glyph="eye-open" />
           </Button>
