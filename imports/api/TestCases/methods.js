@@ -95,6 +95,7 @@ Meteor.methods({
       const result = TestCases.update(_id, {$set: {
         testStatus: 'run',
         testStart: date,
+        ipcLink: '',
       }});
 
       import('./server/postgres').then(({default: postgres}) => {
@@ -147,7 +148,7 @@ Meteor.methods({
         updateParams.messageType = params.messageType;
       }
 
-      const result = TestCases.update(updateParams, {$set: { owner: this.userId, testStatus: 'run' } }, { multi: true });
+      const result = TestCases.update(updateParams, {$set: { owner: this.userId, testStatus: 'run', ipcLink: '', } }, { multi: true });
 
       import('./server/postgres').then(({default: postgres}) => {
         postgres.runTestsFiltered({...params, owner: this.userId});
@@ -166,6 +167,7 @@ Meteor.methods({
     delete testCase.testRunResult;
     delete testCase.diffCount;
     delete testCase.testStart;
+    delete testCase.ipcLink;
     //check and set options field to empty string if null
 
     if (!testCase.rfh2Header) {

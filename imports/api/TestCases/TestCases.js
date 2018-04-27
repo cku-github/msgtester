@@ -64,6 +64,10 @@ TestCases.schema = new SimpleSchema({
     type: String,
     allowedValues: ['LF', 'CRLF'],
   },
+  ipcLink: {
+    type: String,
+    optional: true,
+  },
 });
 
 TestCases.attachSchema(TestCases.schema);

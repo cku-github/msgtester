@@ -75,6 +75,7 @@ const pollReadyTests = async () => {
     const query = `
       select c_test_case_id, coalesce(c_expected_resulttrace, '') as c_expected_resulttrace
       , coalesce(c_test_run_resulttrace, '') as c_test_run_resulttrace
+      , coalesce(c_ipclink, '') as c_ipclink
       from bus_test_cases
       where c_test_status = 'ready'
     `;
@@ -85,6 +86,7 @@ const pollReadyTests = async () => {
         c_test_case_id: _id,
         c_expected_resulttrace: expectedResult,
         c_test_run_resulttrace: testRunResult,
+        c_ipclink: ipcLink,
       } = row;
 
       console.log({ _id, testRunResult, expectedResult });
@@ -98,6 +100,7 @@ const pollReadyTests = async () => {
             expectedResult: testRunResult,
             testStatus: 'ready',
             diffCount: 0,
+            ipcLink: ipcLink,
           },
         });
 
@@ -115,6 +118,7 @@ const pollReadyTests = async () => {
             testRunResult,
             testStatus: 'ready',
             diffCount,
+            ipcLink,
           },
         });
 
