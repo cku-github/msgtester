@@ -7,7 +7,7 @@ const PublicNavigation = () => (
   <div>
     <Nav>
       <NavItem>
-        {Meteor.settings.public.environmentName}
+        <strong>{Meteor.settings.public.environmentName}</strong>
       </NavItem>
     </Nav>
     <Nav pullRight>

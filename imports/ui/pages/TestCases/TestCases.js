@@ -87,7 +87,7 @@ class TestCases extends React.Component {
           </Button>
         </div>
         <div className="page-header clearfix">
-          <h4 className="pull-left">TestCases</h4>
+          <h2 className="pull-left">{Meteor.settings.public.environmentName}</h2>
           <Link className="btn btn-success pull-right" to={`${match.url}/new`}>Add Test Case</Link>
         </div>
         <Table responsive>

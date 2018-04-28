@@ -101,6 +101,7 @@ Meteor.methods({
     try {
       const result = TestCases.update(_id, {$set: {
         testStatus: 'run',
+        diffCount: '',
         testStart: date,
         ipcLink: '',
       }});

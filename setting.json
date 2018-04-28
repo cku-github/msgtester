@@ -1,5 +1,7 @@
 {
-  "public": {},
+  "public": {
+     "environmentName": "LocalServer"
+  },
   "private": {
     "postgres": {
       "user": "ipc_vps",
