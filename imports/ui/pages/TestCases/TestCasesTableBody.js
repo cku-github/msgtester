@@ -9,7 +9,7 @@ import TestCasesCollection from '../../../api/TestCases/TestCases';
 import Loading from '../../components/Loading/LoadingTable';
 import RemoveTestCaseButton from '../../components/RemoveTestCaseButton/RemoveTestCaseButton';
 
-import './TestCases.scss';
+import './TestCasesTableBody.scss';
 
 const runTest = (_id) => {
   const date = new Date();
@@ -25,7 +25,7 @@ const runTest = (_id) => {
 const TestCasesTableBody = ({
   loading, testCases, match, history,
 }) => (!loading ? (
-  <tbody>
+  <tbody className="TestCasesTableBody">
     {testCases.length ? testCases.map(({
       _id, group, name, messageType, loadingQueue, testStatus, diffCount, format, ipcLink
     }) => (
@@ -46,7 +46,7 @@ const TestCasesTableBody = ({
         <td>{name}</td>
         <td>{messageType}</td>
         <td>{loadingQueue}</td>
-        <td>{testStatus}</td>
+        <td className={`testStatus ${testStatus}`}>{testStatus}</td>
         <td>{diffCount}</td>
         <td>
           <a href={ipcLink} target="_blank">

@@ -1,0 +1,11 @@
+.TestCasesTableBody {
+  .testStatus {
+    &.passed {
+      background-color: #5cb85c;
+    }
+
+    &.failed {
+      background-color: #d9534f;
+    }
+  }
+}

@@ -31,7 +31,7 @@ TestCases.schema = new SimpleSchema({
   }, // clob
   testStatus: {
     type: String,
-    allowedValues: ['run', 'loading', 'ready'],
+    allowedValues: ['run', 'loading', 'ready', 'passed', 'failed'],
   },
   testStart: {
     type: Date,
