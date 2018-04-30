@@ -160,7 +160,7 @@ Meteor.methods({
         updateParams.messageType = params.messageType;
       }
 
-      const result = TestCases.update(updateParams, {$set: { owner: this.userId, testStatus: 'run', ipcLink: '', } }, { multi: true });
+      const result = TestCases.update(updateParams, {$set: { owner: this.userId, testStatus: 'run', ipcLink: '', diffCount: '', } }, { multi: true });
       if (Meteor.isServer) {
         import('./server/postgres').then(({default: postgres}) => {
           postgres.runTestsFiltered({...params, owner: this.userId});

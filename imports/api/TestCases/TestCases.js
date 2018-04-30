@@ -20,6 +20,14 @@ TestCases.deny({
 TestCases.schema = new SimpleSchema({
   owner: SimpleSchema.RegEx.Id,
   name: String,
+  testIdPrefix: {
+    type: String,
+    optional: true,
+  },
+  jiraURL: {
+    type: String,
+    optional: true,
+  },
   messageType: String,
   format: String,
   loadingQueue: String,

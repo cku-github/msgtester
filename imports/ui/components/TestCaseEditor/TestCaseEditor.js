@@ -23,6 +23,13 @@ class TestCaseEditor extends React.Component {
         name: {
           required: true,
         },
+        testIdPrefix: {
+          required: false,
+          length: 8,
+        },
+        jiraURL: {
+          required: false,
+        },
         messageType: {
           required: true,
         },
@@ -69,6 +76,12 @@ class TestCaseEditor extends React.Component {
       messages: {
         name: {
           required: 'A name is needed',
+        },
+        testIdPrefix: {
+          required: 'prefix which will be used in the ID created in the test message. if used, must be 8char long',
+        },
+        jiraURL: {
+          required: 'optional link to Jira case for this testmessage',
         },
         messageType: {
           required: 'please choose a messageType',
@@ -140,10 +153,12 @@ class TestCaseEditor extends React.Component {
 
     const testCase = {
       name: form.name.value,
+      testIdPrefix: form.testIdPrefix.value,
       messageType: form.messageType.value,
       format: form.format.value,
       loadingQueue: form.loadingQueue.value,
-      runTimeSec: Number(form.runTimeSec.value),
+      runTimeSec: Number('60'),
+      // runTimeSec: Number(form.runTimeSec.value),
       // TODO find way to escape CLOB because I need to store JSON and XML content
       testMessage: form.testMessage.value, // clob
       expectedResult: form.expectedResult.value, // clob
@@ -254,11 +269,11 @@ class TestCaseEditor extends React.Component {
           </Col>
           <Col xs={1}>
             <FormGroup>
-              <ControlLabel>Run Time Sec.</ControlLabel>
+              <ControlLabel>TestID Prefix</ControlLabel>
               <FormControl
-                name="runTimeSec"
-                defaultValue={testCase.runTimeSec || 60}
-                placeholder="allowed runTime in Sec"
+                name="testIdPrefix"
+                defaultValue={testCase.testIdPrefix}
+                placeholder="8 length ID"
               />
             </FormGroup>
           </Col>
