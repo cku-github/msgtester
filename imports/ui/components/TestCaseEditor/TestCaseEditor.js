@@ -25,7 +25,8 @@ class TestCaseEditor extends React.Component {
         },
         testIdPrefix: {
           required: false,
-          length: 8,
+          minlength: 8,
+          maxlength: 8,
         },
         jiraURL: {
           required: false,

@@ -25,6 +25,7 @@ Meteor.methods({
       autoTest: Boolean,
       mqUserIdentifier: String,
       linefeed: String,
+      testIdPrefix: Match.Maybe(String),
     });
     // console.log('methods.testCases.insert: ', testCase);
 
@@ -62,6 +63,7 @@ Meteor.methods({
       autoTest: Boolean,
       mqUserIdentifier: String,
       linefeed: String,
+      testIdPrefix: Match.Maybe(String),
     });
 
     try {
