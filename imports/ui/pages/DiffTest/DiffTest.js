@@ -35,7 +35,7 @@ const DiffTest = ({_id, history, loading, name, testRunResult, expectedResult}) 
     }
 
     const spanStyle = {
-      backgroundColor: part.added ? 'lightgreen' : part.removed ? 'salmon' : 'lightgrey'
+      backgroundColor: part.added ? 'salmon' : part.removed ? 'lightgreen' : 'lightgrey'
     };
 
     return (

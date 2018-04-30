@@ -152,7 +152,9 @@ const loadFromPostgresql = async (userId) => {
     n_runtime_in_sec,
     n_completes_in_ipc,
     c_mqmd_useridentifier,
-    c_linebreak
+    c_linebreak,
+    c_testid_prefix,
+    c_jira_url
     from bus_test_cases
     `;
 
@@ -177,6 +179,8 @@ const loadFromPostgresql = async (userId) => {
         _id: row.c_test_case_id,
         owner: userId,
         name: row.c_test_case_name,
+        testIdPrefix: row.c_test_case_id,
+        jiraURL: row.c_jira_url,
         group: row.c_group_name,
         messageType: row.c_message_type,
         format: row.c_format,
@@ -223,6 +227,7 @@ const insert = async (testCase) => {
       _id,
       owner,
       name,
+      testIdPrefix,
       messageType,
       format,
       loadingQueue,
@@ -235,6 +240,7 @@ const insert = async (testCase) => {
       autoTest,
       mqUserIdentifier,
       linefeed,
+      jiraURL,
     } = testCase;
 
     const query = `
@@ -242,14 +248,15 @@ const insert = async (testCase) => {
         c_test_case_id, c_test_case_name, c_message_type, c_format,
         c_loading_queue, c_test_message, c_test_status, c_rhf2_header,
         c_comment, c_group_name, c_last_editor, n_runtime_in_sec,
-        n_completes_in_ipc, n_autotest, c_mqmd_useridentifier, c_linebreak
+        n_completes_in_ipc, n_autotest, c_mqmd_useridentifier, c_linebreak,
+        c_testid_prefix, c_jira_url
       )
       values(
         '${_id}', '${name}', '${messageType}', '${format}',
         '${loadingQueue}', '${testMessage}', 'new', '${rfh2Header}',
         '${comment}', '${group}', '${owner}', ${runTimeSec},
         ${completesInIpc ? 1 : 0}, ${autoTest ? 1 : 0},
-        '${mqUserIdentifier}', '${linefeed}'
+        '${mqUserIdentifier}', '${linefeed}', '${testIdPrefix}', '${jiraURL}'
       );
     `;
 
@@ -267,6 +274,7 @@ const update = async (testCase) => {
       _id,
       owner,
       name,
+      testIdPrefix,
       messageType,
       format,
       loadingQueue,
@@ -280,6 +288,7 @@ const update = async (testCase) => {
       autoTest,
       mqUserIdentifier,
       linefeed,
+      jiraURL,
     } = testCase;
 
     // update bus_test_cases set test_message = $2 where test_case_id = $1;
@@ -300,7 +309,10 @@ const update = async (testCase) => {
     n_completes_in_ipc = ${completesInIpc ? 1 : 0},
     n_autotest = ${autoTest ? 1 : 0},
     c_mqmd_useridentifier = '${mqUserIdentifier}',
-    c_linebreak = '${linefeed}' where
+    c_linebreak = '${linefeed}',
+    c_testid_prefix = '${testIdPrefix}',
+    c_jira_url = '${jiraURL}'
+    where
     c_test_case_id = '${_id}'
     `;
 
