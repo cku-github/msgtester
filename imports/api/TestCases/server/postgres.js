@@ -21,7 +21,6 @@ const fetch = async (query, params) => {
     const result = await client.query(query, params);
     result.rows.forEach((result) => {
       // NOTE: result here will likely need to be mapped to specific fields in MongoDB instead of a plain dump.
-      console.log(result);
       //  TestCases.insert(result);
     });
 
@@ -89,24 +88,20 @@ const pollReadyTests = async () => {
         c_ipclink: ipcLink,
       } = row;
 
-      console.log({ _id, testRunResult, expectedResult });
-
       // test result is empty, new test case
       if (!expectedResult) {
-        console.log('expected result empty');
         TestCases.update(_id, {
           $set: {
             testRunResult,
             expectedResult: testRunResult,
             testStatus: 'ready',
             diffCount: 0,
-            ipcLink: ipcLink,
+            ipcLink,
           },
         });
 
         updateExpectedResult(_id, testRunResult);
       } else {
-        console.log('expected result not empty');
         // test result is same
         // test result is different
         // const diff = jsdiff.diffChars(expectedResult, testRunResult);
@@ -135,7 +130,6 @@ const pollReadyTests = async () => {
 // function to import all data from Postgresql. Deletes all existing data in Mongo.
 const loadFromPostgresql = async (userId) => {
   try {
-    console.log('Start loadFromPostgresql');
     const client = await pool.connect();
     // query to get all test_cases from Postgresql
     const query = `
@@ -166,7 +160,6 @@ const loadFromPostgresql = async (userId) => {
 
     // delete existing Mongo records
     // delete Queues
-    console.log('deleting data in MongoDB');
     Groups.remove({});
     Queues.remove({});
     MessageTypes.remove({});
@@ -203,8 +196,6 @@ const loadFromPostgresql = async (userId) => {
       };
 
 
-      console.log('will add new entry with ID ', row.c_test_case_id);
-      console.log(row.c_group_name, row.c_loading_queue, row.c_message_type);
       // console.log('testCase: ', testCase)
       TestCases.insert(testCase);
       setGroups.add(row.c_group_name);
@@ -213,17 +204,13 @@ const loadFromPostgresql = async (userId) => {
       setFormats.add(row.c_format);
     });
 
-    console.log(setGroups);
-    console.log(setQueues);
-    console.log(setMessageTypes);
-    console.log(setFormats);
 
     setGroups.forEach(name => Groups.insert({ name }));
     setQueues.forEach(name => Queues.insert({ name }));
     setMessageTypes.forEach(name => MessageTypes.insert({ name }));
     setFormats.forEach(name => Formats.insert({ name }));
 
-    await client.release(true)
+    await client.release(true);
   } catch (exception) {
     throw new Error(exception.message);
   }

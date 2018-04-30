@@ -9,6 +9,44 @@ Merlin Patterson • merlin.patterson@cleverbeagle.com
 
 ---
 
-“Never play to the gallery […] if you feel safe in the area that you’re working in, you’re not working in the right area. Always go a little further into the water than you feel you’re capable of being in. Go a little bit out of your depth and when you don’t feel that your feet are quite touching the bottom, you’re just about in the right place to do something exciting.” <br />
+deployment:
+delete c:\msgtester\node_modules
+delete c:\msgtester\package-lock.json
+call c:\msgtester\meteor npm install --production
+call c:\msgtester\meteor build --server-only c:\temp --architecture os.linux.x86_64
 
-– David Bowie
+copy the created msgtester.tar.gz to my server (rhel7) where I previously installed passenger according to the brilliant guide at https://www.phusionpassenger.com/library/walkthroughs/deploy/
+
+On the server I unpacked the bundle and created and ran the build again:
+cd /opt/passenger/msgtester/bundle/programs/server
+meteor npm install --production
+
+then created a new Passenger config file under /opt/passenger/msgtester/bundle
+vi Passengerfile.json
+With the standard contents plus the METEOR_SETTING as a single escaped json string
+{
+ // Tell Passenger that this is a Meteor app.
+ "app_type": "node",
+ "startup_file": "main.js",
+ "envvars": {
+   // Tell your app where MongoDB is
+   "MONGO_URL": "mongodb://localhost:27017/msgtesterdev",
+   // Tell your app what its root URL is
+   "ROOT_URL": "http://msgtestdev.vps.no",
+   "METEOR_SETTINGS": "{ \"private\": {\"postgres\": {\"user\": \"myPgUser\", \"host\": \"localhost\", \"database\": \"mypgdb\", \"password\": \"MyPgPassword\", \"port\": 5432}, \"MAIL_URL\": \"\"}}"
+ },
+ // Store log and PID file in parent directory
+ "log_file": "../passenger.log",
+ "pid_file": "../passenger.pid"
+ // Run the app in a production environment. The default value is "development".
+ "environment": "production",
+ // Run Passenger on port 80, the standard HTTP port.
+ "port": 3000,
+ // Tell Passenger to daemonize into the background.
+ "daemonize": true,
+ // Tell Passenger to run the app as the given user. Only has effect
+ // if Passenger was started with root privileges.
+ "user": "myuser"
+}
+then I ran the app with 
+passenger start --address ::

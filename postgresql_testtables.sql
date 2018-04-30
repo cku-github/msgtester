@@ -21,7 +21,8 @@ CREATE TABLE bus_test_cases
    n_runtime_in_sec int,
    n_completes_in_ipc int,
    c_mqmd_useridentifier varchar(12),
-   c_linebreak varchar(10)
+   c_linebreak varchar(10),
+   c_ipclink varchar(250)
 );
 
 drop table bus_test_runs;
@@ -31,6 +32,7 @@ CREATE TABLE bus_test_runs
    c_run_id varchar(36),
    fk_test_case_id varchar(50),
    c_reference varchar(20),
+   c_groupreference varchar(20),
    c_session_nr varchar(20),
    c_sequence_nr varchar(20),
    d_run_timestamp timestamp,
@@ -44,5 +46,7 @@ CREATE TABLE bus_test_runs
 
 --alter table bus_test_cases add c_mqmd_useridentifier varchar(12);
 --alter table bus_test_cases add c_linebreak varchar(10);
+--alter table bus_test_cases add c_ipclink varchar(250);
+--alter table bus_test_runs add c_groupreference varchar(250);
 
 --update bus_test_cases set c_linebreak = 'CRLF';

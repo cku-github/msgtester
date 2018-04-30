@@ -7,7 +7,7 @@
     "MONGO_URL": "mongodb://localhost:27017/msgtesterdev",
     // Tell your app what its root URL is
     "ROOT_URL": "http://msgtestdev.vps.no",
-    "METEOR_SETTINGS": "{ \"private\": {\"postgres\": {\"user\": \"ipc_vps\", \"host\": \"ims-dbsql.sst.vps.no\", \"database\": \"ipcdb_dev\", \"password\": \"SoMuchCheaperThanOracle12\", \"port\": 5432}, \"MAIL_URL\": \"\"}}"
+    "METEOR_SETTINGS": "{ \"public\": {\"environmentName\": \"DEV\"}, \"private\": {\"postgres\": {\"user\": \"ipc_vps\", \"host\": \"ims-dbsql.sst.vps.no\", \"database\": \"ipcdb_dev\", \"password\": \"SoMuchCheaperThanOracle12\", \"port\": 5432}, \"MAIL_URL\": \"\"}}"
   },
   // Store log and PID file in parent directory
   "log_file": "../passenger.log",
