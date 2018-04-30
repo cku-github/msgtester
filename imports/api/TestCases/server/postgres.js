@@ -94,7 +94,7 @@ const pollReadyTests = async () => {
           $set: {
             testRunResult,
             expectedResult: testRunResult,
-            testStatus: 'ready',
+            testStatus: 'passed',
             diffCount: 0,
             ipcLink,
           },
@@ -111,7 +111,7 @@ const pollReadyTests = async () => {
         TestCases.update(_id, {
           $set: {
             testRunResult,
-            testStatus: 'ready',
+            testStatus: diffCount === 0 ? 'passed' : 'failed',
             diffCount,
             ipcLink,
           },
