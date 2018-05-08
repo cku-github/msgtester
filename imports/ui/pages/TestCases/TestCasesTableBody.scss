@@ -1,11 +1,36 @@
 .TestCasesTableBody {
   .testStatus {
     &.passed {
-      background-color: #5cb85c;
+      background-color: #5cb85c; /* green */
+      border: 2px solid white;
+      color: white;
+      padding: 6px 20px;
+      width: 100%;
+      border-radius: 8px;
+      text-align: center;
+      display: inline-block;
     }
 
     &.failed {
-      background-color: #d9534f;
+      background-color: #d9534f; /* red */
+      border: 2px solid white;
+      color: white;
+      padding: 6px 20px;
+      width: 100%;
+      border-radius: 8px;
+      text-align: center;
+      display: inline-block;
+    }
+
+    &.run {
+      background-color: #fdf746; /* yellow */
+      border: 2px solid white;
+      color: black;
+      padding: 6px 20px;
+      width: 100%;
+      border-radius: 8px;
+      text-align: center;
+      display: inline-block;
     }
   }
 }

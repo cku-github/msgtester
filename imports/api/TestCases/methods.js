@@ -26,6 +26,7 @@ Meteor.methods({
       mqUserIdentifier: String,
       linefeed: String,
       testIdPrefix: Match.Maybe(String),
+      jiraURL: Match.Maybe(String),
     });
     // console.log('methods.testCases.insert: ', testCase);
 
@@ -64,6 +65,7 @@ Meteor.methods({
       mqUserIdentifier: String,
       linefeed: String,
       testIdPrefix: Match.Maybe(String),
+      jiraURL: Match.Maybe(String),
     });
 
     try {
@@ -127,6 +129,7 @@ Meteor.methods({
       const result = TestCases.update(_id, {$set: {
         expectedResult: testRunResult,
         diffCount: 0,
+        testStatus: 'passed',
       }});
 
       if (Meteor.isServer) {
