@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, FormControl, FormGroup, ControlLabel, Button } from 'react-bootstrap';
+import { Row, Col, FormControl, FormGroup, ControlLabel, Button, Glyphicon } from 'react-bootstrap';
 import { Bert } from 'meteor/themeteorchef:bert';
 import validate from '../../../modules/validate';
 import QueueSelect from '../QueueSelect/QueueSelect';
@@ -14,6 +14,7 @@ class TestCaseEditor extends React.Component {
   constructor(props) {
     super(props);
     this.copyMessage = this.copyMessage.bind(this);
+    this.runTest = this.runTest.bind(this);
   }
 
   componentDidMount() {
@@ -201,15 +202,26 @@ class TestCaseEditor extends React.Component {
     });
   }
 
+  runTest() {
+    const date = new Date();
+    const { testCase } = this.props;
+    Meteor.call('testCases.runTest' ,testCase._id, date, (error) => {
+      if (error) {
+        Bert.alert(error.reason, 'danger');
+      } else {
+        Bert.alert('Test is running', 'success');
+      }
+    });
+  }
+
   render() {
     const { testCase } = this.props;
 
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
-        <Button type="submit" bsStyle="success">
-          {testCase && testCase._id ? 'Save Change' : 'Add Test Case'}
-        </Button>
-        {testCase && testCase._id && <Button onClick={this.copyMessage}>Copy messages</Button>}
+        {testCase && testCase._id ? <Button type="submit" bsStyle="success" title="save"><Glyphicon glyph="ok-sign"/></Button>: <Button type="submit" bsStyle="success" title="create new"><Glyphicon glyph="plus-sign"/></Button>}
+        {testCase && testCase._id && <Button onClick={this.runTest} title="run test"><Glyphicon glyph="play" /></Button>}
+        {testCase && testCase._id && <Button onClick={this.copyMessage} title="create copy"><Glyphicon glyph="duplicate" /></Button>}
         <Row>
           <Col xs={4}>
             <FormGroup>

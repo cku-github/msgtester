@@ -32,6 +32,7 @@
     "react-router-dom": "^4.2.2",
     "react-scroll-sync": "^0.4.1",
     "react-select": "^1.2.1",
+    "react-tooltip": "^3.5.1",
     "simpl-schema": "^0.3.2"
   },
   "devDependencies": {
