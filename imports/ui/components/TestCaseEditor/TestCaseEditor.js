@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Route } from 'react-router-dom';
 import { Row, Col, FormControl, FormGroup, ControlLabel, Button, Glyphicon } from 'react-bootstrap';
 import { Bert } from 'meteor/themeteorchef:bert';
 import validate from '../../../modules/validate';
@@ -215,7 +216,7 @@ class TestCaseEditor extends React.Component {
   }
 
   render() {
-    const { testCase } = this.props;
+    const { testCase, history } = this.props;
 
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
@@ -376,6 +377,7 @@ TestCaseEditor.defaultProps = {
 
 TestCaseEditor.propTypes = {
   testCase: PropTypes.object,
+  match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
 

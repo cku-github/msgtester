@@ -50,3 +50,32 @@ With the standard contents plus the METEOR_SETTING as a single escaped json stri
 }
 then I ran the app with 
 passenger start --address ::
+
+UPDATE:
+copy new msgtester.tar.gz to /opt/incentage/passenger dir on the server.
+Then go to 
+> cd /opt/incentage/passenger/msgtesterdev/tmp
+ and unpack with 
+> tar zxvf /opt/incentage/passenger/msgtester.tar.gz
+
+copy passenger file from original bundle dir to the new unpacked one.
+> cp /opt/incentage/passenger/msgtestdev/bundle/Passengerfile.json /opt/incentage/passenger/msgtestdev/tmp/bundle/Passengerfile.json
+go to 
+> cd /opt/incentage/passenger/msgtesterdev/tmp/bundle/programs/server
+Rebuild with
+> npm install --production
+> npm prune --production
+
+stop the current running app with
+> cd /opt/incentage/passenger/msgtestdev/bundle
+> passenger stop
+
+remove any old backups, rename and replace the existing bundle dir with the new unpacked one
+> cd /opt/incentage/passenger/msgtestdev
+> rm -rf bundle.old
+> mv bundle/ bundle.old
+> mv tmp/bundle .
+
+restart
+> cd bundle
+> passenger start --address ::
