@@ -47,7 +47,7 @@ const DiffTest = ({_id, history, loading, name, testRunResult, expectedResult}) 
 
   return (
     <div>
-      <Button onClick={() => history.push('/test-cases')} title="back to test cases">
+      <Button onClick={() => history.goBack()} title="back to wence thou came">
         <Glyphicon glyph="menu-left" />
       </Button>
       <Button onClick={() => acceptTestResult(_id)} title="accept test result as new standard">
