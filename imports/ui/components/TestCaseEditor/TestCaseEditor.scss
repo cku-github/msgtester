@@ -1,0 +1,33 @@
+.testCaseStatus {
+
+  padding: 6px 20px;
+  width: 10%;
+  border-radius: 8px;
+  text-align: center;
+  display: inline-block;
+  float: right;
+
+    &.passed {
+      background-color: #5cb85c; /* green */
+      border: 2px solid white;
+      color: white;
+    }
+
+    &.failed {
+      background-color: #d9534f; /* red */
+      border: 2px solid white;
+      color: white;
+    }
+
+    &.run {
+      background-color: #fdf746; /* yellow */
+      border: 2px solid white;
+      color: black;
+    }
+
+    &.ready {
+      background-color: white; /* green */
+      border: 2px solid black;
+      color: black;
+    }
+  }

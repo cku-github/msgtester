@@ -9,6 +9,7 @@ import GroupSelect from '../GroupSelect/GroupSelect';
 import MessageTypeSelect from '../MessageTypeSelect/MessageTypeSelect';
 import FormatSelect from '../FormatSelect/FormatSelect';
 
+import './TestCaseEditor.scss';
 
 
 class TestCaseEditor extends React.Component {
@@ -220,11 +221,14 @@ class TestCaseEditor extends React.Component {
 
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
-        {testCase && testCase._id ? <Button type="submit" bsStyle="success" title="save"><Glyphicon glyph="ok-sign" /></Button> : <Button type="submit" bsStyle="success" title="create new"><Glyphicon glyph="plus-sign" /></Button>}
-        {testCase && testCase._id && <Button onClick={() => history.push(`/test-cases`)} title="close without saving"><Glyphicon glyph="menu-left" /></Button>}
-        {testCase && testCase._id && <Button onClick={this.runTest} title="run test"><Glyphicon glyph="play" /></Button>}
-        {testCase && testCase._id && <Button onClick={() => history.push(`/test-cases/${testCase._id}/diff`)} title="display diff report"><Glyphicon glyph="eye-open" /></Button>}
-        {testCase && testCase._id && <Button onClick={this.copyMessage} title="create copy"><Glyphicon glyph="duplicate" /></Button>}
+        <p>
+          {testCase && testCase._id ? <Button type="submit" bsStyle="success" title="save"><Glyphicon glyph="ok-sign" /></Button> : <Button type="submit" bsStyle="success" title="create new">Create New</Button>}
+          {testCase && testCase._id && <Button onClick={() => history.push(`/test-cases`)} title="close without saving"><Glyphicon glyph="menu-left" /></Button>}
+          {testCase && testCase._id && <Button onClick={this.runTest} title="run test"><Glyphicon glyph="play" /></Button>}
+          {testCase && testCase._id && <Button onClick={() => history.push(`/test-cases/${testCase._id}/diff`)} title="display diff report"><Glyphicon glyph="eye-open" /></Button>}
+          {testCase && testCase._id && <Button onClick={this.copyMessage} title="create copy"><Glyphicon glyph="duplicate" /></Button>}
+          <div className={`testCaseStatus ${testCase.testStatus}`}>{testCase.testStatus}</div>
+        </p>
         <Row>
           <Col xs={4}>
             <FormGroup>
