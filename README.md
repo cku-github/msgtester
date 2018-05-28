@@ -1,11 +1,7 @@
 ### MsgTester
-Lets users create and maintain a repository of financial test messages. Users can trigger test runs on single or sets of messages and the gui will display test results including diff to previous runs
-
-**Lead Mentor**: <br />
-Merlin Patterson • merlin.patterson@cleverbeagle.com
+Lets users create and maintain a repository of financial test messages. Users can trigger test runs on single or sets of messages and the GUI will display test results including diff to previous runs
 
 [Pup Documentation](https://cleverbeagle.com/pup) <br />
-[Manage Issues on Clever Beagle](https://app.cleverbeagle.com/products/FXSqWYxjoSnj7jnJs/issues)
 
 ---
 
@@ -48,19 +44,19 @@ With the standard contents plus the METEOR_SETTING as a single escaped json stri
  // if Passenger was started with root privileges.
  "user": "myuser"
 }
-then I ran the app with 
+then I ran the app with
 passenger start --address ::
 
 UPDATE:
 copy new msgtester.tar.gz to /opt/incentage/passenger dir on the server.
-Then go to 
+Then go to
 > cd /opt/incentage/passenger/msgtesterdev/tmp
- and unpack with 
+ and unpack with
 > tar zxvf /opt/incentage/passenger/msgtester.tar.gz
 
 copy passenger file from original bundle dir to the new unpacked one.
 > cp /opt/incentage/passenger/msgtestdev/bundle/Passengerfile.json /opt/incentage/passenger/msgtestdev/tmp/bundle/Passengerfile.json
-go to 
+go to
 > cd /opt/incentage/passenger/msgtesterdev/tmp/bundle/programs/server
 Rebuild with
 > npm install --production
