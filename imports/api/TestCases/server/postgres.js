@@ -5,6 +5,7 @@ import TestCases from '../TestCases';
 import Queues from '../../Queues/Queues';
 import Groups from '../../Groups/Groups';
 import MessageTypes from '../../MessageTypes/MessageTypes';
+import DepartmentCodes from '../../DepartmentCodes/DepartmentCodes';
 import Formats from '../../Formats/Formats';
 
 const pool = new Pool(Meteor.settings.private.postgres);
@@ -154,7 +155,8 @@ const loadFromPostgresql = async (userId) => {
     c_mqmd_useridentifier,
     c_linebreak,
     c_testid_prefix,
-    c_jira_url
+    c_jira_url,
+    c_department_code
     from bus_test_cases
     `;
 
@@ -167,6 +169,7 @@ const loadFromPostgresql = async (userId) => {
     MessageTypes.remove({});
     Formats.remove({});
     TestCases.remove({});
+    DepartmentCodes.remove({});
 
     const setGroups = new Set();
     const setQueues = new Set();
@@ -179,7 +182,7 @@ const loadFromPostgresql = async (userId) => {
         _id: row.c_test_case_id,
         owner: userId,
         name: row.c_test_case_name,
-        testIdPrefix: row.c_test_case_id,
+        testIdPrefix: row.c_testid_prefix,
         jiraURL: row.c_jira_url,
         group: row.c_group_name,
         messageType: row.c_message_type,
@@ -197,6 +200,7 @@ const loadFromPostgresql = async (userId) => {
         completesInIpc: row.n_completes_in_ipc ? true : false,
         mqUserIdentifier: row.c_mqmd_useridentifier,
         linefeed: row.c_linebreak,
+        departmentCode: row.c_department_code,
       };
 
 
@@ -208,11 +212,20 @@ const loadFromPostgresql = async (userId) => {
       setFormats.add(row.c_format);
     });
 
-
     setGroups.forEach(name => Groups.insert({ name }));
     setQueues.forEach(name => Queues.insert({ name }));
     setMessageTypes.forEach(name => MessageTypes.insert({ name }));
     setFormats.forEach(name => Formats.insert({ name }));
+
+    // Set valid departmentCodes
+    DepartmentCodes.insert({ name: 'cs' });
+    DepartmentCodes.insert({ name: 'fs' });
+    DepartmentCodes.insert({ name: 'is' });
+    DepartmentCodes.insert({ name: 'ss' });
+    DepartmentCodes.insert({ name: 'dev' });
+
+    console.log('Groups: ', Groups.find({}).fetch());
+    console.log('DepartmentCodes: ', DepartmentCodes.find({}).fetch());
 
     await client.release(true);
   } catch (exception) {
@@ -241,6 +254,7 @@ const insert = async (testCase) => {
       mqUserIdentifier,
       linefeed,
       jiraURL,
+      departmentCode,
     } = testCase;
 
     const query = `
@@ -249,14 +263,15 @@ const insert = async (testCase) => {
         c_loading_queue, c_test_message, c_test_status, c_rhf2_header,
         c_comment, c_group_name, c_last_editor, n_runtime_in_sec,
         n_completes_in_ipc, n_autotest, c_mqmd_useridentifier, c_linebreak,
-        c_testid_prefix, c_jira_url
+        c_testid_prefix, c_jira_url, c_department_code
       )
       values(
         '${_id}', '${name}', '${messageType}', '${format}',
         '${loadingQueue}', '${testMessage}', 'new', '${rfh2Header}',
         '${comment}', '${group}', '${owner}', ${runTimeSec},
         ${completesInIpc ? 1 : 0}, ${autoTest ? 1 : 0},
-        '${mqUserIdentifier}', '${linefeed}', '${testIdPrefix}', '${jiraURL}'
+        '${mqUserIdentifier}', '${linefeed}', '${testIdPrefix}', '${jiraURL}',
+        '${departmentCode}'
       );
     `;
 
@@ -289,6 +304,7 @@ const update = async (testCase) => {
       mqUserIdentifier,
       linefeed,
       jiraURL,
+      departmentCode,
     } = testCase;
 
     // update bus_test_cases set test_message = $2 where test_case_id = $1;
@@ -311,7 +327,8 @@ const update = async (testCase) => {
     c_mqmd_useridentifier = '${mqUserIdentifier}',
     c_linebreak = '${linefeed}',
     c_testid_prefix = '${testIdPrefix}',
-    c_jira_url = '${jiraURL}'
+    c_jira_url = '${jiraURL}',
+    c_department_code = '${departmentCode}'
     where
     c_test_case_id = '${_id}'
     `;
@@ -348,7 +365,7 @@ const runTest = async (testCase) => {
 };
 
 const runTestsFiltered = async ({
-  group, loadingQueue, messageType, owner,
+  group, loadingQueue, messageType, owner, departmentCode
 }) => {
   try {
     const client = await pool.connect();
@@ -371,6 +388,10 @@ const runTestsFiltered = async ({
 
     if (messageType) {
       query += ` AND c_message_type = '${messageType}'`;
+    }
+
+    if (departmentCode) {
+      query += ` AND c_department_code = '${departmentCode}'`;
     }
 
     const result = await client.query(query);

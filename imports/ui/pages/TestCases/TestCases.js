@@ -10,6 +10,7 @@ import Loading from '../../components/Loading/Loading';
 import GroupFilter from '../../components/GroupSelect/GroupFilter';
 import QueueFilter from '../../components/QueueSelect/QueueFilter';
 import MessageTypeFilter from '../../components/MessageTypeSelect/MessageTypeFilter';
+import DepartmentCodeFilter from '../../components/DepartmentCodeSelect/DepartmentCodeFilter';
 import TestCasesTableBody from './TestCasesTableBody';
 
 import './TestCases.scss';
@@ -41,11 +42,13 @@ class TestCases extends React.Component {
       loadingQueue: window.localStorage.getItem('filterLoadingQueue') || '',
       group: window.localStorage.getItem('filterGroup') || '',
       messageType: window.localStorage.getItem('filterMessageType') || '',
+      departmentCode: window.localStorage.getItem('filterDepartmentCode') || '',
     };
 
     this.filterGroup = this.filterGroup.bind(this);
     this.filterQueue = this.filterQueue.bind(this);
     this.filterMessageType = this.filterMessageType.bind(this);
+    this.filterDepartmentCode = this.filterDepartmentCode.bind(this);
   }
 
   filterGroup({ name }) {
@@ -75,14 +78,23 @@ class TestCases extends React.Component {
     this.setState({ messageType: name });
   }
 
+  filterDepartmentCode({ name }) {
+    if (name) {
+      window.localStorage.setItem('filterDepartmentCode', name);
+    } else {
+      window.localStorage.removeItem('filterDepartmentCode');
+    }
+    this.setState({ departmentCode: name });
+  }
+
   render() {
     const { match, history } = this.props;
-    const { loadingQueue, group, messageType } = this.state;
+    const { loadingQueue, group, messageType, departmentCode } = this.state;
 
     return (
       <div className="TestCases">
         <div className="pull-right">
-          <Button onClick={importPostgresInfo}>
+          <Button onClick={importPostgresInfo} title="load all testcases from linked Postgresql DB">
             Reload from Postgres
           </Button>
         </div>
@@ -94,20 +106,25 @@ class TestCases extends React.Component {
           <thead>
             <tr>
               <th>
-                <Button onClick={() => runTestsFiltered({ loadingQueue, group, messageType })} title="Run all filtered tests">
+                <Button onClick={() => runTestsFiltered({ loadingQueue, group, messageType, departmentCode })} title="Run all filtered tests">
                   <Glyphicon glyph="forward" />
                 </Button>
               </th>
+              <th>DP</th>
               <th>Group</th>
               <th>Name</th>
               <th>MT</th>
               <th>Queue</th>
               <th>Status</th>
               <th>Diff</th>
+              <th>Last run</th>
               <th>IPC Link</th>
             </tr>
             <tr>
               <th />
+              <th>
+                <DepartmentCodeFilter value={departmentCode} onChange={this.filterDepartmentCode} />
+              </th>
               <th>
                 <GroupFilter value={group} onChange={this.filterGroup} />
               </th>
@@ -120,9 +137,11 @@ class TestCases extends React.Component {
               </th>
               <th />
               <th />
+              <th />
+              <th />
             </tr>
           </thead>
-          <TestCasesTableBody group={group} loadingQueue={loadingQueue} messageType={messageType} match={match} history={history} />
+          <TestCasesTableBody departmentCode={departmentCode} group={group} loadingQueue={loadingQueue} messageType={messageType} match={match} history={history} />
         </Table>
       </div>
     );

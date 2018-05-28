@@ -4,7 +4,7 @@ import jsdiff from 'diff';
 import { Button, Col, Row, Glyphicon } from 'react-bootstrap';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
-import {ScrollSync, ScrollSyncPane} from 'react-scroll-sync';
+import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import TestCases from '../../../api/TestCases/TestCases';
 import Loading from '../../components/Loading/Loading';
 
@@ -92,7 +92,7 @@ const DiffTest = ({_id, history, loading, name, testRunResult, expectedResult}) 
       </ScrollSync>
     </div>
   );
-}
+};
 
 DiffTest.propTypes = {
   history: PropTypes.object.isRequired,

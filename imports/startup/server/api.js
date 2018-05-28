@@ -4,6 +4,7 @@ import '../../api/Groups/server/publications';
 import '../../api/Queues/server/publications';
 import '../../api/MessageTypes/server/publications';
 import '../../api/Formats/server/publications';
+import '../../api/DepartmentCodes/server/publications';
 
 import '../../api/OAuth/server/methods';
 
@@ -29,6 +30,7 @@ const testCase = {
   rfh2Header: 'rfh2Header',
   comment: 'comment',
   group: 'group',
+  departmentCode: 'departmentCode',
   autoTest: true,
 };
 

@@ -25,6 +25,7 @@ Meteor.methods({
       autoTest: Boolean,
       mqUserIdentifier: String,
       linefeed: String,
+      departmentCode: String,
       testIdPrefix: Match.Maybe(String),
       jiraURL: Match.Maybe(String),
     });
@@ -64,6 +65,7 @@ Meteor.methods({
       autoTest: Boolean,
       mqUserIdentifier: String,
       linefeed: String,
+      departmentCode: String,
       testIdPrefix: Match.Maybe(String),
       jiraURL: Match.Maybe(String),
     });
@@ -148,6 +150,7 @@ Meteor.methods({
       group: Match.Maybe(String),
       loadingQueue: Match.Maybe(String),
       messageType: Match.Maybe(String),
+      departmentCode: Match.Maybe(String),
     });
 
     try {
@@ -163,6 +166,10 @@ Meteor.methods({
 
       if (params.messageType) {
         updateParams.messageType = params.messageType;
+      }
+
+      if (params.departmentCode) {
+        updateParams.departmentCode = params.departmentCode;
       }
 
       const result = TestCases.update(updateParams, {$set: { owner: this.userId, testStatus: 'run', ipcLink: '', diffCount: '', } }, { multi: true });

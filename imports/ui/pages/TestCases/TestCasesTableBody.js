@@ -27,7 +27,7 @@ const TestCasesTableBody = ({
 }) => (!loading ? (
   <tbody className="TestCasesTableBody">
     {testCases.length ? testCases.map(({
-      _id, group, name, messageType, loadingQueue, testStatus, diffCount, format, ipcLink
+      _id, departmentCode, group, name, messageType, loadingQueue, testStatus, diffCount, testStart, ipcLink,
     }) => (
       <tr key={_id}>
         <td>
@@ -42,12 +42,14 @@ const TestCasesTableBody = ({
             <Glyphicon glyph="eye-open" />
           </Button>
         </td>
+        <td>{departmentCode || ''}</td>
         <td>{group}</td>
         <td>{name}</td>
         <td>{messageType}</td>
         <td>{loadingQueue}</td>
         <td className={`testStatus ${testStatus}`}>{testStatus}</td>
         <td>{diffCount}</td>
+        <td>{testStart ? testStart.toISOString().substring(0,10) : '' }</td>
         <td>
           <a href={ipcLink} target="_blank">
             ...
@@ -66,11 +68,15 @@ TestCasesTableBody.propTypes = {
 };
 
 export default withTracker(({
-  group, loadingQueue, messageType, match, history
+  departmentCode, group, loadingQueue, messageType, match, history
 }) => {
   const subscription = Meteor.subscribe('testCases');
 
   const params = {};
+
+  if (departmentCode) {
+    params.departmentCode = departmentCode;
+  }
 
   if (group) {
     params.group = group;

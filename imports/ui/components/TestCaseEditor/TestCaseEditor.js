@@ -6,6 +6,7 @@ import { Bert } from 'meteor/themeteorchef:bert';
 import validate from '../../../modules/validate';
 import QueueSelect from '../QueueSelect/QueueSelect';
 import GroupSelect from '../GroupSelect/GroupSelect';
+import DepartmentCodeSelect from '../DepartmentCodeSelect/DepartmentCodeSelect';
 import MessageTypeSelect from '../MessageTypeSelect/MessageTypeSelect';
 import FormatSelect from '../FormatSelect/FormatSelect';
 
@@ -67,6 +68,9 @@ class TestCaseEditor extends React.Component {
         group: {
           required: true,
         },
+        departmentCode: {
+          required: true,
+        },
         autoTest: {
           required: false,
         },
@@ -120,6 +124,9 @@ class TestCaseEditor extends React.Component {
         group: {
           required: 'Please choose from list or create a new group to organize tests',
         },
+        departmentCode: {
+          required: 'Please choose appropriate value from list',
+        },
         autoTest: {
           required: 'If set to true this test case will be run automatically on each code change deployment in the ISB',
         },
@@ -140,19 +147,23 @@ class TestCaseEditor extends React.Component {
     const methodToCall = existingTestCase ? 'testCases.update' : 'testCases.insert';
 
     if (!form.format) {
-      return Bert.alert('A format is needed', 'danger');
+      return Bert.alert('A format is required', 'danger');
     }
 
     if (!form.loadingQueue) {
-      return Bert.alert('A loading queue is needed', 'danger');
+      return Bert.alert('A loading queue is required', 'danger');
     }
 
     if (!form.group) {
       return Bert.alert('A group is needed', 'danger');
     }
 
+    if (!form.departmentCode) {
+      return Bert.alert('A departmentCode must be chosen', 'danger');
+    }
+
     if (!form.messageType) {
-      return Bert.alert('A message type is needed', 'danger');
+      return Bert.alert('A message type is required', 'danger');
     }
 
     const testCase = {
@@ -171,6 +182,7 @@ class TestCaseEditor extends React.Component {
       rfh2Header: form.rfh2Header.value, // clob
       comment: form.comment.value,
       group: form.group.value,
+      departmentCode: form.departmentCode.value,
       autoTest: form.autoTest.checked,
       mqUserIdentifier: form.mqUserIdentifier.value,
       linefeed: form.linefeed.value,
@@ -221,14 +233,13 @@ class TestCaseEditor extends React.Component {
 
     return (
       <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
-        <p>
-          {testCase && testCase._id ? <Button type="submit" bsStyle="success" title="save"><Glyphicon glyph="ok-sign" /></Button> : <Button type="submit" bsStyle="success" title="create new">Create New</Button>}
-          {testCase && testCase._id && <Button onClick={() => history.push(`/test-cases`)} title="close without saving"><Glyphicon glyph="menu-left" /></Button>}
-          {testCase && testCase._id && <Button onClick={this.runTest} title="run test"><Glyphicon glyph="play" /></Button>}
-          {testCase && testCase._id && <Button onClick={() => history.push(`/test-cases/${testCase._id}/diff`)} title="display diff report"><Glyphicon glyph="eye-open" /></Button>}
-          {testCase && testCase._id && <Button onClick={this.copyMessage} title="create copy"><Glyphicon glyph="duplicate" /></Button>}
-          <div className={`testCaseStatus ${testCase.testStatus}`}>{testCase.testStatus}</div>
-        </p>
+        {testCase && testCase._id ? <Button type="submit" bsStyle="success" title="save"><Glyphicon glyph="ok-sign" /></Button> : <Button type="submit" bsStyle="success" title="create new">Create New</Button>}
+        {testCase && testCase._id && <Button onClick={() => history.push(`/test-cases`)} title="close without saving"><Glyphicon glyph="menu-left" /></Button>}
+        {testCase && testCase._id && <Button onClick={this.runTest} title="run test"><Glyphicon glyph="play" /></Button>}
+        {testCase && testCase._id && <Button onClick={() => history.push(`/test-cases/${testCase._id}/diff`)} title="display diff report"><Glyphicon glyph="eye-open" /></Button>}
+        {testCase && testCase._id && <Button onClick={this.copyMessage} title="create copy"><Glyphicon glyph="duplicate" /></Button>}
+        <div className={`testCaseStatus ${testCase.testStatus}`}>{testCase.testStatus}</div>
+        <p />
         <Row>
           <Col xs={4}>
             <FormGroup>
@@ -275,11 +286,18 @@ class TestCaseEditor extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col xs={4}>
+          <Col xs={3}>
             <FormGroup>
               <ControlLabel>Group</ControlLabel>
               <GroupSelect name={testCase.group} />
             </FormGroup>
+          </Col>
+          <Col xs={1}>
+            <ControlLabel titel="Department Code">DP</ControlLabel>
+            <DepartmentCodeSelect
+              name={testCase.departmentCode}
+              titel="chose cs = CorporateActions, fs = Funds, is = Investor, ss = Settlement"
+            />
           </Col>
           <Col xs={4}>
             <FormGroup>

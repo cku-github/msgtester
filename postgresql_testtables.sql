@@ -22,7 +22,8 @@ CREATE TABLE bus_test_cases
    n_completes_in_ipc int,
    c_mqmd_useridentifier varchar(12),
    c_linebreak varchar(10),
-   c_ipclink varchar(250)
+   c_ipclink varchar(250),
+   c_department_code varchar(20)
 );
 
 drop table bus_test_runs;
@@ -48,5 +49,7 @@ CREATE TABLE bus_test_runs
 --alter table bus_test_cases add c_linebreak varchar(10);
 --alter table bus_test_cases add c_ipclink varchar(250);
 --alter table bus_test_runs add c_groupreference varchar(250);
+--alter table bus_test_cases add c_department_code varchar(20);
 
 --update bus_test_cases set c_linebreak = 'CRLF';
+--update bus_test_cases set c_department_code = 'dev';

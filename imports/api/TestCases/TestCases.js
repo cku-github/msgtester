@@ -76,6 +76,10 @@ TestCases.schema = new SimpleSchema({
     type: String,
     optional: true,
   },
+  departmentCode: {
+    type: String,
+    allowedValues: ['cs', 'fs', 'is', 'ss', 'dev'],
+  },
 });
 
 TestCases.attachSchema(TestCases.schema);
