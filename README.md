@@ -1,7 +1,17 @@
 ### MsgTester
 Lets users create and maintain a repository of financial test messages. Users can trigger test runs on single or sets of messages and the GUI will display test results including diff to previous runs
 
+The entire code is in javascript and uses the meteor framework. https://www.meteor.com/
+
+To speed up development the pup boilerplate was used https://cleverbeagle.com/pup/v1/introduction and the team at clever beagle helped develop the initial app in paid consultancy work. They can also be asked to make changes in the future as they also have full access to the code and have very reasonable rates for efficient work.
+
 [Pup Documentation](https://cleverbeagle.com/pup) <br />
+
+The msgTester App is created to run on linux servers and is hosted using the phusion passenger library. https://www.phusionpassenger.com/library/walkthroughs/start/meteor.html
+This runs a nginx web server to host the web frontend.
+
+A local installation of MongoDB is required as well as firewall access to the PostGresql DB.
+meteor and npm were also installed on the linux server using the default best practice guides from the official homepages.
 
 ---
 
