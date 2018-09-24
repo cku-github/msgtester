@@ -23,7 +23,9 @@ CREATE TABLE bus_test_cases
    c_mqmd_useridentifier varchar(12),
    c_linebreak varchar(10),
    c_ipclink varchar(250),
-   c_department_code varchar(20)
+   c_department_code varchar(20),
+   c_testid_prefix varchar(8),
+   c_jira_url varchar(250)
 );
 
 drop table bus_test_runs;

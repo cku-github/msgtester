@@ -267,15 +267,18 @@ const insert = async (testCase) => {
       )
       values(
         '${_id}', '${name}', '${messageType}', '${format}',
-        '${loadingQueue}', '${testMessage}', 'new', '${rfh2Header}',
-        '${comment}', '${group}', '${owner}', ${runTimeSec},
+        '${loadingQueue}', $token$${testMessage}$token$, 'new', $token$${rfh2Header}$token$,
+        $token$${comment}$token$, '${group}', '${owner}', ${runTimeSec},
         ${completesInIpc ? 1 : 0}, ${autoTest ? 1 : 0},
         '${mqUserIdentifier}', '${linefeed}', '${testIdPrefix}', '${jiraURL}',
         '${departmentCode}'
       );
     `;
 
-    const result = await client.query(query);
+    const cleanquery = query.replace(/'undefined',/g, '\'\',');
+
+    //console.log('update postgresql with', cleanquery);
+    const result = await client.query(cleanquery);
     await client.release(true);
   } catch (exception) {
     throw new Error(exception.message);
@@ -314,11 +317,11 @@ const update = async (testCase) => {
     c_message_type = '${messageType}',
     c_format = '${format}',
     c_loading_queue = '${loadingQueue}',
-    c_test_message = '${testMessage}',
-    c_expected_resulttrace = '${testRunResult}',
+    c_test_message = $token$${testMessage}$token$,
+    c_expected_resulttrace = $token$${testRunResult}$token$,
     c_test_status = 'new',
-    c_rhf2_header = '${rfh2Header}',
-    c_comment = '${comment}',
+    c_rhf2_header = $token$${rfh2Header}$token$,
+    c_comment = $token$${comment}$token$,
     c_group_name = '${group}',
     c_last_editor = '${owner}',
     n_runtime_in_sec = ${runTimeSec},
@@ -333,6 +336,8 @@ const update = async (testCase) => {
     c_test_case_id = '${_id}'
     `;
 
+    // enable here to see insert in case of errors
+    //console.log('update postgresql with', query);
     const result = await client.query(query);
     await client.release(true);
   } catch (exception) {

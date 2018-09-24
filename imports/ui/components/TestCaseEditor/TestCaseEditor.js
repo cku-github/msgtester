@@ -310,7 +310,7 @@ class TestCaseEditor extends React.Component {
               <ControlLabel>TestID Prefix</ControlLabel>
               <FormControl
                 name="testIdPrefix"
-                defaultValue={testCase.testIdPrefix}
+                defaultValue={testCase.testIdPrefix || ''}
                 placeholder="8 length ID"
               />
             </FormGroup>
