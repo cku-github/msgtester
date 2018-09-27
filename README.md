@@ -65,7 +65,7 @@ Then go to
 > tar zxvf /opt/incentage/passenger/msgtester.tar.gz
 
 copy passenger file from original bundle dir to the new unpacked one.
-> cp /opt/incentage/passenger/msgtestdev/bundle/Passengerfile.json /opt/incentage/passenger/msgtestdev/tmp/bundle/Passengerfile.json
+> cp /opt/incentage/passenger/msgtesterdev/bundle/Passengerfile.json /opt/incentage/passenger/msgtesterdev/tmp/bundle/Passengerfile.json
 go to
 > cd /opt/incentage/passenger/msgtesterdev/tmp/bundle/programs/server
 Rebuild with
@@ -73,11 +73,11 @@ Rebuild with
 > npm prune --production
 
 stop the current running app with
-> cd /opt/incentage/passenger/msgtestdev/bundle
+> cd /opt/incentage/passenger/msgtesterdev/bundle
 > passenger stop
 
 remove any old backups, rename and replace the existing bundle dir with the new unpacked one
-> cd /opt/incentage/passenger/msgtestdev
+> cd /opt/incentage/passenger/msgtesterdev
 > rm -rf bundle.old
 > mv bundle/ bundle.old
 > mv tmp/bundle .
@@ -85,3 +85,9 @@ remove any old backups, rename and replace the existing bundle dir with the new 
 restart
 > cd bundle
 > passenger start --address ::
+
+
+======================================
+Other items of interest
+Go into the project folder and upgrade where the npm install is done call the following to set to a correct and supported version
+meteor npm install --save-exact @babel/runtime@7.0.0-beta.55
