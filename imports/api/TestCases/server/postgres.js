@@ -342,7 +342,7 @@ const update = async (testCase) => {
     `;
 
     // enable here to see insert in case of errors
-    console.log('update postgresql with', query);
+    //console.log('update postgresql with', query);
     const result = await client.query(query);
     await client.release(true);
   } catch (exception) {
