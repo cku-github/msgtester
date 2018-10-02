@@ -60,6 +60,7 @@ TestCases.schema = new SimpleSchema({
   }, // clob,
   group: String,
   autoTest: Boolean,
+  delayedTest: Boolean,
   diffCount: {
     type: Number,
     optional: true,

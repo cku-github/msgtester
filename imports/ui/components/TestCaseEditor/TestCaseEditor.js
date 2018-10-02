@@ -74,6 +74,9 @@ class TestCaseEditor extends React.Component {
         autoTest: {
           required: false,
         },
+        delayedTest: {
+          required: false,
+        },
         mqUserIdentifier: {
           required: false,
         },
@@ -130,6 +133,9 @@ class TestCaseEditor extends React.Component {
         autoTest: {
           required: 'If set to true this test case will be run automatically on each code change deployment in the ISB',
         },
+        delayedTest: {
+          required: 'If set this message will be processed 10sec after the processing trigger is called. This is useful to have sets of messages where one is an answer to another and needs to be processed later',
+        },
         mqUserIdentifier: {
           required: 'If set this value will be written to the MQ Header, UserID field. It is used for message authorisation checks',
         },
@@ -174,7 +180,6 @@ class TestCaseEditor extends React.Component {
       loadingQueue: form.loadingQueue.value,
       runTimeSec: Number('60'),
       // runTimeSec: Number(form.runTimeSec.value),
-      // TODO find way to escape CLOB because I need to store JSON and XML content
       testMessage: form.testMessage.value, // clob
       expectedResult: form.expectedResult.value, // clob
       testStatus: 'ready',
@@ -184,6 +189,7 @@ class TestCaseEditor extends React.Component {
       group: form.group.value,
       departmentCode: form.departmentCode.value,
       autoTest: form.autoTest.checked,
+      delayedTest: form.delayedTest.checked,
       mqUserIdentifier: form.mqUserIdentifier.value,
       linefeed: form.linefeed.value,
     };
@@ -315,7 +321,7 @@ class TestCaseEditor extends React.Component {
               />
             </FormGroup>
           </Col>
-          <Col xs={2}>
+          <Col xs={1}>
             <FormGroup controlId="formControlsSelect">
               <ControlLabel>Linefeed Chars</ControlLabel>
               <FormControl
@@ -331,12 +337,23 @@ class TestCaseEditor extends React.Component {
           </Col>
           <Col xs={1}>
             <FormGroup>
+              <ControlLabel>Delayed</ControlLabel>
+              <input
+                type="checkbox"
+                name="delayedTest"
+                placeholder="delayedTest"
+                defaultChecked={testCase.delayedTest || false}
+              />
+            </FormGroup>
+          </Col>
+          <Col xs={1}>
+            <FormGroup>
               <ControlLabel>Autotest</ControlLabel>
               <input
                 type="checkbox"
                 name="autoTest"
                 placeholder="autoTest"
-                defaultValue={testCase.autoTest || false}
+                defaultChecked={testCase.autoTest || false}
               />
             </FormGroup>
           </Col>

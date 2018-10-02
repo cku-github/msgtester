@@ -23,6 +23,7 @@ Meteor.methods({
       comment: String,
       group: String,
       autoTest: Boolean,
+      delayedTest: Boolean,
       mqUserIdentifier: String,
       linefeed: String,
       departmentCode: String,
@@ -63,6 +64,7 @@ Meteor.methods({
       comment: String,
       group: String,
       autoTest: Boolean,
+      delayedTest: Boolean,
       mqUserIdentifier: String,
       linefeed: String,
       departmentCode: String,
@@ -70,6 +72,7 @@ Meteor.methods({
       jiraURL: Match.Maybe(String),
     });
 
+    console.log('methods.testCases.update: ', testCase);
     try {
       const testCaseId = testCase._id;
       TestCases.update(testCaseId, {$set: { owner: this.userId, ...testCase } });

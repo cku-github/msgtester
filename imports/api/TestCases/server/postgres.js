@@ -150,6 +150,7 @@ const loadFromPostgresql = async (userId) => {
     c_last_editor,
     n_diff_count,
     n_autotest,
+    n_delayed,
     n_runtime_in_sec,
     n_completes_in_ipc,
     c_mqmd_useridentifier,
@@ -176,7 +177,7 @@ const loadFromPostgresql = async (userId) => {
     const setMessageTypes = new Set();
     const setFormats = new Set();
 
-    console.log('process each row from Postgresql');
+    // console.log('process each row from Postgresql');
     result.rows.forEach((row) => {
       const testCase = {
         _id: row.c_test_case_id,
@@ -196,6 +197,7 @@ const loadFromPostgresql = async (userId) => {
         testRunResult: row.c_test_run_resulttrace,
         diffCount: row.n_diff_count,
         autoTest: row.n_autotest ? true : false,
+        delayedTest: row.n_delayed ? true : false,
         runTimeSec: row.n_runtime_in_sec,
         completesInIpc: row.n_completes_in_ipc ? true : false,
         mqUserIdentifier: row.c_mqmd_useridentifier,
@@ -251,6 +253,7 @@ const insert = async (testCase) => {
       comment,
       group,
       autoTest,
+      delayedTest,
       mqUserIdentifier,
       linefeed,
       jiraURL,
@@ -262,14 +265,14 @@ const insert = async (testCase) => {
         c_test_case_id, c_test_case_name, c_message_type, c_format,
         c_loading_queue, c_test_message, c_test_status, c_rhf2_header,
         c_comment, c_group_name, c_last_editor, n_runtime_in_sec,
-        n_completes_in_ipc, n_autotest, c_mqmd_useridentifier, c_linebreak,
+        n_completes_in_ipc, n_autotest, n_delayed, c_mqmd_useridentifier, c_linebreak,
         c_testid_prefix, c_jira_url, c_department_code
       )
       values(
         '${_id}', '${name}', '${messageType}', '${format}',
         '${loadingQueue}', $token$${testMessage}$token$, 'new', $token$${rfh2Header}$token$,
         $token$${comment}$token$, '${group}', '${owner}', ${runTimeSec},
-        ${completesInIpc ? 1 : 0}, ${autoTest ? 1 : 0},
+        ${completesInIpc ? 1 : 0}, ${autoTest ? 1 : 0}, ${delayedTest ? 1 : 0},
         '${mqUserIdentifier}', '${linefeed}', '${testIdPrefix}', '${jiraURL}',
         '${departmentCode}'
       );
@@ -304,6 +307,7 @@ const update = async (testCase) => {
       comment,
       group,
       autoTest,
+      delayedTest,
       mqUserIdentifier,
       linefeed,
       jiraURL,
@@ -327,6 +331,7 @@ const update = async (testCase) => {
     n_runtime_in_sec = ${runTimeSec},
     n_completes_in_ipc = ${completesInIpc ? 1 : 0},
     n_autotest = ${autoTest ? 1 : 0},
+    n_delayed = ${delayedTest ? 1 : 0},
     c_mqmd_useridentifier = '${mqUserIdentifier}',
     c_linebreak = '${linefeed}',
     c_testid_prefix = '${testIdPrefix}',
@@ -337,7 +342,7 @@ const update = async (testCase) => {
     `;
 
     // enable here to see insert in case of errors
-    //console.log('update postgresql with', query);
+    console.log('update postgresql with', query);
     const result = await client.query(query);
     await client.release(true);
   } catch (exception) {

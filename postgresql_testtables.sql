@@ -20,6 +20,7 @@ CREATE TABLE bus_test_cases
    n_autotest int,
    n_runtime_in_sec int,
    n_completes_in_ipc int,
+   n_delayed int,
    c_mqmd_useridentifier varchar(12),
    c_linebreak varchar(10),
    c_ipclink varchar(250),
@@ -52,6 +53,8 @@ CREATE TABLE bus_test_runs
 --alter table bus_test_cases add c_ipclink varchar(250);
 --alter table bus_test_runs add c_groupreference varchar(250);
 --alter table bus_test_cases add c_department_code varchar(20);
+--alter table bus_test_cases add column n_delayed int;
 
 --update bus_test_cases set c_linebreak = 'CRLF';
 --update bus_test_cases set c_department_code = 'dev';
+--update bus_test_cases set n_delayed = 0;
