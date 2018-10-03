@@ -57,7 +57,7 @@ With the standard contents plus the METEOR_SETTING as a single escaped json stri
 then I ran the app with
 passenger start --address ::
 
-UPDATE:
+UPDATE: (update UAT further down)
 copy new msgtester.tar.gz to /opt/incentage/passenger dir on the server.
 Then go to
 > cd /opt/incentage/passenger/msgtesterdev/tmp
@@ -70,6 +70,8 @@ go to
 > cd /opt/incentage/passenger/msgtesterdev/tmp/bundle/programs/server
 Rebuild with
 > npm install --production
+> npm install --save-exact @babel/runtime@7.0.0-beta.55
+> npm install jquery@1.12.1
 > npm prune --production
 
 stop the current running app with
@@ -91,3 +93,32 @@ restart
 Other items of interest
 Go into the project folder and upgrade where the npm install is done call the following to set to a correct and supported version
 meteor npm install --save-exact @babel/runtime@7.0.0-beta.55
+
+UAT Update texts
+> cd /opt/incentage/passenger/msgtesteruat/tmp
+ and unpack with
+> tar zxvf /opt/incentage/passenger/msgtester.tar.gz
+
+copy passenger file from original bundle dir to the new unpacked one.
+> cp /opt/incentage/passenger/msgtesteruat/bundle/Passengerfile.json /opt/incentage/passenger/msgtesteruat/tmp/bundle/Passengerfile.json
+go to
+> cd /opt/incentage/passenger/msgtesteruat/tmp/bundle/programs/server
+Rebuild with
+> npm install --production
+> npm prune --production
+> npm install --save-exact @babel/runtime@7.0.0-beta.55
+> npm install jquery@1.12.1
+
+stop the current running app with
+> cd /opt/incentage/passenger/msgtesteruat/bundle
+> passenger stop
+
+remove any old backups, rename and replace the existing bundle dir with the new unpacked one
+> cd /opt/incentage/passenger/msgtesteruat
+> rm -rf bundle.old
+> mv bundle/ bundle.old
+> mv tmp/bundle .
+
+restart
+> cd bundle
+> passenger start --address ::
