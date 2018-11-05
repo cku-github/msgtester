@@ -362,7 +362,8 @@ const runTest = async (testCase) => {
     const query = `
     update bus_test_cases set
     c_test_status = 'run',
-    c_last_editor = '${owner}'
+    c_last_editor = '${owner}',
+    d_test_time = statement_timestamp()
     where
     c_test_case_id = '${_id}'
     `;
@@ -385,6 +386,7 @@ const runTestsFiltered = async ({
     update bus_test_cases set
     c_test_status = 'run',
     c_last_editor = '${owner}'
+    d_test_time = statement_timestamp()    
     where 1 = 1
     `;
 
