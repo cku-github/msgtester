@@ -122,3 +122,14 @@ remove any old backups, rename and replace the existing bundle dir with the new 
 restart
 > cd bundle
 > passenger start --address ::
+
+=========================================================
+In case of Mongo errors try
+Meteor reset
+
+possibly
+meteor npm install bootstrap@3.3.7
+meteor npm update bootstrap
+//meteor npm install jquery@3.3.1
+meteor npm install jquery@2.2.4
+meteor npm update jquery --depth 2

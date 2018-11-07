@@ -385,8 +385,8 @@ const runTestsFiltered = async ({
     let query = `
     update bus_test_cases set
     c_test_status = 'run',
-    c_last_editor = '${owner}'
-    d_test_time = statement_timestamp()    
+    c_last_editor = '${owner}',
+    d_test_time = statement_timestamp()
     where 1 = 1
     `;
 
