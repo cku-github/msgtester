@@ -177,7 +177,7 @@ const loadFromPostgresql = async (userId) => {
     const setMessageTypes = new Set();
     const setFormats = new Set();
 
-    // console.log('process each row from Postgresql');
+    console.log('process each row from Postgresql');
     result.rows.forEach((row) => {
       const testCase = {
         _id: row.c_test_case_id,
@@ -206,7 +206,7 @@ const loadFromPostgresql = async (userId) => {
       };
 
 
-      // console.log('testCase: ', testCase)
+      console.log('testCase: ', testCase)
       TestCases.insert(testCase);
       setGroups.add(row.c_group_name);
       setQueues.add(row.c_loading_queue);

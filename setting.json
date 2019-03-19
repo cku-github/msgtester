@@ -6,7 +6,7 @@
     "postgres": {
       "user": "ipc_vps",
       "host": "localhost",
-      "database": "ipcdb_vps",
+      "database": "ipcdb_dev",
       "password": "SoMuchBetterThanOracle12",
       "port": 5432
     },
