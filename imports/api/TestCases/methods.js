@@ -155,6 +155,7 @@ Meteor.methods({
       messageType: Match.Maybe(String),
       departmentCode: Match.Maybe(String),
     });
+    const date = new Date();
 
     try {
       const updateParams = {};
@@ -175,7 +176,7 @@ Meteor.methods({
         updateParams.departmentCode = params.departmentCode;
       }
 
-      const result = TestCases.update(updateParams, {$set: { owner: this.userId, testStatus: 'run', ipcLink: '', diffCount: '', } }, { multi: true });
+      const result = TestCases.update(updateParams, {$set: { owner: this.userId, testStatus: 'run', diffCount: '', testStart: date, ipcLink: '', } }, { multi: true });
       if (Meteor.isServer) {
         import('./server/postgres').then(({default: postgres}) => {
           postgres.runTestsFiltered({...params, owner: this.userId});

@@ -71,6 +71,7 @@ const updateExpectedResult = async (_id, testRunResult) => {
 
 const pollReadyTests = async () => {
   try {
+    var today = new Date();
     const client = await pool.connect();
     const query = `
       select c_test_case_id, coalesce(c_expected_resulttrace, '') as c_expected_resulttrace
@@ -89,6 +90,7 @@ const pollReadyTests = async () => {
         c_ipclink: ipcLink,
       } = row;
 
+      console.log('current testStart: ', today);
       // test result is empty, new test case
       if (!expectedResult) {
         TestCases.update(_id, {
@@ -97,6 +99,7 @@ const pollReadyTests = async () => {
             expectedResult: testRunResult,
             testStatus: 'passed',
             diffCount: 0,
+            testStart: today,
             ipcLink,
           },
         });
@@ -114,6 +117,7 @@ const pollReadyTests = async () => {
             testRunResult,
             testStatus: diffCount === 0 ? 'passed' : 'failed',
             diffCount,
+            testStart: today,
             ipcLink,
           },
         });
