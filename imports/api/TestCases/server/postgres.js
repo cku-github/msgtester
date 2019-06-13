@@ -146,7 +146,7 @@ const loadFromPostgresql = async (userId) => {
     c_format,
     c_loading_queue,
     c_test_message,
-    c_test_status,
+    --c_test_status,
     c_rhf2_header,
     c_comment,
     c_expected_resulttrace,
