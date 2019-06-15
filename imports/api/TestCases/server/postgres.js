@@ -135,6 +135,10 @@ const pollReadyTests = async () => {
 // function to import all data from Postgresql. Deletes all existing data in Mongo.
 const loadFromPostgresql = async (userId) => {
   try {
+    // define value lists used for checking input data
+    var validLineBreaks = ["CR", "CRLF"];
+    var validDepartmentCodes = ["cs","is","fs","ss","dev"]
+
     const client = await pool.connect();
     // query to get all test_cases from Postgresql
     const query = `
@@ -163,6 +167,7 @@ const loadFromPostgresql = async (userId) => {
     c_jira_url,
     c_department_code
     from bus_test_cases
+    where c_test_message is not null
     `;
 
     const result = await client.query(query);
@@ -205,8 +210,8 @@ const loadFromPostgresql = async (userId) => {
         runTimeSec: row.n_runtime_in_sec,
         completesInIpc: row.n_completes_in_ipc ? true : false,
         mqUserIdentifier: row.c_mqmd_useridentifier,
-        linefeed: row.c_linebreak,
-        departmentCode: row.c_department_code,
+        linefeed: validLineBreaks.includes(row.c_linebreak) ? row.c_linebreak : "CRLF",
+        departmentCode: validDepartmentCodes.includes(row.c_department_code) ? row.c_department_code : "dev" ,
       };
 
 
