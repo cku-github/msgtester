@@ -19,7 +19,7 @@ deployment:
 delete c:\msgtester\node_modules
 delete c:\msgtester\package-lock.json
 call c:\msgtester\meteor npm install --production
-// (warning about ajv@^5.0.0 --save went awaz after deleting the node_modules and package-lock.json and running the command above again)
+// (warning about ajv@^5.0.0 --save went away after deleting the node_modules and package-lock.json and running the command above again)
 call c:\msgtester\meteor build --server-only c:\temp --architecture os.linux.x86_64
 
 copy the created msgtester.tar.gz to my server (rhel7) where I previously installed passenger according to the brilliant guide at https://www.phusionpassenger.com/library/walkthroughs/deploy/
@@ -61,33 +61,33 @@ passenger start --address ::
 UPDATE: (update UAT further down)
 copy new msgtester.tar.gz to /opt/incentage/passenger dir on the server.
 Then go to
-> cd /opt/incentage/passenger/msgtesterdev/tmp
- and unpack with
-> tar zxvf /opt/incentage/passenger/msgtester.tar.gz
+  cd /opt/incentage/passenger/msgtesterdev/tmp
+and unpack with
+ tar zxvf /opt/incentage/passenger/msgtester.tar.gz
 
 copy passenger file from original bundle dir to the new unpacked one.
-> cp /opt/incentage/passenger/msgtesterdev/bundle/Passengerfile.json /opt/incentage/passenger/msgtesterdev/tmp/bundle/Passengerfile.json
+  cp /opt/incentage/passenger/msgtesterdev/bundle/Passengerfile.json /opt/incentage/passenger/msgtesterdev/tmp/bundle/Passengerfile.json
 go to
-> cd /opt/incentage/passenger/msgtesterdev/tmp/bundle/programs/server
+  cd /opt/incentage/passenger/msgtesterdev/tmp/bundle/programs/server
 Rebuild with
-> npm install --production
-> npm install --save-exact @babel/runtime@7.0.0-beta.55
-> npm install jquery@1.12.1
-> npm prune --production
+  npm install --production
+  npm install --save-exact @babel/runtime@7.0.0-beta.55
+-- not required \\ npm install jquery@1.12.1
+  npm prune --production
 
 stop the current running app with
-> cd /opt/incentage/passenger/msgtesterdev/bundle
-> passenger stop
+cd /opt/incentage/passenger/msgtesterdev/bundle
+passenger stop
 
 remove any old backups, rename and replace the existing bundle dir with the new unpacked one
-> cd /opt/incentage/passenger/msgtesterdev
-> rm -rf bundle.old
-> mv bundle/ bundle.old
-> mv tmp/bundle .
+  cd /opt/incentage/passenger/msgtesterdev
+  rm -rf bundle.old
+  mv bundle/ bundle.old
+  mv tmp/bundle .
 
 restart
-> cd bundle
-> passenger start --address ::
+  cd bundle
+  passenger start --address ::
 
 
 ======================================
@@ -106,9 +106,9 @@ go to
 > cd /opt/incentage/passenger/msgtesteruat/tmp/bundle/programs/server
 Rebuild with
 > npm install --production
-> npm prune --production
 > npm install --save-exact @babel/runtime@7.0.0-beta.55
-> npm install jquery@1.12.1
+> npm prune --production
+// not anymore > npm install jquery@1.12.1
 
 stop the current running app with
 > cd /opt/incentage/passenger/msgtesteruat/bundle

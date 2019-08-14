@@ -34,13 +34,27 @@ const fetch = async (query, params) => {
 const updateStatusAndDiffResult = async (_id, diffCount) => {
   try {
     const client = await pool.connect();
-    const query = `
-      update bus_test_cases
-      set c_test_status = 'calculating'
-      , c_test_run_resulttrace = '${diffCount}'
-      where c_test_case_id = '${_id}'
-    `;
+    var query = ``;
 
+    if (diffCount == 0) {
+      query = `
+        update bus_test_cases
+        set c_test_status = 'passed'
+        , n_diff_count = ${diffCount}
+        , c_notification_sent = ''
+        where c_test_case_id = '${_id}'
+      `;
+    } else {
+      query = `
+        update bus_test_cases
+        set c_test_status = 'failed'
+        , n_diff_count = ${diffCount}
+        , c_notification_sent = ''
+        where c_test_case_id = '${_id}'
+      `;
+    };
+
+    console.log("updateStatusAndDiffResult: ", query);
     const result = await fetch(query);
     await client.release(true)
   } catch (exception) {
@@ -55,13 +69,15 @@ const updateExpectedResult = async (_id, testRunResult) => {
     // update bus_test_cases set test_message = $2 where test_case_id = $1;
     const query = `
     update bus_test_cases set
-    c_expected_resulttrace = '${testRunResult}'
-    , c_test_status = 'calculating'
+    c_expected_resulttrace = $token$${testRunResult}$token$
+    , c_test_status = 'passed'
     , n_diff_count = 0
+    , c_notification_sent = ''
     where
     c_test_case_id = '${_id}'
     `;
 
+    console.log("updateExpectedResult: ", query);
     const result = await client.query(query);
     await client.release(true);
   } catch (exception) {
@@ -90,7 +106,7 @@ const pollReadyTests = async () => {
         c_ipclink: ipcLink,
       } = row;
 
-      console.log('current testStart: ', today);
+      console.log('current testStart: ', today, _id);
       // test result is empty, new test case
       if (!expectedResult) {
         TestCases.update(_id, {
@@ -108,9 +124,16 @@ const pollReadyTests = async () => {
       } else {
         // test result is same
         // test result is different
-        // const diff = jsdiff.diffChars(expectedResult, testRunResult);
-        const diff = jsdiff.diffWords(expectedResult, testRunResult);
-        const diffCount = diff.filter(part => part.added || part.removed).length;
+        //const diffCount = diff.filter(part => part.added || part.removed).length;
+        const mongoExpectedResult = TestCases.findOne(_id).expectedResult
+        console.log('try to get testCase with ID: ', mongoExpectedResult);
+        const diff = jsdiff.diffWords(testRunResult || '', mongoExpectedResult || '');
+        let diffCount = 0;
+
+        const result = diff.map(function(part, index) {
+          if (part.added || part.removed) {
+            diffCount += 1;
+          }});
 
         TestCases.update(_id, {
           $set: {
@@ -150,7 +173,6 @@ const loadFromPostgresql = async (userId) => {
     c_format,
     c_loading_queue,
     c_test_message,
-    --c_test_status,
     c_rhf2_header,
     c_comment,
     c_expected_resulttrace,
@@ -289,7 +311,7 @@ const insert = async (testCase) => {
 
     const cleanquery = query.replace(/'undefined',/g, '\'\',');
 
-    //console.log('update postgresql with', cleanquery);
+    console.log('Insert new testcase with:', cleanquery);
     const result = await client.query(cleanquery);
     await client.release(true);
   } catch (exception) {
@@ -351,7 +373,7 @@ const update = async (testCase) => {
     `;
 
     // enable here to see insert in case of errors
-    //console.log('update postgresql with', query);
+    console.log('Update postgresql with:', query);
     const result = await client.query(query);
     await client.release(true);
   } catch (exception) {
@@ -377,6 +399,7 @@ const runTest = async (testCase) => {
     c_test_case_id = '${_id}'
     `;
 
+    console.log('Runtest with update:', query)
     const result = await client.query(query);
     await client.release(true);
   } catch (exception) {
@@ -415,6 +438,7 @@ const runTestsFiltered = async ({
       query += ` AND c_department_code = '${departmentCode}'`;
     }
 
+    console.log('RuntestFiltered with update:', query)
     const result = await client.query(query);
     await client.release(true);
   } catch (exception) {
@@ -434,6 +458,7 @@ const deleteTestCase = async (testCase) => {
       where c_test_case_id = '${_id}'
     `;
 
+    console.log('DeleteTestCase with sql: ', query);
     const result = await fetch(query);
     await client.release(true)
   } catch (exception) {
@@ -452,11 +477,12 @@ const acceptTestResult = async (testCase) => {
     // update bus_test_cases set test_message = $2 where test_case_id = $1;
     const query = `
     update bus_test_cases set
-    c_expected_resulttrace = '${testRunResult}'
+    c_expected_resulttrace = $token$${testRunResult}$token$
     where
     c_test_case_id = '${_id}'
     `;
 
+    console.log('AcceptTestResult with sql: ', query);
     const result = await client.query(query);
     await client.release(true);
   } catch (exception) {

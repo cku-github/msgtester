@@ -106,7 +106,8 @@ Meteor.methods({
   'testCases.runTest': function testCasesRunTest(_id, date) {
     check(_id, String);
     check(date, Date);
-
+    
+    console.log('called runTest method on Entry:', _id);
     try {
       const result = TestCases.update(_id, {$set: {
         testStatus: 'run',
