@@ -106,7 +106,7 @@ const pollReadyTests = async () => {
         c_ipclink: ipcLink,
       } = row;
 
-      console.log('current testStart: ', today, _id);
+      console.log('pollReadyTests Timestamp and ID: ', today, _id);
       // test result is empty, new test case
       if (!expectedResult) {
         TestCases.update(_id, {
@@ -124,17 +124,28 @@ const pollReadyTests = async () => {
       } else {
         // test result is same
         // test result is different
-        //const diffCount = diff.filter(part => part.added || part.removed).length;
-        const mongoExpectedResult = TestCases.findOne(_id).expectedResult
-        console.log('try to get testCase with ID: ', mongoExpectedResult);
-        const diff = jsdiff.diffWords(testRunResult || '', mongoExpectedResult || '');
+        // const diffCount = diff.filter(part => part.added || part.removed).length;
+        //const ignoreWhitespace = true;
+        //const newlineIsToken = true;
+        const mongoExpectedResult = TestCases.findOne(_id).expectedResult;
+        console.log('Will now compare mongoExpectedResult with DB testRunResult for ID: ', _id);
+        const diff = jsdiff.diffWords(testRunResult.substring(0,40000) || '', mongoExpectedResult.substring(0,40000) || '');
+        //const diff = jsdiff.diffLines(testRunResult.substring(0,40000) || '', mongoExpectedResult.substring(0,40000) || '', ignoreWhitespace, newlineIsToken);
+        console.log('compare complete at: ', today);
         let diffCount = 0;
 
         const result = diff.map(function(part, index) {
           if (part.added || part.removed) {
             diffCount += 1;
           }});
+        
+        //check diffcount == 0 and the length of either the expected result of the actual result is above 40000, compare the two lengths. 
+        //If they don't match then report difference
+        if (diffCount == 0 && (mongoExpectedResult.length > 40000 || (testRunResult.length > 40000) && mongoExpectedResult.length != testRunResult.length)) {
+          diffCount = 1;
+        };
 
+        //update the mongo DB instance
         TestCases.update(_id, {
           $set: {
             testRunResult,
@@ -145,6 +156,8 @@ const pollReadyTests = async () => {
           },
         });
 
+        //update the Postgresql with the same info
+        console.log('call updateStatusAndDiffResult to store diffCount: ', diffCount);
         updateStatusAndDiffResult(_id, diffCount);
       }
     });
@@ -389,7 +402,6 @@ const runTest = async (testCase) => {
       owner,
     } = testCase;
 
-    // update bus_test_cases set test_message = $2 where test_case_id = $1;
     const query = `
     update bus_test_cases set
     c_test_status = 'run',
@@ -413,7 +425,6 @@ const runTestsFiltered = async ({
   try {
     const client = await pool.connect();
 
-    // update bus_test_cases set test_message = $2 where test_case_id = $1;
     let query = `
     update bus_test_cases set
     c_test_status = 'run',
@@ -474,7 +485,6 @@ const acceptTestResult = async (testCase) => {
       testRunResult,
     } = testCase;
 
-    // update bus_test_cases set test_message = $2 where test_case_id = $1;
     const query = `
     update bus_test_cases set
     c_expected_resulttrace = $token$${testRunResult}$token$

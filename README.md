@@ -20,6 +20,7 @@ delete c:\msgtester\node_modules
 delete c:\msgtester\package-lock.json
 call c:\msgtester\meteor npm install --production
 // (warning about ajv@^5.0.0 --save went away after deleting the node_modules and package-lock.json and running the command above again)
+call c:\msgtester\meteor npm update caniuse-lite browserslist
 call c:\msgtester\meteor build --server-only c:\temp --architecture os.linux.x86_64
 
 copy the created msgtester.tar.gz to my server (rhel7) where I previously installed passenger according to the brilliant guide at https://www.phusionpassenger.com/library/walkthroughs/deploy/

@@ -130,6 +130,7 @@ Meteor.methods({
   'testCases.acceptTestResult': function testCasesAcceptTestResult(_id) {
     check(_id, String);
 
+    console.log('called acceptTestResult method on Entry:', _id);
     try {
       const {testRunResult} = TestCases.findOne(_id);
       const result = TestCases.update(_id, {$set: {
