@@ -106,59 +106,64 @@ const pollReadyTests = async () => {
         c_ipclink: ipcLink,
       } = row;
 
-      console.log('pollReadyTests Timestamp and ID: ', today, _id);
-      // test result is empty, new test case
-      if (!expectedResult) {
-        TestCases.update(_id, {
-          $set: {
-            testRunResult,
-            expectedResult: testRunResult,
-            testStatus: 'passed',
-            diffCount: 0,
-            testStart: today,
-            ipcLink,
-          },
-        });
-
-        updateExpectedResult(_id, testRunResult);
-      } else {
-        // test result is same
-        // test result is different
-        // const diffCount = diff.filter(part => part.added || part.removed).length;
-        //const ignoreWhitespace = true;
-        //const newlineIsToken = true;
+      //check if there is a MongoRecord to the Postgresql data. If not skip to the next msg
+      if (TestCases.findOne(_id)) {
         const mongoExpectedResult = TestCases.findOne(_id).expectedResult;
-        console.log('Will now compare mongoExpectedResult with DB testRunResult for ID: ', _id);
-        const diff = jsdiff.diffWords(testRunResult.substring(0,40000) || '', mongoExpectedResult.substring(0,40000) || '');
-        //const diff = jsdiff.diffLines(testRunResult.substring(0,40000) || '', mongoExpectedResult.substring(0,40000) || '', ignoreWhitespace, newlineIsToken);
-        console.log('compare complete at: ', today);
-        let diffCount = 0;
 
-        const result = diff.map(function(part, index) {
-          if (part.added || part.removed) {
-            diffCount += 1;
-          }});
-        
-        //check diffcount == 0 and the length of either the expected result of the actual result is above 40000, compare the two lengths. 
-        //If they don't match then report difference
-        if (diffCount == 0 && (mongoExpectedResult.length > 40000 || (testRunResult.length > 40000) && mongoExpectedResult.length != testRunResult.length)) {
-          diffCount = 1;
-        };
+        console.log('pollReadyTests Timestamp and ID: ', today, _id);
+        // test result is empty, new test case
+        if (!expectedResult || !mongoExpectedResult) {
+          TestCases.update(_id, {
+            $set: {
+              testRunResult,
+              expectedResult: testRunResult,
+              testStatus: 'passed',
+              diffCount: 0,
+              testStart: today,
+              ipcLink,
+            },
+          });
 
-        //update the mongo DB instance
-        TestCases.update(_id, {
-          $set: {
-            testRunResult,
-            testStatus: diffCount === 0 ? 'passed' : 'failed',
-            diffCount,
-            testStart: today,
-            ipcLink,
-          },
-        });
+          updateExpectedResult(_id, testRunResult);
+        } else {
+          // test result is same
+          // test result is different
+          // const diffCount = diff.filter(part => part.added || part.removed).length;
+          //const ignoreWhitespace = true;
+          //const newlineIsToken = true;
+          
+          console.log('Will now compare mongoExpectedResult with DB testRunResult for ID: ', _id);
+          const diff = jsdiff.diffWords(testRunResult.substring(0,40000) || '', mongoExpectedResult.substring(0,40000) || '');
+          //const diff = jsdiff.diffLines(testRunResult.substring(0,40000) || '', mongoExpectedResult.substring(0,40000) || '', ignoreWhitespace, newlineIsToken);
+          console.log('compare complete at: ', today);
+          let diffCount = 0;
 
-        //update the Postgresql with the same info
-        console.log('call updateStatusAndDiffResult to store diffCount: ', diffCount);
-        updateStatusAndDiffResult(_id, diffCount);
+          const result = diff.map(function(part, index) {
+            if (part.added || part.removed) {
+              diffCount += 1;
+            }});
+          
+          //check diffcount == 0 and the length of either the expected result of the actual result is above 40000, compare the two lengths. 
+          //If they don't match then report difference
+          if (diffCount == 0 && (mongoExpectedResult.length > 40000 || (testRunResult.length > 40000) && mongoExpectedResult.length != testRunResult.length)) {
+            diffCount = 1;
+          };
+
+          //update the mongo DB instance
+          TestCases.update(_id, {
+            $set: {
+              testRunResult,
+              testStatus: diffCount === 0 ? 'passed' : 'failed',
+              diffCount,
+              testStart: today,
+              ipcLink,
+            },
+          });
+
+          //update the Postgresql with the same info
+          console.log('call updateStatusAndDiffResult to store diffCount: ', diffCount);
+          updateStatusAndDiffResult(_id, diffCount);
+        }
       }
     });
 
