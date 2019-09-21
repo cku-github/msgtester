@@ -1,0 +1,8 @@
+{
+  "app_type": "node",
+  "startup_file": "main.js",
+  "log_file": "../passenger.log",
+  "pid_file": "../passenger.pid",
+  "port": 3000,
+  "user": "node"
+}

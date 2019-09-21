@@ -1,0 +1,15 @@
+# docker-compose.yml
+
+app:
+  image: teretech/msgtester:latest
+  ports:
+    - "3000:3000"
+  links:
+    - mongo
+  environment:
+    - ROOT_URL=http://localhost
+    - MONGO_URL=mongodb://mongo:27017/meteor
+    - "METEOR_SETTINGS={\"public\": {\"environmentName\": \"CKUDEV\"}, \"private\": {\"postgres\": {\"user\": \"ipc_vps\", \"host\": \"host.docker.internal\", \"database\": \"ipcdb_dev\", \"password\": \"SoMuchBetterThanOracle12\", \"port\": 5432}, \"MAIL_URL\": \"\"}}"
+
+mongo:
+  image: mongo:latest
