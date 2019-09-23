@@ -3,7 +3,6 @@
 .meteor/local
 centos_msgtester
 node_modules
-msgtester.tar.gz
 build.sh
 deploy.sh
 *.md
