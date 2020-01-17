@@ -16,7 +16,7 @@
     "core-js": "^2.5.5",
     "diff": "^3.5.0",
     "handlebars": ">=4.3.0",
-    "jquery": "^2.2.4",
+    "jquery": "^3.4.0",
     "jquery-validation": "^1.17.0",
     "juice": "^4.2.3",
     "lodash": "^4.17.10",
