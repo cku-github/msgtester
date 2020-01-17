@@ -1,8 +1,0 @@
-.circleci
-.git
-.meteor/local
-node_modules
-msgtester.tar.gz
-build.sh
-deploy.sh
-*.md

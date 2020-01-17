@@ -19,7 +19,6 @@ shell-server@0.4.0            # Server-side component of the `meteor shell` comm
 react-meteor-data
 alanning:roles
 fourseven:scss
-twbs:bootstrap
 accounts-base@1.5.0
 accounts-password@1.5.2
 service-configuration@1.0.11
@@ -36,3 +35,4 @@ static-html
 percolate:synced-cron
 oauth@1.2.8
 underscore@1.0.10
+twbs:bootstrap

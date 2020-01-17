@@ -1,8 +1,0 @@
-.circleci
-.git
-.meteor/local
-centos_msgtester
-node_modules
-build.sh
-deploy.sh
-*.md
