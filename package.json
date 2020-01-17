@@ -6,11 +6,11 @@
     "test": "jest"
   },
   "dependencies": {
-    "@babel/runtime": "^7.6.0",
+    "@babel/runtime": "^7.8.3",
     "@cleverbeagle/seeder": "^1.3.1",
     "ajv": "^5.0.0",
     "babel-runtime": "^6.26.0",
-    "bcrypt": "^1.0.3",
+    "bcryptjs": "^2.4.3",
     "bootstrap": "^3.3.7",
     "commonmark": "^0.28.1",
     "core-js": "^2.5.5",
