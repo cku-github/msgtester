@@ -1,0 +1,10 @@
+docker image building steps
+
+new idea:
+Use steps from 
+https://hub.docker.com/r/geoffreybooth/meteor-base/
+
+docker run -d  -e METEOR_SETTINGS="$(cat /path/to/settings.json)"
+
+use https://hub.docker.com/r/staeke/meteor-alpine/
+try to create a multistage thingy like https://forums.meteor.com/t/meteor-docker-image-for-multistage-docker-builds/44908/11

@@ -7,6 +7,63 @@ To speed up development the pup boilerplate was used https://cleverbeagle.com/pu
 
 [Pup Documentation](https://cleverbeagle.com/pup)
 
+
+##############################
+
+### Docker Container installation:
+docker image building steps
+
+Use steps from 
+https://hub.docker.com/r/geoffreybooth/meteor-base/
+
+
+file preparation:
+1. Create a local project directory. For example: "Meteor"
+
+2. Clone the msgtester to a local project directory. cd Meteor && git clone https://github.com/cku-github/msgtester msgtester
+
+3. copy the files from DockerImageFiles to the parent project directory (Meteor)
+so you will end up with a directory structure
+
+
+Meteor
+|
+|___
+    msgtester
+    |
+    |__
+    |  .git
+    |  .meteor
+    |  art
+    |  client
+    |  DockerImageFiles
+    |  imports
+    |  node_modules
+    |  private
+    |  public
+    |  server
+    |  README.md
+    |  package.json
+    |  ...
+    |
+    |
+    .dockerignore
+    app-with-native-dependencies.dockerfile
+    docker-compose.yml
+    Dockerfile
+
+Settings:
+Edit the Postgresql settings in the docker-compose.yml file to match your environment. Also change the exposed port if required.
+
+Build Docker container:
+within the parent project directory (Meteor) run
+docker-compose up
+(or run docker-compose build followed by docker-compose up)
+
+
+#############################
+
+### Local installation
 The msgTester App is created to run on linux servers and is hosted using the phusion passenger library. https://www.phusionpassenger.com/library/walkthroughs/start/meteor.html
 This runs a nginx web server to host the web frontend.
 
