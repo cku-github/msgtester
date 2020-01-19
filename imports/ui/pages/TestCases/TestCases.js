@@ -94,7 +94,9 @@ class TestCases extends React.Component {
     return (
       <div className="TestCases">
         <div className="pull-right">
-          <Button onClick={importPostgresInfo} title="load all testcases from linked Postgresql DB">
+          <Button onClick={importPostgresInfo} 
+            title={`load all testcases from linked Postgresql DB:
+                  ${Meteor.settings.public.postgresInfo.host}:${Meteor.settings.public.postgresInfo.port}/${Meteor.settings.public.postgresInfo.database}`}>
             Reload from Postgres
           </Button>
         </div>

@@ -8,7 +8,15 @@ import MessageTypes from '../../MessageTypes/MessageTypes';
 import DepartmentCodes from '../../DepartmentCodes/DepartmentCodes';
 import Formats from '../../Formats/Formats';
 
-const pool = new Pool(Meteor.settings.private.postgres);
+const postgresObject = {
+    "user": `${Meteor.settings.private.postgres.user}`,
+    "host": `${Meteor.settings.public.postgresInfo.host}`,
+    "database": `${Meteor.settings.public.postgresInfo.database}`,
+    "password": `${Meteor.settings.private.postgres.password}`,
+    "port": `${Meteor.settings.public.postgresInfo.port}`
+  };
+
+const pool = new Pool(postgresObject);
 
 const oldPoolQuery = pool.query;
 pool.query = (...args) => {
@@ -255,7 +263,7 @@ const loadFromPostgresql = async (userId) => {
       };
 
 
-      console.log('testCase: ', testCase)
+      //console.log('testCase: ', testCase)
       TestCases.insert(testCase);
       setGroups.add(row.c_group_name);
       setQueues.add(row.c_loading_queue);

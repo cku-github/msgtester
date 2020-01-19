@@ -1,15 +1,17 @@
 {
   "public": {
-     "environmentName": "LocalServer"
+    "environmentName": "LocalServer",
+    "postgresInfo": {
+      "host": "localhost",
+      "database": "ipcdb_dev",
+      "port": 5432
+    }
   },
   "private": {
     "postgres": {
       "user": "ipc_vps",
-      "host": "localhost",
-      "database": "ipcdb_dev",
-      "password": "SoMuchBetterThanOracle12",
-      "port": 5432
+      "password": "SoMuchBetterThanOracle12"
     },
-    "MAIL_URL": ""
+    "MAIL_URL": "somemail.server.com"
   }
 }

@@ -13,7 +13,7 @@ services:
       ROOT_URL: ${APP_ROOT_URL:-http://localhost}
       MONGO_URL: mongodb://mongo:27017/meteor
       PORT: 3000
-      METEOR_SETTINGS: '{"public": {"environmentName": "CKUDEV"}, "private": {"postgres": {"user": "ipc_vps", "host": "host.docker.internal", "database": "ipcdb_dev", "password": "SoMuchBetterThanOracle12", "port": 5432}, "MAIL_URL": ""}}'
+      METEOR_SETTINGS: '{"public":{"environmentName":"LocalServer","postgresInfo":{"host":"host.docker.internal","database":"ipcdb_dev","port":5432}},"private":{"postgres":{"user":"ipc_vps","password":"SoMuchBetterThanOracle12"},"MAIL_URL":""}}'
 
   mongo:
     image: mongo:latest
