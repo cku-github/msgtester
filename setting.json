@@ -2,7 +2,7 @@
   "public": {
     "environmentName": "LocalServer",
     "postgresInfo": {
-      "host": "localhost",
+      "host": "ims-dbsql.sst.vps.no",
       "database": "ipcdb_dev",
       "port": 5432
     }
@@ -10,7 +10,7 @@
   "private": {
     "postgres": {
       "user": "ipc_vps",
-      "password": "SoMuchBetterThanOracle12"
+      "password": "SoMuchCheaperThanOracle12"
     },
     "MAIL_URL": "somemail.server.com"
   }

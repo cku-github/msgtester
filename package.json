@@ -16,7 +16,7 @@
     "core-js": "^2.5.5",
     "diff": "^3.5.0",
     "handlebars": ">=4.3.0",
-    "jquery": "^2.2.4",
+    "jquery": "^3.4.1",
     "jquery-validation": "^1.17.0",
     "juice": "^4.2.3",
     "lodash": "^4.17.10",
@@ -39,7 +39,7 @@
     "simpl-schema": "^0.3.2"
   },
   "devDependencies": {
-    "babel-jest": "^21.2.0",
+    "babel-jest": "^25.1.0",
     "babel-plugin-lodash": "^3.3.2",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
@@ -51,7 +51,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-meteor": "^4.2.1",
     "eslint-plugin-react": "^7.7.0",
-    "jest": "^21.2.1"
+    "jest": "^25.1.0"
   },
   "eslintConfig": {
     "parserOptions": {
