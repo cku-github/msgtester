@@ -7,7 +7,7 @@
       "user": "ipc_vp",
       "host": "localhost",
       "database": "ipcdb_vp",
-      "password": "SoMuchBetterThanOracle12",
+      "password": "somePassword",
       "port": 5432
     },
     "MAIL_URL": ""
