@@ -33,19 +33,3 @@ const testCase = {
   departmentCode: 'departmentCode',
   autoTest: true,
 };
-
-
-// postgres.insert(testCase);
-
-// postgres.fetch(`
-//   select fk_test_case_id as testCaseId,
-//   result as expectedResult
-//   from bus_test_runs
-//   where runstate = 'ready'
-// `);
-
-// postgres.update({...testCase, testMessage: 'new test message'});
-
-// postgres.runTest(testCase);
-
-// postgres.pollReadyTests();

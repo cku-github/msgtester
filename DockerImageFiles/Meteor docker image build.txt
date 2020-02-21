@@ -1,6 +1,5 @@
 docker image building steps
 
-new idea:
 Use steps from 
 https://hub.docker.com/r/geoffreybooth/meteor-base/
 
