@@ -33,8 +33,9 @@ const fetch = async (query, params) => {
       //  TestCases.insert(result);
     });
 
-    await client.release(true);
+    client.release(true);
   } catch (exception) {
+    client.release(true);
     throw new Error(exception.message);
   }
 };
@@ -64,8 +65,9 @@ const updateStatusAndDiffResult = async (_id, diffCount) => {
 
     console.log("updateStatusAndDiffResult: ", query);
     const result = await fetch(query);
-    await client.release(true)
+    client.release(true)
   } catch (exception) {
+    client.release(true);
     throw new Error(exception.message);
   }
 };
@@ -87,8 +89,9 @@ const updateExpectedResult = async (_id, testRunResult) => {
 
     console.log("updateExpectedResult: ", query);
     const result = await client.query(query);
-    await client.release(true);
+    client.release(true);
   } catch (exception) {
+    client.release(true);
     throw new Error(exception.message);
   }
 };
@@ -175,8 +178,9 @@ const pollReadyTests = async () => {
       }
     });
 
-    await client.release(true)
+    client.release(true)
   } catch (exception) {
+    client.release(true);
     throw new Error(exception.message);
   }
 };
@@ -286,8 +290,9 @@ const loadFromPostgresql = async (userId) => {
     console.log('Groups: ', Groups.find({}).fetch());
     console.log('DepartmentCodes: ', DepartmentCodes.find({}).fetch());
 
-    await client.release(true);
+    client.release(true);
   } catch (exception) {
+    client.release(true);
     throw new Error(exception.message);
   }
 };
@@ -339,8 +344,9 @@ const insert = async (testCase) => {
 
     console.log('Insert new testcase with:', cleanquery);
     const result = await client.query(cleanquery);
-    await client.release(true);
+    client.release(true);
   } catch (exception) {
+    client.release(true);
     throw new Error(exception.message);
   }
 };
@@ -401,8 +407,9 @@ const update = async (testCase) => {
     // enable here to see insert in case of errors
     console.log('Update postgresql with:', query);
     const result = await client.query(query);
-    await client.release(true);
+    client.release(true);
   } catch (exception) {
+    client.release(true);
     throw new Error(exception.message);
   }
 };
@@ -426,8 +433,9 @@ const runTest = async (testCase) => {
 
     console.log('Runtest with update:', query)
     const result = await client.query(query);
-    await client.release(true);
+    client.release(true);
   } catch (exception) {
+    client.release(true);
     throw new Error(exception.message);
   }
 };
@@ -464,8 +472,9 @@ const runTestsFiltered = async ({
 
     console.log('RuntestFiltered with update:', query)
     const result = await client.query(query);
-    await client.release(true);
+    client.release(true);
   } catch (exception) {
+    client.release(true);
     throw new Error(exception.message);
   }
 };
@@ -484,8 +493,9 @@ const deleteTestCase = async (testCase) => {
 
     console.log('DeleteTestCase with sql: ', query);
     const result = await fetch(query);
-    await client.release(true)
+    client.release(true)
   } catch (exception) {
+    client.release(true);
     throw new Error(exception.message);
   }
 };
@@ -507,8 +517,9 @@ const acceptTestResult = async (testCase) => {
 
     console.log('AcceptTestResult with sql: ', query);
     const result = await client.query(query);
-    await client.release(true);
+    client.release(true);
   } catch (exception) {
+    client.release(true);
     throw new Error(exception.message);
   }
 };
