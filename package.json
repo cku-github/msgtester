@@ -31,7 +31,7 @@
     "react-scroll-sync": "^0.4.1",
     "react-select": "^1.2.1",
     "react-tooltip": "^4.0.3",
-    "simpl-schema": "^0.3.2"
+    "simpl-schema": "^1.10.2"
   },
   "devDependencies": {
     "babel-jest": "^25.1.0",
