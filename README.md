@@ -60,6 +60,15 @@ within the parent project directory (Meteor) run
 docker-compose up
 (or run docker-compose build followed by docker-compose up)
 
+Build for Quay
+docker-compose build
+docker login quay.io
+#find new image
+docker images
+# get image ID from previous output
+docker tag 9937e3d6a356 quay.io/cku1/msgtester:latest
+docker push quay.io/cku1/msgtester:latest
+# check on Quay.io
 
 #############################
 
