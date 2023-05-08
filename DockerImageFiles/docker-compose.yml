@@ -13,8 +13,12 @@ services:
       ROOT_URL: ${APP_ROOT_URL:-http://localhost}
       MONGO_URL: mongodb://mongo:27017/meteor
       PORT: 3000
-      METEOR_SETTINGS: '{"public":{"environmentName":"LocalServer","postgresInfo":{"host":"host.docker.internal","database":"ipcdb_dev","port":5432}},"private":{"postgres":{"user":"ipc_vps","password":"SomePassword"},"MAIL_URL":""}}'
-
+      ENVNAME: 'LocalServer'
+      POSTGRES_DB_HOST: 'host.docker.internal'
+      POSTGRES_DB_NAME: 'ipcdb_dev'
+      POSTGRES_DB_PORT: '5432'
+      POSTGRES_DB_USER: 'ipc_vps'
+      POSTGRES_DB_PASSWORD: 'SetAPasswordHere'
   mongo:
     image: mongo:latest
     command:
